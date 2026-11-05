@@ -1547,14 +1547,17 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     return (lo + hi) / 2;
   }
   // Share of the eventual invites that have arrived, averaged over
-  // applications spread evenly across D days, when an invite comes after
-  // an exponential wait with mean TAU days.
-  function maturity(D) {
-    if (D <= 0) return 0;
-    return 1 - (TAU / D) * (1 - Math.exp(-D / TAU));
+  // applications spread evenly across the D days of the search, when an
+  // invite comes after an exponential wait with mean TAU days and replies
+  // have had T days since the first application (T = D while still searching).
+  function maturity(D, T = D) {
+    T = Math.max(T, D);
+    if (T <= 0) return 0;
+    if (D <= 0) return 1 - Math.exp(-T / TAU);
+    return 1 - (TAU / D) * (Math.exp(-(T - D) / TAU) - Math.exp(-T / TAU));
   }
-  function assess(days, n, k) {
-    const neff = k + (n - k) * maturity(days);
+  function assess(days, n, k, since = days) {
+    const neff = k + (n - k) * maturity(days, since);
     const a = 1 + k, b = 1 + Math.max(0, neff - k);
     const pLow = ibeta(LOW, a, b);
     const pHigh = 1 - ibeta(HIGH, a, b);
@@ -1737,7 +1740,9 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
       : `That is ${v.days} day${v.days === 1 ? "" : "s"} ago. The count updates by itself every day.`;
   }
   function compute(v) {
-    const r = assess(v.days, v.n, v.k);
+    // after an end date, replies to the last applications can still arrive until today
+    const since = v.end && v.start ? Math.max(v.days, daysBetween(v.start, todayStr())) : v.days;
+    const r = assess(v.days, v.n, v.k, since);
     const st = (store && !state.example) ? streakInfo(store.log) : { streak: 0, loggedDays: 0, activeToday: false };
     return { ...r, o: v.o || 0, end: v.end || null, streak: st.streak, loggedDays: st.loggedDays, activeToday: st.activeToday };
   }
@@ -1781,7 +1786,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
       if (r.k === 0 && r.level !== "early") {
         add(`At a typical rate of 3% to 6%, between ${whole(r.zeroLow)} and ${whole(r.zeroHigh)} of people with the same counted applications would also have zero interviews.`);
       } else if (r.k > 0) {
-        add(`At a typical rate you would expect about ${r.expLow.toFixed(1)} to ${r.expHigh.toFixed(1)} interviews ${r.end ? "by the end of your search" : "by now"}. You have ${r.k}.`);
+        add(`At a typical rate you would expect about ${r.expLow.toFixed(1)} to ${r.expHigh.toFixed(1)} interviews ${r.end ? "from these applications" : "by now"}. You have ${r.k}.`);
       }
       add(`Your true interview rate is between ${pct(r.lo)} and ${pct(r.hi)} with 95% probability. The typical range is 3% to 6%.`);
       if (r.o > 0) add(`You turned ${plural(r.k, "interview")} into ${plural(r.o, "offer")}. The rate above still only looks at interviews.`);
