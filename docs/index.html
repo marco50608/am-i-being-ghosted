@@ -100,7 +100,7 @@ body {
   line-height: 1.5;
 }
 .wrap {
-  max-width: 1040px;
+  max-width: 1120px;
   margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
@@ -186,6 +186,8 @@ h2 {
   background: var(--paper);
   color: var(--ink);
 }
+.date-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.date-row .date { flex: 1 1 200px; }
 .stepper button, .btn {
   font: 700 16px/1 var(--body);
   border-radius: 10px;
@@ -526,6 +528,14 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
         <label for="start">Date of your first application</label>
         <input id="start" class="date" type="date">
         <p class="hint" id="start-hint">The day count updates by itself every day.</p>
+      </div>
+      <div class="field">
+        <label for="end">End date</label>
+        <div class="date-row">
+          <input id="end" class="date" type="date">
+          <button type="button" class="btn sm" id="end-today" hidden>Today</button>
+        </div>
+        <p class="hint" id="end-hint">Stays on today while you are still searching. Pick a date once your search is over.</p>
       </div>
       <div class="field">
         <label for="apps">Applications sent</label>
@@ -1652,19 +1662,22 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
   let state;
   if (store) {
     const last = store.log[store.log.length - 1] || { n: 0, k: 0, o: 0 };
-    state = { start: store.start, days: Math.max(0, daysBetween(store.start, todayStr())), n: last.n, k: last.k, o: last.o || 0, example: false };
+    state = { start: store.start, end: store.end || null, days: Math.max(0, daysBetween(store.start, store.end || todayStr())), n: last.n, k: last.k, o: last.o || 0, example: false };
   } else {
-    state = { start: addDays(todayStr(), -EXAMPLE.days), ...EXAMPLE, example: true };
+    state = { start: addDays(todayStr(), -EXAMPLE.days), end: null, ...EXAMPLE, example: true };
   }
 
   const $ = id => document.getElementById(id);
-  const inputs = { start: $("start"), apps: $("apps"), ints: $("ints"), offers: $("offers"), market: $("market"), field: $("field"), channel: $("channel") };
+  const inputs = { start: $("start"), end: $("end"), apps: $("apps"), ints: $("ints"), offers: $("offers"), market: $("market"), field: $("field"), channel: $("channel") };
 
   function readInputs() {
     const v = el => { const x = Math.floor(Number(el.value)); return Number.isFinite(x) && x > 0 ? x : 0; };
     const start = /^\d{4}-\d{2}-\d{2}$/.test(inputs.start.value) ? inputs.start.value : "";
-    const days = start ? daysBetween(start, todayStr()) : 0;
-    return { start, days, n: v(inputs.apps), k: v(inputs.ints), o: v(inputs.offers) };
+    // an end date of today, or none, means the search is still running
+    const picked = /^\d{4}-\d{2}-\d{2}$/.test(inputs.end.value) ? inputs.end.value : "";
+    const end = picked && picked !== todayStr() ? picked : null;
+    const days = start ? daysBetween(start, end || todayStr()) : 0;
+    return { start, end, days, n: v(inputs.apps), k: v(inputs.ints), o: v(inputs.offers) };
   }
   function readProfile() {
     return { market: inputs.market.value || null, field: inputs.field.value || null, channel: inputs.channel.value || null };
@@ -1672,6 +1685,9 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
   function writeInputs() {
     inputs.start.value = state.start;
     inputs.start.max = todayStr();
+    inputs.end.value = state.end || todayStr();
+    inputs.end.max = todayStr();
+    inputs.end.min = state.start;
     inputs.apps.value = state.n;
     inputs.ints.value = state.k;
     inputs.offers.value = state.o || 0;
@@ -1703,19 +1719,27 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
 
   function validate(v) {
     return !v.start ? "Pick the date of your first application."
-      : v.days < 0 ? "The first application cannot be in the future."
+      : v.start > todayStr() ? "The first application cannot be in the future."
+      : v.end && v.end > todayStr() ? "The end date cannot be in the future."
+      : v.days < 0 ? "The end date cannot be before your first application."
       : v.k > v.n ? "Interviews cannot be more than applications sent."
       : v.o > v.k ? "Offers cannot be more than interviews." : "";
   }
   function updateHint(v) {
+    inputs.end.min = v.start || "";
+    $("end-today").hidden = !v.end;
+    $("end-hint").textContent = v.end
+      ? `Your search ended on ${shortDate(v.end)}, so the day count stays put.`
+      : "Stays on today while you are still searching. Pick a date once your search is over.";
     $("start-hint").textContent = !v.start || v.days < 0 ? "The day count updates by itself every day."
+      : v.end ? `Your search ran for ${v.days} day${v.days === 1 ? "" : "s"}.`
       : v.days === 0 ? "That is today. The day count updates by itself every day."
       : `That is ${v.days} day${v.days === 1 ? "" : "s"} ago. The count updates by itself every day.`;
   }
   function compute(v) {
     const r = assess(v.days, v.n, v.k);
     const st = (store && !state.example) ? streakInfo(store.log) : { streak: 0, loggedDays: 0, activeToday: false };
-    return { ...r, o: v.o || 0, streak: st.streak, loggedDays: st.loggedDays, activeToday: st.activeToday };
+    return { ...r, o: v.o || 0, end: v.end || null, streak: st.streak, loggedDays: st.loggedDays, activeToday: st.activeToday };
   }
   function setStale(on) {
     $("verdict").classList.toggle("stale", on);
@@ -1723,14 +1747,14 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
   }
   function paint(r) {
     current = r;
-    shown = { start: state.start, n: r.n, k: r.k, o: r.o };
+    shown = { start: state.start, end: r.end, n: r.n, k: r.k, o: r.o };
 
     const L = LEVELS[r.level];
     const statusEl = $("status");
     statusEl.textContent = L.name;
     statusEl.style.setProperty("--lvl", `var(${L.color})`);
     $("status-msg").textContent = L.msg;
-    $("day-pill").textContent = `Day ${r.days}`;
+    $("day-pill").textContent = r.end ? `${r.days} days` : `Day ${r.days}`;
 
     const showNums = r.level !== "start";
     $("s-plow").textContent = showNums ? whole(r.pLow) : "–";
@@ -1757,7 +1781,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
       if (r.k === 0 && r.level !== "early") {
         add(`At a typical rate of 3% to 6%, between ${whole(r.zeroLow)} and ${whole(r.zeroHigh)} of people with the same counted applications would also have zero interviews.`);
       } else if (r.k > 0) {
-        add(`At a typical rate you would expect about ${r.expLow.toFixed(1)} to ${r.expHigh.toFixed(1)} interviews by now. You have ${r.k}.`);
+        add(`At a typical rate you would expect about ${r.expLow.toFixed(1)} to ${r.expHigh.toFixed(1)} interviews ${r.end ? "by the end of your search" : "by now"}. You have ${r.k}.`);
       }
       add(`Your true interview rate is between ${pct(r.lo)} and ${pct(r.hi)} with 95% probability. The typical range is 3% to 6%.`);
       if (r.o > 0) add(`You turned ${plural(r.k, "interview")} into ${plural(r.o, "offer")}. The rate above still only looks at interviews.`);
@@ -1792,7 +1816,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     err.textContent = problem;
     err.hidden = !problem;
     updateHint(v);
-    setStale(!shown || v.start !== shown.start || v.n !== shown.n || v.k !== shown.k || v.o !== shown.o);
+    setStale(!shown || v.start !== shown.start || v.end !== shown.end || v.n !== shown.n || v.k !== shown.k || v.o !== shown.o);
   }
 
   // Badges stay earned once you have them, even if the numbers move on.
@@ -1885,7 +1909,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     if (s.level === "start") return "";
     const L = LEVELS[s.level];
     const lines = [
-      `Day ${s.days} of my job hunt. ${numsText(s)}.`,
+      (s.end ? `My job hunt took ${s.days} days. ` : `Day ${s.days} of my job hunt. `) + `${numsText(s)}.`,
       `Status: ${L.name}.`
     ];
     if (s.level !== "early") lines.push(`Chance my interview rate is below the typical 3%: ${whole(s.pLow)}.`);
@@ -1948,10 +1972,10 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
 
     ctx.fillStyle = CARD.ink;
     ctx.font = `800 150px ${F.display}`;
-    ctx.fillText(`Day ${s.days}`, X, 320);
+    ctx.fillText(s.end ? `${s.days} days` : `Day ${s.days}`, X, 320);
     ctx.font = `400 40px ${F.body}`;
     ctx.fillStyle = CARD.muted;
-    ctx.fillText("of the job hunt", X, 398);
+    ctx.fillText(s.end ? `of job hunting, ended ${shortDate(s.end)}` : "of the job hunt", X, 398);
 
     const nums = [[s.n, s.n === 1 ? "application" : "applications"], [s.k, s.k === 1 ? "interview" : "interviews"]];
     if (s.o > 0) nums.push([s.o, s.o === 1 ? "offer" : "offers"]);
@@ -2024,7 +2048,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
       if (!$("sharer").hidden) $("sr-img").src = url;
     } catch (e) {}
     const shown = picks.length ? `, ${picks.length} badge${picks.length === 1 ? "" : "s"}` : "";
-    $("card-img").alt = `Share card. Day ${s.days}, ${numsText(s)}, ${LEVELS[s.level].name}${shown}.`;
+    $("card-img").alt = `Share card. ${s.end ? `${s.days} days of job hunting` : `Day ${s.days}`}, ${numsText(s)}, ${LEVELS[s.level].name}${shown}.`;
     srBlob = null;
     if (!$("sharer").hidden) prepareBlob();
   }
@@ -2043,7 +2067,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     $("rv-example").hidden = !isExample;
     $("rv-share").hidden = isExample;
     $("rv-share-t").textContent = THEME.rv.share || "Share my card";
-    $("rv-title").textContent = `Day ${r.days} of your hunt`;
+    $("rv-title").textContent = r.end ? `Your hunt took ${r.days} days` : `Day ${r.days} of your hunt`;
     $("rv-nums").textContent = numsText(r);
     $("rv-msg").textContent = L.msg;
     $("rv-env-to").textContent = THEME.rv.envText(r, apps);
@@ -2340,6 +2364,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
 
   // ---------- events ----------
   Object.values(inputs).forEach(el => { el.addEventListener("input", onEdit); el.addEventListener("change", onEdit); });
+  $("end-today").addEventListener("click", () => { inputs.end.value = todayStr(); onEdit({ target: inputs.end }); inputs.end.focus(); });
   document.querySelectorAll("[data-step]").forEach(btn => {
     btn.addEventListener("click", () => {
       const el = inputs[btn.dataset.step];
@@ -2355,7 +2380,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     err.textContent = problem;
     err.hidden = !problem;
     if (problem) return;
-    state.start = v.start; state.days = v.days; state.n = v.n; state.k = v.k; state.o = v.o;
+    state.start = v.start; state.end = v.end; state.days = v.days; state.n = v.n; state.k = v.k; state.o = v.o;
 
     if (state.example) {
       const r = compute(v);
@@ -2371,6 +2396,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     const prevSeen = new Set(store && Array.isArray(store.seen) ? store.seen : []);
     if (!store) store = { start: v.start, log: [] };
     store.start = v.start;
+    store.end = v.end;
     store.log = store.log.filter(e => e.d !== today);
     store.log.push({ d: today, n: v.n, k: v.k, o: v.o });
     store.profile = readProfile();
@@ -2410,7 +2436,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     btn.classList.remove("danger-ok");
     clearStore();
     store = null;
-    state = { start: todayStr(), days: 0, n: 0, k: 0, o: 0, example: false };
+    state = { start: todayStr(), end: null, days: 0, n: 0, k: 0, o: 0, example: false };
     writeInputs();
     updateHint(readInputs());
     $("err").hidden = true;
@@ -2453,7 +2479,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     const pr = store.profile || {};
     const body = { v: 2, theme: THEME.key, start: v.start, days: v.days, n: v.n, k: v.k, o: v.o, market: pr.market || null, field: pr.field || null, channel: pr.channel || null };
     // the same numbers twice on one day add nothing new
-    const sig = [todayStr(), v.start, v.n, v.k, v.o, body.market, body.field, body.channel].join("|");
+    const sig = [todayStr(), v.start, v.days, v.n, v.k, v.o, body.market, body.field, body.channel].join("|");
     if (store.lastSent === sig) return true;
     store.lastSent = sig;
     saveStore(store);
@@ -2483,7 +2509,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
   }
   const isDay = x => typeof x === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x);
   function backupCode() {
-    const pack = { v: 2, s: store.start, l: store.log.map(e => [e.d, e.n, e.k, e.o || 0]), pr: store.profile || null,
+    const pack = { v: 2, s: store.start, e: store.end || null, l: store.log.map(e => [e.d, e.n, e.k, e.o || 0]), pr: store.profile || null,
       lv: store.lastLevel || null, se: store.seen || [], ea: store.earned || {}, no: optOut ? 1 : 0 };
     return "GHOST1." + b64e(JSON.stringify(pack));
   }
@@ -2507,6 +2533,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
       const profile = { market: opt(inputs.market, pr.market), field: opt(inputs.field, pr.field), channel: opt(inputs.channel, pr.channel) };
       const out = { start: x.s, log, profile, seen: Array.isArray(x.se) ? x.se.filter(id => typeof id === "string") : [], earned };
       if (typeof x.lv === "string") out.lastLevel = x.lv;
+      if (isDay(x.e) && x.e >= x.s) out.end = x.e;
       return { store: out, optOut: x.no === 1 };
     } catch (e) { return null; }
   }
@@ -2539,7 +2566,7 @@ h1 { font-weight: 700; letter-spacing: -.01em; }
     storageOk = saveStore(store);
     if (got.optOut) setOptOut(true);
     const last = store.log[store.log.length - 1] || { n: 0, k: 0, o: 0 };
-    state = { start: store.start, days: Math.max(0, daysBetween(store.start, todayStr())), n: last.n, k: last.k, o: last.o || 0, example: false };
+    state = { start: store.start, end: store.end || null, days: Math.max(0, daysBetween(store.start, store.end || todayStr())), n: last.n, k: last.k, o: last.o || 0, example: false };
     writeInputs();
     updateHint(readInputs());
     paint(compute(readInputs()));
