@@ -1,0 +1,2641 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A Bayesian reality check for your job hunt. Enter your applications and interviews and find out whether the silence is ordinary ghosting.">
+<meta property="og:title" content="Am I Being Ghosted?">
+<meta property="og:description" content="A Bayesian reality check for your job hunt. Enter your applications and interviews and find out whether the silence is ordinary ghosting.">
+<meta property="og:type" content="website">
+<script src="../config.js"></script>
+<title>Am I Being Ghosted?</title>
+<link rel="stylesheet" href="../fonts/ghost.css">
+<style>
+/* Layout: one haunted inbox. A band of little ghosts on top, inputs and the ghost scene side by side on wide screens, badges and share card below. */
+:root {
+  --paper: #f3f1f9;
+  --card: #ffffff;
+  --ink: #221d3a;
+  --muted: #67617f;
+  --line: #dfdaee;
+  --chip: #edeaf6;
+  --accent: #5b46c9;
+  --tag: #e2557a;
+  --on-red: #ffffff;
+  --ok: #2b8a6c;
+  --quiet: #a77c12;
+  --unusual: #cc6019;
+  --bad: #b8336a;
+  --great: #2a76b8;
+  --early: #6c7890;
+  --display: "Grandstander", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Courier Prime", "Courier New", ui-monospace, monospace;
+  --radius: 14px;
+  --shadow: rgba(34, 29, 58, .18);
+  --locked: .36;
+  --scrim: rgba(12, 9, 26, .98);
+  --scrim-ink: #f3f1fb;
+  --scrim-muted: #b9b2d4;
+  --scrim-chip: rgba(255, 255, 255, .13);
+  --scrim-track: rgba(255, 255, 255, .18);
+  --stamp-drop: rgba(0, 0, 0, .5);
+  --ghost: #ffffff;
+  --ghost-shade: #e4ddf7;
+  --ghost-edge: rgba(42, 35, 66, .3);
+  --ghost-ink: #2a2342;
+  --blush: rgba(255, 130, 165, .45);
+  --band: #5b46c9;
+  --env-a: #8b7be0;
+  --env-b: #4fbfae;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #120f1e;
+    --card: #1c182c;
+    --ink: #ece9f7;
+    --muted: #a39dbd;
+    --line: #2e2945;
+    --chip: #262139;
+    --accent: #a594ff;
+    --tag: #ef6f9c;
+    --ok: #4cbc95;
+    --quiet: #ddb04a;
+    --unusual: #ee8a46;
+    --bad: #ef6f9c;
+    --great: #6db1ee;
+    --early: #98a3b8;
+    --shadow: rgba(0, 0, 0, .55);
+    --locked: .3;
+    --ghost: #f6f3ff;
+    --ghost-shade: #d3caf0;
+    --ghost-edge: rgba(0, 0, 0, 0);
+    --band: #a594ff;
+    --env-a: #a594ff;
+    --env-b: #7ff0dc;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #120f1e;
+  --card: #1c182c;
+  --ink: #ece9f7;
+  --muted: #a39dbd;
+  --line: #2e2945;
+  --chip: #262139;
+  --accent: #a594ff;
+  --tag: #ef6f9c;
+  --ok: #4cbc95;
+  --quiet: #ddb04a;
+  --unusual: #ee8a46;
+  --bad: #ef6f9c;
+  --great: #6db1ee;
+  --early: #98a3b8;
+  --shadow: rgba(0, 0, 0, .55);
+  --locked: .3;
+  --ghost: #f6f3ff;
+  --ghost-shade: #d3caf0;
+  --ghost-edge: rgba(0, 0, 0, 0);
+  --band: #a594ff;
+  --env-a: #a594ff;
+  --env-b: #7ff0dc;
+  color-scheme: dark;
+}
+
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+  display: grid;
+  gap: 28px;
+}
+header { display: grid; gap: 6px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1 {
+  font-family: var(--display);
+  font-stretch: 112%;
+  font-weight: 800;
+  font-size: clamp(36px, 7vw, 60px);
+  line-height: 1;
+  margin: 0;
+  text-wrap: balance;
+}
+.lede { margin: 4px 0 0; max-width: 60ch; color: var(--muted); font-size: 18px; }
+h2 {
+  font-family: var(--display);
+  font-stretch: 105%;
+  font-weight: 700;
+  font-size: 22px;
+  margin: 0;
+  text-wrap: balance;
+}
+.grid2 { display: grid; gap: 20px; grid-template-columns: 1fr; }
+@media (min-width: 820px) { .grid2 { grid-template-columns: 5fr 7fr; align-items: start; } }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pill {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--muted);
+}
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 700; }
+.field .hint { font-size: 14px; color: var(--muted); margin: 0; }
+.stepper { display: grid; grid-template-columns: 44px 1fr 44px; gap: 8px; }
+.stepper input {
+  width: 100%;
+  min-width: 0;
+  font: 700 22px/1 var(--mono);
+  text-align: center;
+  padding: 10px 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+.date {
+  width: 100%;
+  min-width: 0;
+  font: 700 20px/1.2 var(--mono);
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.stepper button, .btn {
+  font: 700 16px/1 var(--body);
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--chip);
+  color: var(--ink);
+  cursor: pointer;
+}
+.stepper button { font-size: 22px; }
+.btn { padding: 12px 16px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--card); }
+.btn:disabled { opacity: .5; cursor: default; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.note { font-size: 14px; color: var(--muted); margin: 0; }
+.error { color: var(--bad); font-weight: 700; margin: 0; }
+
+.verdict { display: grid; gap: 10px; }
+.status {
+  justify-self: start;
+  font-family: var(--display);
+  font-stretch: 108%;
+  font-weight: 800;
+  font-size: clamp(26px, 4.6vw, 38px);
+  line-height: 1.05;
+  color: var(--lvl, var(--early));
+  text-wrap: balance;
+}
+.status-msg { margin: 0; font-size: 17px; max-width: 58ch; }
+
+.scene { display: block; width: 100%; aspect-ratio: 8 / 3; border-radius: 12px; background: var(--chip); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .scene { filter: brightness(.88) saturate(.95); } }
+:root[data-theme="dark"] .scene { filter: brightness(.88) saturate(.95); }
+.meter { display: grid; gap: 8px; }
+.meter-track { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.meter-seg { height: 14px; border-radius: 4px; opacity: .3; }
+.meter-seg.on { opacity: 1; }
+.seg-ok { background: var(--ok); }
+.seg-quiet { background: var(--quiet); }
+.seg-unusual { background: var(--unusual); }
+.seg-bad { background: var(--bad); }
+.meter-pin {
+  position: absolute;
+  top: -6px;
+  width: 4px;
+  height: 26px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: left .5s ease;
+}
+.meter-labels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; font-size: 12px; color: var(--muted); }
+.meter-labels span { min-width: 0; display: grid; gap: 4px; align-content: start; }
+.meter-ico { display: flex; gap: 1px; height: 18px; align-items: flex-end; color: var(--muted); font-style: normal; }
+.meter-ico svg { height: 100%; width: auto; overflow: visible; }
+.meter-labels span.on .meter-ico { color: var(--lvl, var(--ink)); }
+.meter-labels span.on { color: var(--lvl, var(--ink)); font-weight: 700; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stats.four { grid-template-columns: repeat(auto-fit, minmax(max(150px, calc(50% - 6px)), 1fr)); }
+.stat { background: var(--paper); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
+.stat .k { font-size: 13px; color: var(--muted); }
+.stat .v { font: 700 21px/1.15 var(--mono); font-variant-numeric: tabular-nums; }
+.opt { font: 400 12px/1 var(--body); color: var(--muted); margin-left: 6px; }
+.sel { width: 100%; min-width: 0; font: 400 16px/1.2 var(--body); padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); }
+.more { border: 1px solid var(--line); border-radius: 10px; padding: 0 14px; }
+.more > summary { cursor: pointer; padding: 12px 0; font-weight: 700; }
+.more[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.more-body { display: grid; gap: 12px; padding-bottom: 14px; }
+.consent { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; color: var(--muted); cursor: pointer; }
+.consent input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); }
+.consent a, .log-col a { color: var(--accent); }
+.log-grid { display: grid; gap: 24px; }
+@media (min-width: 820px) { .log-grid { grid-template-columns: 1fr 1fr; } }
+.log-col { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.log-col h3 { margin: 0; font-family: var(--display); font-size: 18px; line-height: 1.2; }
+.log-col p { margin: 0; max-width: 60ch; }
+.log-col textarea { width: 100%; min-height: 76px; resize: vertical; font: 13px/1.4 var(--mono); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); word-break: break-all; }
+select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.explain { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.explain li { padding-left: 18px; position: relative; max-width: 64ch; }
+.explain li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+
+.streakbar { display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--mono); font-size: 15px; }
+.streakbar b { font-size: 20px; font-variant-numeric: tabular-nums; }
+
+/* badge album: every badge is a postage stamp, locked ones wait in a dashed slot */
+.next { appearance: none; width: 100%; margin: 0; border: 0; font: inherit; color: inherit; text-align: left; cursor: zoom-in;
+  display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 16px 12px 12px; border-radius: 12px; background: var(--paper); }
+.next:hover { background: var(--chip); }
+.next-slot { width: 60px; aspect-ratio: 5 / 6; border: 2px dashed var(--line); border-radius: 6px; display: grid; place-items: center; }
+.next-slot canvas { width: 80%; height: 80%; display: block; }
+.next-body { display: grid; gap: 2px; min-width: 0; }
+.next-k { font: 700 11px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.next-t { font-family: var(--display); font-stretch: 105%; font-weight: 800; font-size: 20px; line-height: 1.1; }
+.next-d { font-size: 14px; color: var(--muted); }
+.next-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.next-row .bar { flex: 1; }
+.next-n { font: 700 13px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.badges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 10px; padding-top: 6px; }
+@media (min-width: 720px) { .badges { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 32px 16px; } }
+.badges > div { display: grid; min-width: 0; }
+.badge { appearance: none; margin: 0; padding: 8px 4px 10px; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; cursor: zoom-in;
+  display: grid; justify-items: center; align-content: start; gap: 3px; text-align: center; min-width: 0; width: 100%; }
+.badge:focus-visible, .next:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.badge.locked:hover .slot { border-color: var(--accent); }
+.slot { position: relative; width: min(112px, 100%); aspect-ratio: 5 / 6; margin-bottom: 8px; display: grid; place-items: center; }
+.slot canvas { display: block; width: 100%; height: 100%; }
+.badge.locked .slot { border: 2px dashed var(--line); border-radius: 8px; }
+.badge.locked .slot canvas { width: 82%; height: 82%; filter: grayscale(1); opacity: var(--locked); }
+.badge.earned .slot canvas { transform: rotate(var(--tilt, 0deg)); filter: drop-shadow(0 6px 8px var(--shadow)); transition: transform .25s cubic-bezier(.3, 1.4, .5, 1); }
+.badge.earned:hover .slot canvas { transform: rotate(0deg) translateY(-4px) scale(1.05); }
+.new-tag { position: absolute; top: -8px; right: -6px; padding: 4px 8px; border-radius: 999px; background: var(--tag); color: var(--on-red); font: 700 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; transform: rotate(8deg); box-shadow: 0 2px 6px var(--shadow); }
+.bt { font-weight: 700; font-size: 15px; line-height: 1.2; }
+.bd { font-size: 13px; line-height: 1.3; color: var(--muted); }
+.bm { margin-top: 5px; font: 700 12px/1.2 var(--mono); color: var(--accent); }
+.badge.locked .bm { color: var(--muted); }
+.bp { width: min(112px, 100%); display: grid; gap: 5px; margin-top: 6px; }
+.bp span { font: 700 12px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { display: block; height: 6px; border-radius: 999px; background: var(--chip); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent); }
+@media (max-width: 719px) { .bm, .bp span { font-size: 11px; } }
+
+.share { display: grid; gap: 16px; }
+@media (min-width: 820px) { .share { grid-template-columns: 360px 1fr; align-items: start; } }
+.share img { width: 100%; max-width: 360px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); }
+.share textarea {
+  width: 100%; min-height: 120px; resize: vertical;
+  font: 15px/1.45 var(--body); padding: 10px 12px;
+  border-radius: 10px; border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink);
+}
+.how { display: grid; gap: 12px; }
+.how p { margin: 0; max-width: 66ch; }
+footer { font-size: 14px; color: var(--muted); display: grid; gap: 4px; }
+footer a { color: var(--accent); }
+.danger-ok { color: var(--bad); border-color: var(--bad); }
+/* results waiting for a new check */
+.verdict.stale > :not(.stale-note) { opacity: .35; }
+.stale-note { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--chip); font-weight: 700; }
+
+/* reply letter reveal */
+.reveal {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: max(56px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.reveal::before { content: ""; position: fixed; inset: 0; background: var(--paper); opacity: .96; }
+.rv-skip { position: fixed; z-index: 3; top: max(12px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+.rv-stage { position: relative; z-index: 1; margin: auto; width: min(420px, 100%); display: grid; gap: 18px; justify-items: center; }
+.rv-letter {
+  position: relative; width: 100%;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 22px 20px 20px; box-shadow: 0 18px 40px var(--shadow);
+  display: grid; gap: 8px;
+}
+.rv-label { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font: 700 12px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); padding-right: 92px; }
+.rv-title { font-family: var(--display); font-stretch: 110%; font-weight: 800; font-size: 30px; line-height: 1.05; margin: 2px 0 0; padding-right: 92px; text-wrap: balance; }
+.rv-nums { margin: 0; font: 700 16px/1.35 var(--mono); padding-right: 84px; font-variant-numeric: tabular-nums; }
+.rv-msg { margin: 6px 0 0; font-size: 16px; }
+.rv-stamps-label { font: 700 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.rv-stamps { display: flex; flex-wrap: wrap; gap: 16px 14px; margin-top: 12px; }
+.rv-stamp { appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: zoom-in; width: 86px; display: grid; gap: 8px; justify-items: center; text-align: center; border-radius: 8px; }
+.rv-stamp:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.rv-stamp canvas { width: 84px; height: 100.8px; display: block; filter: drop-shadow(0 5px 7px var(--shadow)); }
+.rv-stamps.big { gap: 16px 22px; }
+.rv-stamps.big .rv-stamp { width: 124px; }
+.rv-stamps.big .rv-stamp canvas { width: 116px; height: 139.2px; }
+.rv-stamp span { font-size: 12px; line-height: 1.2; font-weight: 700; }
+.rv-stamps.big .rv-stamp span { font-size: 14px; }
+.rv-confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.rv-more { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+.rv-postmark {
+  position: absolute; top: -20px; right: -8px; width: 108px; height: 108px; border-radius: 50%;
+  border: 4px double var(--lvl, var(--accent)); color: var(--lvl, var(--accent)); background: var(--card);
+  display: grid; align-content: center; justify-items: center; gap: 5px; padding: 10px; text-align: center;
+  transform: rotate(-10deg);
+}
+.rv-pm-date { font: 700 10px/1 var(--mono); letter-spacing: .08em; }
+.rv-pm-big:empty { display: none; }
+.rv-pm-status { font-family: var(--display); font-stretch: 80%; font-weight: 800; font-size: 13px; line-height: 1.05; text-transform: uppercase; }
+.rv-env {
+  position: absolute; inset: 0; margin: auto; z-index: 2; pointer-events: none;
+  width: min(320px, 82vw); height: calc(min(320px, 82vw) / 1.6);
+  perspective: 900px;
+}
+.rv-env-body { position: absolute; inset: 0; box-shadow: 0 16px 36px var(--shadow); }
+.rv-flap { position: absolute; left: 8px; right: 8px; top: 8px; height: 56%; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; }
+/* badge viewer: one stamp, big, on a dark scrim */
+.viewer {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: max(64px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.viewer::before { content: ""; position: fixed; inset: 0; background: var(--scrim); }
+.vw-close { position: fixed; z-index: 2; top: max(12px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+.vw-body { position: relative; z-index: 1; margin: auto; width: min(420px, 100%); display: grid; justify-items: center; gap: 20px; text-align: center; color: var(--scrim-ink); }
+.vw-stage { width: min(260px, 64vw); aspect-ratio: 5 / 6; perspective: 900px; touch-action: pan-y; cursor: grab; }
+.vw-fly { width: 100%; height: 100%; }
+.vw-tilt { position: relative; width: 100%; height: 100%; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .18s ease-out; }
+.vw-tilt canvas { display: block; width: 100%; height: 100%; filter: drop-shadow(0 22px 30px var(--stamp-drop)); }
+.vw-sheen { position: absolute; inset: 6.25% 7.5%; pointer-events: none; mix-blend-mode: soft-light;
+  background: radial-gradient(circle at var(--mx, 30%) var(--my, 20%), rgba(255, 255, 255, .8), rgba(255, 255, 255, 0) 55%); }
+.viewer.locked .vw-tilt canvas { filter: grayscale(1) brightness(.55) drop-shadow(0 22px 30px var(--stamp-drop)); }
+.viewer.locked .vw-sheen { display: none; }
+.vw-info { display: grid; gap: 8px; justify-items: center; }
+.vw-k { font: 700 12px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--scrim-muted); }
+.vw-title { margin: 0; font-family: var(--display); font-stretch: 110%; font-weight: 800; font-size: clamp(28px, 7vw, 38px); line-height: 1.05; text-wrap: balance; }
+.vw-d { margin: 0; font-size: 16px; color: var(--scrim-muted); }
+.vw-flavor { margin: 4px 0 0; max-width: 34ch; font-size: 18px; line-height: 1.45; text-wrap: balance; }
+.vw-story { width: min(420px, 100%); margin-top: 6px; padding: 12px 16px 14px; border-radius: 12px; background: var(--scrim-chip); text-align: left; display: grid; gap: 6px; }
+.vw-story-k { font: 700 11px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--scrim-muted); }
+.vw-story p { margin: 0; font-size: 15px; line-height: 1.55; }
+.vw-status { margin-top: 4px; padding: 6px 14px; border-radius: 999px; background: var(--scrim-chip); font: 700 14px/1.2 var(--mono); }
+.vw-prog { width: min(280px, 100%); display: grid; gap: 7px; justify-items: center; }
+.vw-prog .bar { width: 100%; height: 8px; background: var(--scrim-track); }
+.vw-prog .bar i { background: var(--scrim-ink); }
+.vw-prog span { font-size: 15px; color: var(--scrim-muted); }
+.vw-nav { display: flex; gap: 10px; }
+h2[tabindex="-1"]:focus { outline: none; }
+@media (prefers-reduced-motion: reduce) { .meter-pin, .badge.earned .slot canvas, .vw-tilt { transition: none; } }
+.ico { width: 1.1em; height: 1.1em; vertical-align: -.2em; margin-right: 7px; }
+.btn.sm { padding: 7px 12px; font-size: 14px; }
+.head-r { display: flex; align-items: center; gap: 8px; }
+.card-open { appearance: none; position: relative; display: block; width: 100%; max-width: 360px; margin: 0; padding: 0; border: 0; border-radius: 10px; background: none; cursor: zoom-in; }
+.card-open:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.card-open img { display: block; }
+.card-open-hint { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; font: 700 13px/1.3 var(--body); color: var(--muted); }
+.card-open:hover .card-open-hint { color: var(--accent); }
+.rv-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+/* share sheet: the whole card, which badges go on it, and the ways out */
+.sharer {
+  position: fixed; inset: 0; z-index: 70;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: max(60px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.sharer::before { content: ""; position: fixed; inset: 0; background: linear-gradient(var(--scrim), var(--scrim)), var(--scrim); }
+.sr-close { position: fixed; z-index: 2; top: max(12px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+.sr-body { position: relative; z-index: 1; margin: auto; width: min(1000px, 100%); display: grid; gap: 22px; color: var(--scrim-ink); }
+@media (min-width: 860px) { .sr-body { grid-template-columns: auto minmax(300px, 1fr); align-items: start; } }
+.sr-card { display: grid; justify-items: center; }
+.sr-card img { display: block; width: min(100%, 520px, calc((100vh - 110px) * .8)); height: auto; border-radius: 12px; box-shadow: 0 24px 50px rgba(0, 0, 0, .45); }
+.sr-side { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.sr-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sr-title { font-family: var(--display); font-stretch: 108%; font-weight: 800; font-size: clamp(24px, 5vw, 30px); line-height: 1.1; margin: 0; }
+.sr-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.sr-note { margin: 0; min-height: 1.4em; font-size: 15px; color: var(--scrim-muted); }
+.sr-note a { color: var(--scrim-ink); }
+.sr-text { width: 100%; min-height: 110px; font: 14px/1.45 var(--body); padding: 10px 12px; border-radius: 10px; border: 0; background: var(--scrim-chip); color: var(--scrim-ink); }
+.sr-pick { display: grid; gap: 10px; padding-top: 4px; }
+.sr-pick-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.sr-pick-k { font: 700 12px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--scrim-muted); }
+.sr-pick-n { font: 700 13px/1 var(--mono); color: var(--scrim-muted); font-variant-numeric: tabular-nums; }
+.sr-link { appearance: none; margin: 0; padding: 2px 0; border: 0; background: none; color: var(--scrim-ink); font: 700 14px/1.2 var(--body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.sr-chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
+.sr-chip { appearance: none; position: relative; margin: 0; padding: 6px 4px 7px; border: 2px solid transparent; border-radius: 12px; background: var(--scrim-chip); color: var(--scrim-ink); font: 700 11px/1.15 var(--body); cursor: pointer; display: grid; justify-items: center; gap: 5px; text-align: center; min-width: 0; }
+.sr-chip canvas { width: 44px; height: 52.8px; display: block; }
+.sr-chip span { overflow-wrap: anywhere; }
+.sr-chip[aria-pressed="true"] { border-color: var(--scrim-ink); }
+.sr-chip[aria-pressed="true"]::after { content: "✓"; position: absolute; top: -7px; right: -6px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--scrim-ink); color: #1a1412; font: 700 12px/1 var(--body); }
+.sr-chip[aria-pressed="false"] canvas { filter: grayscale(1); opacity: .35; }
+.sr-chip[aria-pressed="false"] { color: var(--scrim-muted); }
+.sr-chip:focus-visible, .sr-link:focus-visible { outline: 3px solid var(--scrim-ink); outline-offset: 2px; }
+.stripe {
+  height: 26px;
+  margin-top: 8px;
+  background: var(--band);
+  opacity: .85;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 26'%3E%3Cpath fill-rule='evenodd' d='M14 13.5 C14 7.5 17.6 3.5 22 3.5 C26.4 3.5 30 7.5 30 13.5 L30.3 22.5 Q28.7 25.5 27.1 23 Q25.5 25.5 23.9 23 Q22.3 25.5 20.7 23 Q19.1 25.5 17.5 23 Q15.9 25.5 13.7 22.5 Z M18.9 12.2 a1.2 1.7 0 1 0 2.4 0 a1.2 1.7 0 1 0 -2.4 0 Z M22.7 12.2 a1.2 1.7 0 1 0 2.4 0 a1.2 1.7 0 1 0 -2.4 0 Z'/%3E%3C/svg%3E") left center / 44px 26px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 26'%3E%3Cpath fill-rule='evenodd' d='M14 13.5 C14 7.5 17.6 3.5 22 3.5 C26.4 3.5 30 7.5 30 13.5 L30.3 22.5 Q28.7 25.5 27.1 23 Q25.5 25.5 23.9 23 Q22.3 25.5 20.7 23 Q19.1 25.5 17.5 23 Q15.9 25.5 13.7 22.5 Z M18.9 12.2 a1.2 1.7 0 1 0 2.4 0 a1.2 1.7 0 1 0 -2.4 0 Z M22.7 12.2 a1.2 1.7 0 1 0 2.4 0 a1.2 1.7 0 1 0 -2.4 0 Z'/%3E%3C/svg%3E") left center / 44px 26px repeat-x;
+}
+h1 { font-weight: 800; letter-spacing: -.01em; }
+.title-row { display: flex; align-items: center; gap: 14px; }
+.mascot { flex: none; width: clamp(54px, 10vw, 86px); height: auto; overflow: visible; filter: drop-shadow(0 8px 10px var(--shadow)); animation: floaty 3.2s ease-in-out infinite; }
+.mascot .m-body { fill: var(--ghost); stroke: var(--ghost-edge); stroke-width: 1.8; }
+.mascot .m-shade { fill: var(--ghost-shade); }
+.mascot .m-ink { fill: var(--ghost-ink); }
+.mascot .m-hi { fill: #ffffff; }
+.mascot .m-blush { fill: var(--blush); }
+@keyframes floaty { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-9px) rotate(4deg); } }
+.status { font-weight: 800; }
+.rv-env-body {
+  background: var(--card);
+  border: 8px solid transparent;
+  border-image: repeating-linear-gradient(-45deg, var(--env-a) 0 9px, var(--card) 9px 14px, var(--env-b) 14px 23px, var(--card) 23px 28px) 8;
+}
+.rv-env-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rv-env-lines path { fill: none; stroke: var(--line); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.rv-env-to { position: absolute; left: 14px; bottom: 12px; font: 700 12px/1.2 var(--mono); letter-spacing: .06em; color: var(--muted); }
+.rv-env-stamp { position: absolute; right: 12px; top: 10px; width: 34px; height: 40px; border: 2px solid var(--accent); outline: 2px dotted var(--accent); outline-offset: 2px; display: grid; place-items: center; }
+.rv-env-stamp svg { width: 22px; height: 22px; color: var(--accent); }
+.rv-flap { background: var(--chip); }
+@media (prefers-reduced-motion: reduce) { .mascot { animation: none; } }
+
+</style>
+
+<div class="stripe" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <symbol id="gh" viewBox="0 0 100 100"><path fill="currentColor" fill-rule="evenodd" d="M22 52 C22 29 34 14 50 14 C66 14 78 29 78 52 L79 86 Q73.2 96 67.4 87 Q61.6 96 55.8 87 Q50 96 44.2 87 Q38.4 96 32.6 87 Q26.8 96 21 86 Z M35.4 48 a4.6 6.4 0 1 0 9.2 0 a4.6 6.4 0 1 0 -9.2 0 Z M55.4 48 a4.6 6.4 0 1 0 9.2 0 a4.6 6.4 0 1 0 -9.2 0 Z M46.4 62 a3.6 4.6 0 1 0 7.2 0 a3.6 4.6 0 1 0 -7.2 0 Z"/></symbol>
+    </svg>
+    <div class="eyebrow">A job hunt reality check</div>
+    <div class="title-row">
+      <h1>Am I Being Ghosted?</h1>
+      <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
+        <path class="m-body" d="M22 52 C22 29 34 14 50 14 C66 14 78 29 78 52 L79 86 Q73.2 96 67.4 87 Q61.6 96 55.8 87 Q50 96 44.2 87 Q38.4 96 32.6 87 Q26.8 96 21 86 Z"/>
+        <path class="m-shade" d="M63 17.5 C73 23 78 35 78 52 L78.6 85 Q76 90 73 88.5 C75 70 75 38 63 17.5 Z"/>
+        <ellipse class="m-ink" cx="40" cy="48" rx="4.6" ry="6.4"/><ellipse class="m-ink" cx="60" cy="48" rx="4.6" ry="6.4"/>
+        <circle class="m-hi" cx="41.6" cy="45.4" r="1.7"/><circle class="m-hi" cx="61.6" cy="45.4" r="1.7"/>
+        <ellipse class="m-blush" cx="31" cy="58" rx="4.8" ry="3"/><ellipse class="m-blush" cx="69" cy="58" rx="4.8" ry="3"/>
+        <ellipse class="m-ink" cx="50" cy="62" rx="3.6" ry="4.6"/>
+      </svg>
+    </div>
+    <p class="lede">Enter the date you started applying, how many applications you sent and how many interviews you got. Find out whether the silence is ordinary ghosting or a sign to change something, and collect badges for sticking with it.</p>
+  </header>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="in-h">
+      <div class="card-head">
+        <h2 id="in-h">Your numbers</h2>
+        <span class="pill" id="mode-pill">Example numbers</span>
+      </div>
+      <div class="field">
+        <label for="start">Date of your first application</label>
+        <input id="start" class="date" type="date">
+        <p class="hint" id="start-hint">The day count updates by itself every day.</p>
+      </div>
+      <div class="field">
+        <label for="apps">Applications sent</label>
+        <div class="stepper">
+          <button type="button" data-step="apps" data-d="-1" aria-label="One application less">−</button>
+          <input id="apps" type="number" inputmode="numeric" min="0" max="5000" step="1">
+          <button type="button" data-step="apps" data-d="1" aria-label="One application more">+</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ints">Interviews you got</label>
+        <div class="stepper">
+          <button type="button" data-step="ints" data-d="-1" aria-label="One interview less">−</button>
+          <input id="ints" type="number" inputmode="numeric" min="0" max="5000" step="1">
+          <button type="button" data-step="ints" data-d="1" aria-label="One interview more">+</button>
+        </div>
+        <p class="hint">Count each application that led to an interview. A first phone screen counts.</p>
+      </div>
+      <div class="field">
+        <label for="offers">Offers</label>
+        <div class="stepper">
+          <button type="button" data-step="offers" data-d="-1" aria-label="One offer less">−</button>
+          <input id="offers" type="number" inputmode="numeric" min="0" max="5000" step="1">
+          <button type="button" data-step="offers" data-d="1" aria-label="One offer more">+</button>
+        </div>
+        <p class="hint">Job offers so far, written or spoken.</p>
+      </div>
+      <details class="more" id="more">
+        <summary>About your search <span class="opt">optional</span></summary>
+        <div class="more-body">
+          <div class="field">
+            <label for="market">Where you are applying</label>
+            <select id="market" class="sel">
+              <option value="">Choose</option><option value="de">Germany</option><option value="eu">Elsewhere in the EU</option>
+              <option value="uk">United Kingdom</option><option value="us">United States</option><option value="other">Somewhere else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="field">Your field</label>
+            <select id="field" class="sel">
+              <option value="">Choose</option><option value="data">Data and analytics</option><option value="software">Software and IT</option>
+              <option value="product">Product and design</option><option value="business">Business, finance and consulting</option>
+              <option value="marketing">Marketing, sales and communications</option><option value="engineering">Engineering and science</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="channel">How you mostly apply</label>
+            <select id="channel" class="sel">
+              <option value="">Choose</option><option value="cold">Mostly cold applications</option><option value="mix">A mix</option>
+              <option value="referral">Mostly referrals or recruiters</option>
+            </select>
+          </div>
+        </div>
+      </details>
+      <p class="error" id="err" hidden></p>
+      <div class="row">
+        <button type="button" class="btn primary" id="save">Check my numbers</button>
+        <button type="button" class="btn" id="reset">Start over</button>
+      </div>
+      <p class="note" id="save-note">Checking also saves your numbers in this browser, so your day count, streak and badges carry over.</p>
+      <label class="consent" for="no-log">
+        <input type="checkbox" id="no-log">
+        <span>Don't add my numbers to the anonymous job hunt dataset. <a href="#log-h">What is added</a></span>
+      </label>
+    </section>
+
+    <section class="card verdict" id="verdict" aria-labelledby="out-h" aria-live="polite">
+      <div class="card-head">
+        <h2 id="out-h" tabindex="-1">Where you stand</h2>
+        <div class="head-r"><button type="button" class="btn sm" id="vd-share" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share</button><span class="pill" id="day-pill">Day 0</span></div>
+      </div>
+      <canvas class="scene" id="scene" aria-hidden="true"></canvas>
+      <p class="stale-note" id="stale-note" hidden>Your numbers changed. Press Check my numbers to see the new read.</p>
+      <div class="status" id="status">Ready when you are</div>
+      <p class="status-msg" id="status-msg">Enter your numbers to see where you stand.</p>
+      <div class="meter" id="meter">
+        <div class="meter-track" aria-hidden="true">
+          <div class="meter-seg seg-ok"></div>
+          <div class="meter-seg seg-quiet"></div>
+          <div class="meter-seg seg-unusual"></div>
+          <div class="meter-seg seg-bad"></div>
+          <div class="meter-pin" id="pin" style="left:0%"></div>
+        </div>
+        <div class="meter-labels" aria-hidden="true">
+<span><i class="meter-ico"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg></i>Normal ghosting</span><span><i class="meter-ico"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg></i>A little haunted</span><span><i class="meter-ico"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg></i>Ghost town</span><span><i class="meter-ico"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg></i>Haunted market?</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Chance your rate is below 3%</span><span class="v" id="s-plow">–</span></div>
+        <div class="stat"><span class="k">Your likely interview rate</span><span class="v" id="s-range">–</span></div>
+        <div class="stat"><span class="k">Applications counted so far</span><span class="v" id="s-neff">–</span></div>
+        <div class="stat" id="s-offer-box" hidden><span class="k">Offers from your interviews</span><span class="v" id="s-offer">–</span></div>
+      </div>
+      <ul class="explain" id="explain"></ul>
+    </section>
+  </div>
+
+  <section class="card" aria-labelledby="b-h">
+    <div class="card-head">
+      <h2 id="b-h">Badges</h2>
+      <div class="streakbar">
+        <span><b id="st-day">0</b> days in</span>
+        <span><b id="st-streak">0</b> day streak</span>
+        <span><b id="st-earned">0</b> of <span id="st-total">15</span> badges</span>
+      </div>
+    </div>
+    <button type="button" class="next" id="next" hidden>
+      <span class="next-slot"><canvas id="next-cv" width="240" height="288" aria-hidden="true"></canvas></span>
+      <span class="next-body">
+        <span class="next-k">Next badge</span>
+        <span class="next-t" id="next-t"></span>
+        <span class="next-d" id="next-d"></span>
+        <span class="next-row"><span class="bar"><i id="next-bar"></i></span><span class="next-n" id="next-n"></span></span>
+      </span>
+    </button>
+    <p class="note" id="streak-note">Your streak counts days in a row on which you checked in with new applications.</p>
+    <div class="badges" id="badges" role="list"></div>
+  </section>
+
+  <section class="card" aria-labelledby="sh-h">
+    <div class="card-head"><h2 id="sh-h">Share your card</h2></div>
+    <div class="share">
+      <button type="button" class="card-open" id="card-open" aria-label="Open the full card, pick its badges and share it">
+        <img id="card-img" alt="">
+        <span class="card-open-hint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Full size and badge picker</span>
+      </button>
+      <div class="how">
+        <p>Post it with your numbers. People in the same boat find it reassuring, and recruiters see someone who tracks their work. You can pick which badges go on the card.</p>
+        <div class="row">
+          <button type="button" class="btn primary" id="share-open"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share my card</button>
+          <button type="button" class="btn" id="copy">Copy post text</button>
+        </div>
+        <label class="note" for="post">Post text</label>
+        <textarea id="post" readonly></textarea>
+        <p class="note" id="share-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="log-h">
+    <h2 id="log-h" tabindex="-1">Your log</h2>
+    <div class="log-grid">
+      <div class="log-col">
+        <h3>Keep it on another device</h3>
+        <p class="note">Your numbers live in this browser, with no account. Copy a backup code and paste it on another phone or computer to bring back your log, streak and badges. Clearing site data removes the log, so keep the code somewhere safe.</p>
+        <div class="row"><button type="button" class="btn" id="bk-copy">Copy backup code</button></div>
+        <label class="note" for="bk-in">Paste a backup code</label>
+        <textarea id="bk-in" rows="3" placeholder="GHOST1..." spellcheck="false"></textarea>
+        <div class="row"><button type="button" class="btn" id="bk-restore">Restore from code</button></div>
+        <p class="note" id="bk-note" aria-live="polite"></p>
+      </div>
+      <div class="log-col">
+        <h3>The job hunt dataset</h3>
+        <p class="note">Each check of your own numbers adds one row to an anonymous dataset about job hunts. The row holds your start date, applications, interviews and offers, plus your answers about your search if you gave any. The dataset stores no name, email address, IP address, cookie or ID, so a row cannot be traced back to you. The example numbers are never added.</p>
+        <p class="note">To opt out, tick Don't add my numbers under Check my numbers. This browser remembers the choice. Legal basis: GDPR Art. 6(1)(f), a legitimate interest in understanding how job hunts go and improving this tool.</p>
+        <p class="note" id="ds-status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card how" aria-labelledby="how-h">
+    <h2 id="how-h">How the read works</h2>
+    <p><b>Typical rate.</b> Across about two million applications tracked by Huntr, 3% to 6% led to an interview (about 3% with an untailored CV, about 6% with a tailored one). The data is mostly from the US and self-reported, so your field and country may differ.</p>
+    <p><b>Replies take time.</b> Interview invites usually arrive within one to three weeks. Applications from the last few weeks have not had their full chance yet, so they count only partly. The tool assumes your applications were spread evenly over your days of applying.</p>
+    <p><b>Your rate.</b> The estimate starts from "any rate is possible" and updates with your numbers (a Beta-Binomial model). The range covers your true rate with 95% probability.</p>
+    <p><b>The status</b> comes from the chance that your true rate is below 3%. Under 50% reads "Normal ghosting", 50% to 80% "A little haunted", 80% to 95% "Ghost town" and above 95% "Haunted market?". A rate likely above typical reads "Ghost-free". The more ghosts in the picture, the further below typical your numbers are.</p>
+    <p><b>What it cannot tell you.</b> One person's numbers cannot separate a bad market from a CV or targeting problem. If you land in the last band, check the roles you pick and how your CV reads first, because that is the part you control.</p>
+  </section>
+
+  <footer>
+    <span>Made by Art Liu. The method comes from his <a href="https://github.com/marco50608/bayesian-resume-analysis" target="_blank" rel="noopener">Bayesian CV analysis</a>.</span>
+    <span>Your numbers stay in this browser. Clearing site data or a private window removes them, so keep a backup code from Your log.</span>
+  </footer>
+</div>
+
+<div class="reveal" id="reveal" role="dialog" aria-modal="true" aria-labelledby="rv-title" hidden>
+  <button type="button" class="btn rv-skip" id="rv-skip">Skip</button>
+  
+  <canvas class="rv-confetti" id="rv-confetti" aria-hidden="true"></canvas>
+  <div class="rv-stage">
+    <article class="rv-letter" id="rv-letter">
+      <div class="rv-label"><span>Reply from the job market</span><span class="pill" id="rv-example" hidden>Example</span></div>
+      <h2 class="rv-title" id="rv-title">Day 0 of your hunt</h2>
+      <p class="rv-nums" id="rv-nums"></p>
+      <p class="rv-msg" id="rv-msg"></p>
+      <div id="rv-stamps-wrap">
+        <div class="rv-stamps-label" id="rv-stamps-label">New badges</div>
+        <div class="rv-stamps" id="rv-stamps"></div>
+        <p class="rv-more" id="rv-more" hidden></p>
+      </div>
+      <div class="rv-postmark" id="rv-postmark">
+        <span class="rv-pm-date" id="rv-pm-date"></span>
+        <span class="rv-pm-big" id="rv-pm-big"></span>
+        <span class="rv-pm-status" id="rv-pm-status"></span>
+      </div>
+    </article>
+    <div class="rv-env" id="rv-env" aria-hidden="true">
+      <div class="rv-env-body"><svg class="rv-env-lines" viewBox="0 0 100 62" preserveAspectRatio="none"><path d="M0 62 L50 30 L100 62"/></svg><span class="rv-env-to" id="rv-env-to">RE: your applications</span><span class="rv-env-stamp"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#gh"/></svg></span></div>
+      <div class="rv-flap" id="rv-flap"></div>
+    </div>
+    <div class="rv-actions" id="rv-actions">
+      <button type="button" class="btn primary" id="rv-share" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="rv-share-t">Share my card</span></button>
+      <button type="button" class="btn" id="rv-done">See the details</button>
+    </div>
+  </div>
+</div>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vw-title" hidden>
+  <button type="button" class="btn vw-close" id="vw-close">Close</button>
+  <div class="vw-body" id="vw-body">
+    <div class="vw-stage" id="vw-stage">
+      <div class="vw-fly" id="vw-fly">
+        <div class="vw-tilt" id="vw-tilt">
+          <canvas id="vw-cv" width="600" height="720" aria-hidden="true"></canvas>
+          <div class="vw-sheen"></div>
+        </div>
+      </div>
+    </div>
+    <div class="vw-info" id="vw-info">
+      <span class="vw-k" id="vw-k"></span>
+      <h2 class="vw-title" id="vw-title"></h2>
+      <p class="vw-d" id="vw-d"></p>
+      <p class="vw-flavor" id="vw-flavor"></p>
+      <div class="vw-story" id="vw-story" hidden><span class="vw-story-k">The legend</span><p id="vw-story-t"></p></div>
+      <span class="vw-status" id="vw-status"></span>
+      <div class="vw-prog" id="vw-prog" hidden>
+        <span class="bar"><i id="vw-bar"></i></span>
+        <span id="vw-need"></span>
+      </div>
+    </div>
+    <div class="vw-nav">
+      <button type="button" class="btn" id="vw-prev">‹ Previous</button>
+      <button type="button" class="btn" id="vw-next">Next ›</button>
+    </div>
+  </div>
+</div>
+
+<div class="sharer" id="sharer" role="dialog" aria-modal="true" aria-labelledby="sr-title" hidden>
+  <button type="button" class="btn sr-close" id="sr-close">Close</button>
+  <div class="sr-body" id="sr-body">
+    <div class="sr-card"><img id="sr-img" alt="Your share card"></div>
+    <div class="sr-side">
+      <div class="sr-head"><h2 class="sr-title" id="sr-title">Share your card</h2><span class="pill" id="sr-example" hidden>Example numbers</span></div>
+      <div class="sr-actions">
+        <button type="button" class="btn" id="sr-native" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share</button>
+        <button type="button" class="btn" id="sr-li">Post on LinkedIn</button>
+        <button type="button" class="btn" id="sr-copyimg" hidden>Copy image</button>
+        <button type="button" class="btn" id="sr-save" hidden>Save image</button>
+        <button type="button" class="btn" id="sr-copytxt">Copy post text</button>
+      </div>
+      <p class="sr-note" id="sr-note" aria-live="polite"></p>
+      <textarea class="sr-text" id="sr-text" readonly hidden aria-label="Post text"></textarea>
+      <div class="sr-pick" id="sr-pick">
+        <div class="sr-pick-head">
+          <span class="sr-pick-k">Badges on the card</span>
+          <span class="sr-pick-n" id="sr-pick-n"></span>
+          <button type="button" class="sr-link" id="sr-all">All</button>
+          <button type="button" class="sr-link" id="sr-none">None</button>
+        </div>
+        <div class="sr-chips" id="sr-chips" role="group" aria-label="Badges on the card"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<canvas id="card" width="1080" height="1350" hidden></canvas>
+
+<script>
+(() => {
+  "use strict";
+
+  // ===================== theme: cute ghosts =====================
+  const TAU2 = Math.PI * 2;
+  function rrPath(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.arcTo(x + w, y, x + w, y + h, r);
+    c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r);
+    c.arcTo(x, y, x + w, y, r);
+    c.closePath();
+  }
+  function rr(c, x, y, w, h, r, f) { rrPath(c, x, y, w, h, r); c.fillStyle = f; c.fill(); }
+  function circ(c, x, y, r, f) { c.beginPath(); c.arc(x, y, r, 0, TAU2); c.fillStyle = f; c.fill(); }
+  function oval(c, x, y, rx, ry, f, rot = 0) { c.beginPath(); c.ellipse(x, y, rx, ry, rot, 0, TAU2); c.fillStyle = f; c.fill(); }
+  function poly(c, pts, f) { c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.closePath(); c.fillStyle = f; c.fill(); }
+  function shape(c, d, f) { c.fillStyle = f; c.fill(new Path2D(d)); }
+  function line(c, pts, s, w) {
+    c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y));
+    c.strokeStyle = s; c.lineWidth = w; c.lineCap = "round"; c.lineJoin = "round"; c.stroke();
+  }
+  function star(c, x, y, r, f, inner = 0.45) {
+    c.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r * inner : r;
+      c.lineTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad);
+    }
+    c.closePath(); c.fillStyle = f; c.fill();
+  }
+  function sparkle(c, x, y, r, f) {
+    c.beginPath();
+    c.moveTo(x, y - r); c.quadraticCurveTo(x, y, x + r, y); c.quadraticCurveTo(x, y, x, y + r);
+    c.quadraticCurveTo(x, y, x - r, y); c.quadraticCurveTo(x, y, x, y - r);
+    c.fillStyle = f; c.fill();
+  }
+  function mix(hex, to, t) {
+    const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+    const a = p(hex), b = p(to);
+    return "#" + a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, "0")).join("");
+  }
+  function inkFor(hex) {
+    const lin = v => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); };
+    const [r, g, bl] = [1, 3, 5].map(i => lin(parseInt(hex.slice(i, i + 2), 16)));
+    return .2126 * r + .7152 * g + .0722 * bl > .45 ? "#4a2e00" : "#ffffff";
+  }
+
+  // ---------- the ghost ----------
+  const INK = "#2a2342";
+  const GHOST_BODY = new Path2D("M22 52 C22 29 34 14 50 14 C66 14 78 29 78 52 L79 86 Q73.2 96 67.4 87 Q61.6 96 55.8 87 Q50 96 44.2 87 Q38.4 96 32.6 87 Q26.8 96 21 86 Z");
+  const GHOST_SHADE = new Path2D("M63 17.5 C73 23 78 35 78 52 L78.6 85 Q76 90 73 88.5 C75 70 75 38 63 17.5 Z");
+  function face(c, eyes, mouth, blush, glowEyes) {
+    const ink = glowEyes || INK;
+    if (glowEyes) { c.shadowColor = glowEyes; c.shadowBlur = 10; }
+    const dot = (x, y, rx = 4.6, ry = 6.4) => { oval(c, x, y, rx, ry, ink); if (!glowEyes) circ(c, x + 1.6, y - 2.6, 1.7, "#ffffff"); };
+    const arc = (x, y, up) => {
+      c.beginPath(); c.moveTo(x - 5, y); c.quadraticCurveTo(x, y + (up ? -7 : 6), x + 5, y);
+      c.strokeStyle = ink; c.lineWidth = 3.2; c.lineCap = "round"; c.stroke();
+    };
+    switch (eyes) {
+      case "happy": arc(40, 50, true); arc(60, 50, true); break;
+      case "sleep": arc(40, 47, false); arc(60, 47, false); break;
+      case "sad": dot(40, 49, 4.2, 5.6); dot(60, 49, 4.2, 5.6); line(c, [[33.5, 41], [44, 37]], ink, 2.6); line(c, [[66.5, 41], [56, 37]], ink, 2.6); break;
+      case "shock": dot(40, 47, 5.8, 8); dot(60, 47, 5.8, 8); break;
+      case "bored": oval(c, 40, 50, 4.6, 3, ink); oval(c, 60, 50, 4.6, 3, ink); line(c, [[34.5, 47], [45.5, 47]], ink, 2.2); line(c, [[54.5, 47], [65.5, 47]], ink, 2.2); break;
+      case "wink": arc(40, 50, true); dot(60, 48); break;
+      default: dot(40, 48); dot(60, 48);
+    }
+    c.shadowBlur = 0; c.shadowColor = "transparent";
+    if (blush) { oval(c, 31, 58, 4.8, 3, "rgba(255,130,165,.45)"); oval(c, 69, 58, 4.8, 3, "rgba(255,130,165,.45)"); }
+    switch (mouth) {
+      case "smile": c.beginPath(); c.moveTo(44, 60); c.quadraticCurveTo(50, 67, 56, 60); c.strokeStyle = INK; c.lineWidth = 2.8; c.lineCap = "round"; c.stroke(); break;
+      case "grin": shape(c, "M43 59 Q50 72 57 59 Z", INK); oval(c, 50, 65.6, 3.4, 2.2, "#ff8fa8"); break;
+      case "wave": line(c, [[42, 63], [45, 60.5], [48, 63], [51, 60.5], [54, 63], [57, 60.5]], INK, 2.4); break;
+      case "wail": oval(c, 50, 64, 5.6, 8.4, INK); oval(c, 50, 68.6, 3.4, 2.6, "#ff8fa8"); break;
+      case "flat": line(c, [[45, 62], [55, 62]], INK, 2.6); break;
+      case "none": break;
+      default: oval(c, 50, 62, 3.6, 4.6, INK);
+    }
+  }
+  // x, y is the middle of the body; s = 1 draws a ghost about 82 units tall
+  function ghostChar(c, x, y, s, o = {}) {
+    c.save();
+    c.translate(x, y);
+    if (o.tilt) c.rotate(o.tilt);
+    c.scale(o.flip ? -s : s, s);
+    c.translate(-50, -54);
+    if (o.alpha !== undefined) c.globalAlpha *= o.alpha;
+    const fill = o.fill || "#ffffff", shade = o.shade || "#e4ddf7";
+    const edge = o.edge === undefined ? "rgba(42,35,66,.3)" : o.edge;
+    const arm = (ax, ay, rot) => {
+      c.beginPath(); c.ellipse(ax, ay, 5.6, 9, rot, 0, TAU2);
+      c.fillStyle = fill; c.fill();
+      if (edge) { c.lineWidth = 1.6; c.strokeStyle = edge; c.stroke(); }
+    };
+    const arms = o.arms || "down";
+    if (arms === "down") { arm(21, 64, .55); arm(79, 64, -.55); }
+    else if (arms === "up") { arm(17, 42, -.5); arm(83, 42, .5); }
+    else if (arms === "wave") { arm(21, 64, .55); arm(84, 40, .35 + Math.sin((o.t || 0) * 6) * .3); }
+    if (o.glow) { c.shadowColor = o.glow; c.shadowBlur = 18; }
+    c.fillStyle = fill; c.fill(GHOST_BODY);
+    c.shadowBlur = 0; c.shadowColor = "transparent";
+    c.fillStyle = shade; c.fill(GHOST_SHADE);
+    if (edge) { c.lineWidth = 1.8; c.strokeStyle = edge; c.stroke(GHOST_BODY); }
+    face(c, o.eyes || "dot", o.mouth || "o", o.blush !== false, o.glowEyes);
+    if (o.prop) o.prop(c);
+    if (arms === "hold") { arm(31, 72, 1.15); arm(69, 72, -1.15); }
+    c.restore();
+  }
+
+  // ---------- badge pictures, each in a 100 x 100 box ----------
+  function flame(c, big) {
+    if (big) {
+      shape(c, "M27 86 C17 78 16 64 22 54 C24 62 28 66 32 67 C29 58 30 50 34 44 C36 56 40 62 44 66 Z", "#ff8a2a");
+      shape(c, "M73 86 C83 78 84 64 78 54 C76 62 72 66 68 67 C71 58 70 50 66 44 C64 56 60 62 56 66 Z", "#ff8a2a");
+    }
+    shape(c, "M50 10 C60 27 77 37 75 60 C74 77 63 87 50 87 C37 87 26 77 25 60 C24 47 31 39 37 31 C37 42 41 48 46 50 C43 36 45 23 50 10 Z", "#ffb52e");
+    shape(c, "M51 39 C58 50 66 57 64 69 C63 78 58 83 50 83 C42 83 37 78 36 70 C35 61 43 54 51 39 Z", "#ffe27a");
+  }
+  function envelope(c, x, y, a, s, f, line1) {
+    c.save(); c.translate(x, y); c.rotate(a); c.scale(s, s);
+    rr(c, -14, -9.5, 28, 19, 2, f);
+    line(c, [[-12, -7.5], [0, 2], [12, -7.5]], line1 || "rgba(40,40,90,.35)", 1.8);
+    c.restore();
+  }
+  const ART = {
+    plane(c) {
+      c.save(); c.setLineDash([5, 6]);
+      c.beginPath(); c.moveTo(36, 76); c.bezierCurveTo(26, 86, 17, 74, 6, 90);
+      c.strokeStyle = "rgba(255,255,255,.8)"; c.lineWidth = 3.4; c.lineCap = "round"; c.stroke();
+      c.restore();
+      poly(c, [[8, 60], [92, 32], [40, 70]], "#ffffff");
+      poly(c, [[40, 70], [92, 32], [54, 96]], "#dce7ff");
+      poly(c, [[40, 70], [54, 96], [46, 78]], "#9db8ee");
+      line(c, [[40, 70], [92, 32]], "rgba(60,100,190,.35)", 1.4);
+      ghostChar(c, 52, 33, .44, { arms: "up", eyes: "happy", mouth: "grin", tilt: -.18 });
+    },
+    envelopes(c) {
+      envelope(c, 16, 30, -.35, .72, "#bfe9e1", "rgba(12,95,82,.45)");
+      envelope(c, 27, 16, -.15, .56, "#d9f4ee", "rgba(12,95,82,.45)");
+      ghostChar(c, 56, 48, .72, { arms: "hold", eyes: "dot", mouth: "smile", prop: g => {
+        const st = (y, a, f) => { g.save(); g.translate(50, y); g.rotate(a); rr(g, -21, -9, 42, 18, 2.5, f); line(g, [[-18, -6.5], [0, 2.5], [18, -6.5]], "rgba(12,95,82,.4)", 2); g.restore(); };
+        st(90, .06, "#bfe9e1"); st(82, -.05, "#e0f6f1"); st(74, .03, "#ffffff");
+        rr(g, 61, 66.5, 7, 8, 1.2, "#ef5b3b");
+      } });
+    },
+    mailbag(c) {
+      ghostChar(c, 50, 40, .58, { eyes: "dot", mouth: "o", arms: "up" });
+      const letter = (x, y, a, f) => { c.save(); c.translate(x, y); c.rotate(a * Math.PI / 180); rr(c, -11, -8, 22, 16, 2, f); line(c, [[-9, -6], [0, 1], [9, -6]], "rgba(90,60,160,.4)", 1.6); c.restore(); };
+      letter(25, 47, -24, "#ffe9a6"); letter(76, 45, 22, "#ffd3df");
+      shape(c, "M28 50 C17 66 17 90 50 92 C83 90 83 66 72 50 Z", "#d99c58");
+      shape(c, "M62 53 C73 66 74 84 58 90 C78 88 81 68 72 51 Z", "#bc7f40");
+      rr(c, 26, 45, 48, 10, 5, "#a96c32");
+      circ(c, 50, 72, 10, "#f7e6cc");
+      rr(c, 43.5, 67.5, 13, 9, 1.5, "#bc7f40");
+      line(c, [[44.5, 69], [50, 73], [55.5, 69]], "#f7e6cc", 1.4);
+    },
+    helmet(c) {
+      ghostChar(c, 50, 63, .74, { eyes: "dot", mouth: "flat", arms: "down" });
+      shape(c, "M18 45 C18 6 82 6 82 45 L72 45 C72 24 28 24 28 45 Z", "#fff1d2");
+      c.save(); c.strokeStyle = "#e6c88a"; c.lineWidth = 1.5; c.lineCap = "round";
+      for (let i = 0; i <= 12; i++) {
+        const a = Math.PI + (i / 12) * Math.PI;
+        c.beginPath(); c.moveTo(50 + Math.cos(a) * 24, 45 + Math.sin(a) * 22); c.lineTo(50 + Math.cos(a) * 31, 45 + Math.sin(a) * 34); c.stroke();
+      }
+      c.restore();
+      shape(c, "M29 47 C29 29 38 22 50 22 C62 22 71 29 71 47 Z", "#f2c14e");
+      shape(c, "M57 24 C65 27 70 35 71 47 L63 47 C63 37 61 30 57 24 Z", "#dca22c");
+      rr(c, 25, 44, 50, 8, 4, "#c98d1d");
+      shape(c, "M27 50 L36 50 L35 64 C31 64 28 61 27 58 Z", "#e7b03a");
+      shape(c, "M73 50 L64 50 L65 64 C69 64 72 61 73 58 Z", "#e7b03a");
+      rr(c, 45, 18, 10, 6, 2, "#c98d1d");
+    },
+    calendar(c) {
+      ghostChar(c, 79, 50, .54, { eyes: "dot", mouth: "o", arms: "down", tilt: .28 });
+      c.save(); c.translate(-8, 6); c.scale(.9, .9);
+      rr(c, 33, 15, 6, 14, 3, "#3c2a1e"); rr(c, 61, 15, 6, 14, 3, "#3c2a1e");
+      rr(c, 19, 22, 62, 62, 7, "#ffffff");
+      c.save(); rrPath(c, 19, 22, 62, 62, 7); c.clip(); c.fillStyle = "#df452c"; c.fillRect(19, 22, 62, 16); c.restore();
+      circ(c, 36, 30, 2.6, "#7d1f12"); circ(c, 64, 30, 2.6, "#7d1f12");
+      for (let r = 0; r < 3; r++) for (let i = 0; i < 7; i++) {
+        const x = 24 + i * 7.6, y = 44 + r * 12;
+        if (r < 2) rr(c, x, y, 5.8, 8.4, 1.5, "#f08a23");
+        else { rrPath(c, x + .6, y + .6, 4.6, 7.2, 1.2); c.strokeStyle = "#f2c49c"; c.lineWidth = 1.2; c.stroke(); }
+      }
+      c.restore();
+    },
+    moon(c) {
+      sparkle(c, 14, 22, 6, "#ffffff"); sparkle(c, 86, 18, 4.5, "#ffe9a8");
+      sparkle(c, 88, 80, 5.5, "#ffffff"); sparkle(c, 12, 80, 4, "#ffe9a8");
+      circ(c, 50, 50, 31, "#fbeeb8");
+      shape(c, "M58 21.5 C73 27 82 40 80 55 C78 70 66 81 50 81 C67 75 75 62 73 48 C72 37 66 27 58 21.5 Z", "#efd98f");
+      circ(c, 38, 40, 6, "#eedc9a"); circ(c, 61, 64, 5, "#eedc9a"); circ(c, 36, 66, 3.4, "#eedc9a");
+      ghostChar(c, 52, 54, .5, { eyes: "happy", mouth: "smile", arms: "up", tilt: -.4, glow: "rgba(255,255,255,.9)" });
+    },
+    cactus(c) {
+      oval(c, 50, 89, 42, 7, "#c9902c");
+      c.save(); c.translate(-16, 2);
+      rr(c, 20, 42, 12, 28, 6, "#2f9a57"); rr(c, 20, 59, 27, 12, 6, "#2f9a57");
+      rr(c, 68, 34, 12, 26, 6, "#2f9a57"); rr(c, 53, 50, 27, 12, 6, "#2f9a57");
+      rr(c, 40, 22, 20, 66, 10, "#3cb36a");
+      line(c, [[46, 30], [46, 84]], "#2b8a4e", 2); line(c, [[54, 30], [54, 84]], "#2b8a4e", 2);
+      circ(c, 50, 21, 5.5, "#ff6f91"); circ(c, 50, 21, 2.2, "#ffd23f");
+      c.restore();
+      ghostChar(c, 74, 62, .5, { eyes: "dot", mouth: "flat", arms: "down" });
+      oval(c, 74, 44, 18, 4.6, "#8a5a2b");
+      shape(c, "M64.5 44 C64.5 33 68 30 74 33.5 C80 30 83.5 33 83.5 44 Z", "#a86f39");
+      rr(c, 64.6, 39.6, 18.8, 3.2, 1, "#6e4420");
+    },
+    spark(c) {
+      ghostChar(c, 50, 44, .66, { eyes: "happy", mouth: "none", arms: "hold", prop: g => {
+        rr(g, 43, 74, 14, 22, 2.5, "#fff6e0");
+        line(g, [[50, 74], [50, 70]], "#3b2a1e", 1.6);
+        shape(g, "M50 50 C56 59 59 63 57 68.5 C56 71.5 53.5 73 50 73 C46.5 73 44 71.5 43 68.5 C41 63 44 59 50 50 Z", "#ffb52e");
+        oval(g, 50, 67.5, 2.8, 4, "#fffaf0");
+      } });
+      [-13, 0, 13].forEach(dx => circ(c, 50 + dx, 93, 4.6, "#ffe27a"));
+    },
+    fire(c) {
+      c.save(); c.translate(50, 4); c.scale(.86, .86); c.translate(-50, -8);
+      flame(c, true);
+      oval(c, 43, 60, 3.8, 5.2, INK); oval(c, 57, 60, 3.8, 5.2, INK);
+      circ(c, 44.3, 58, 1.4, "#ffffff"); circ(c, 58.3, 58, 1.4, "#ffffff");
+      shape(c, "M44 67 Q50 77 56 67 Z", INK);
+      oval(c, 36, 66, 3.4, 2.2, "rgba(255,90,90,.45)"); oval(c, 64, 66, 3.4, 2.2, "rgba(255,90,90,.45)");
+      c.restore();
+      for (let i = 0; i < 7; i++) circ(c, 50 + (i - 3) * 9.6, 93, 3.7, "#ffe27a");
+    },
+    notebook(c) {
+      ghostChar(c, 68, 40, .52, { eyes: "dot", mouth: "smile", arms: "down" });
+      c.save(); c.translate(68, 40); c.scale(.52, .52); c.translate(-50, -54);
+      c.lineWidth = 2.8; c.strokeStyle = INK;
+      c.beginPath(); c.arc(40, 48, 8.5, 0, TAU2); c.moveTo(68.5, 48); c.arc(60, 48, 8.5, 0, TAU2); c.moveTo(48.5, 47); c.lineTo(51.5, 47); c.stroke();
+      c.restore();
+      c.save(); c.translate(-6, 14); c.scale(.84, .84);
+      rr(c, 20, 14, 50, 70, 5, "#ffffff");
+      c.save(); rrPath(c, 20, 14, 50, 70, 5); c.clip(); c.fillStyle = "#d6ebdd"; c.fillRect(20, 14, 11, 70); c.restore();
+      for (let i = 0; i < 5; i++) circ(c, 25.5, 23 + i * 13, 2.5, "#2f8f5b");
+      for (let i = 0; i < 5; i++) {
+        const y = 27 + i * 11;
+        if (i < 3) line(c, [[36, y - 2], [39, y + 1], [44, y - 5]], "#2f8f5b", 2.4);
+        else { rrPath(c, 36, y - 5, 7, 7, 1.5); c.strokeStyle = "#bcd9c6"; c.lineWidth = 1.4; c.stroke(); }
+        line(c, [[48, y - 1], [63, y - 1]], "#c4dccc", 2.2);
+      }
+      c.restore();
+      c.save(); c.translate(70, 66); c.rotate(-.9);
+      rr(c, -20, -4.5, 34, 9, 2, "#ffc93c");
+      poly(c, [[14, -4.5], [23, 0], [14, 4.5]], "#f3d3a4");
+      poly(c, [[20, -1.5], [23, 0], [20, 1.5]], "#3b3b3b");
+      rr(c, -26, -4.5, 7, 9, 2, "#ff8fa3");
+      c.restore();
+    },
+    fish(c) {
+      c.save(); c.globalAlpha = .35;
+      line(c, [[0, 80], [12, 77], [24, 80], [36, 77], [48, 80], [60, 77], [72, 80], [84, 77], [100, 80]], "#ffffff", 2.4);
+      c.restore();
+      ghostChar(c, 27, 46, .5, { eyes: "shock", mouth: "o", arms: "up" });
+      line(c, [[36, 30], [86, 10]], "#7a4a24", 3.2);
+      line(c, [[86, 10], [80, 56]], "rgba(255,255,255,.9)", 1.4);
+      c.save(); c.translate(72, 70); c.rotate(-.45); c.scale(.62, .62); c.translate(-56, -66);
+      shape(c, "M75 66 L91 52 C88 62 88 70 91 80 Z", "#ff8a1f");
+      oval(c, 56, 66, 22, 14, "#ffa53d");
+      oval(c, 53, 71, 15, 6, "#ffd08a");
+      shape(c, "M48 54 C52 44 60 43 66 46 C62 49 61 52 62 55 Z", "#ff8a1f");
+      circ(c, 42, 61, 4, "#ffffff"); circ(c, 41.2, 61.3, 2, INK);
+      c.restore();
+      [[84, 34, 3], [90, 26, 2]].forEach(([x, y, r]) => { c.beginPath(); c.arc(x, y, r, 0, TAU2); c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 1.5; c.stroke(); });
+    },
+    hat(c) {
+      star(c, 15, 32, 7, "#ffd23f"); star(c, 86, 20, 8.5, "#ffd23f"); star(c, 88, 46, 6, "#ffd23f");
+      sparkle(c, 22, 14, 3.5, "#ffffff");
+      ghostChar(c, 46, 63, .66, { eyes: "wink", mouth: "grin", arms: "down" });
+      rr(c, 32, 17, 28, 21, 2, "#2a2f45");
+      c.fillStyle = "#e2553f"; c.fillRect(32, 31, 28, 5);
+      oval(c, 46, 17, 14, 3.4, "#3b4262");
+      oval(c, 46, 39, 22, 4.6, "#1e2235");
+      line(c, [[63, 70], [84, 56]], "#1e2235", 3.4); line(c, [[80.5, 58.4], [84, 56]], "#ffffff", 3.4);
+      sparkle(c, 88, 53, 5.5, "#ffffff");
+    },
+    landing(c) {
+      rr(c, 6, 84, 88, 8, 3, "#3e4559");
+      for (let x = 14; x < 90; x += 14) rr(c, x, 87, 8, 1.8, .9, "#ffffff");
+      line(c, [[4, 26], [20, 26]], "rgba(255,255,255,.85)", 2.8);
+      line(c, [[1, 36], [14, 36]], "rgba(255,255,255,.65)", 2.8);
+      c.save(); c.translate(55, 44); c.rotate(10 * Math.PI / 180); c.scale(1.05, 1.05);
+      shape(c, "M-36 -6 L-42 -24 L-33 -24 L-24 -6 Z", "#ffffff");
+      shape(c, "M-40 -21 L-36 -21 L-32 -10 L-36 -10 Z", "#2a76b8");
+      rr(c, -38, -7, 76, 15, 7.5, "#ffffff");
+      c.fillStyle = "#2a76b8"; c.fillRect(-34, 2.5, 66, 3);
+      for (let x = -24; x <= 18; x += 7) circ(c, x, -1.5, 1.8, "#5b7bd5");
+      shape(c, "M28 -6 C32 -6 35 -4 37 -1 L28 -1 Z", "#5b7bd5");
+      shape(c, "M-10 2 L8 2 L-4 20 L-14 20 Z", "#dce6f7");
+      line(c, [[-6, 8], [-6, 15]], "#3e4559", 1.8); circ(c, -6, 17, 2.6, "#3e4559");
+      line(c, [[24, 7], [24, 13]], "#3e4559", 1.8); circ(c, 24, 15, 2.3, "#3e4559");
+      c.restore();
+      ghostChar(c, 15, 72, .26, { arms: "wave", eyes: "happy", mouth: "smile", alpha: .85, t: .3 });
+    },
+    ghost(c) {
+      ghostChar(c, 18, 28, .26, { alpha: .5, eyes: "dot", mouth: "o", edge: null });
+      ghostChar(c, 84, 76, .24, { alpha: .5, eyes: "dot", mouth: "o", edge: null });
+      ghostChar(c, 44, 58, .84, { eyes: "dot", mouth: "o", arms: "down" });
+      rr(c, 62, 10, 32, 19, 9.5, "rgba(255,255,255,.95)");
+      poly(c, [[69, 27], [65, 35], [75, 28]], "rgba(255,255,255,.95)");
+      [70.5, 78, 85.5].forEach(x => circ(c, x, 19.5, 2.3, "#7e88a3"));
+    },
+    jar(c) {
+      rr(c, 23, 30, 54, 58, 12, "rgba(255,255,255,.2)");
+      ghostChar(c, 37, 54, .3, { eyes: "dot", mouth: "o", edge: null, glow: "rgba(127,240,220,.9)" });
+      ghostChar(c, 62, 50, .27, { eyes: "sad", mouth: "wave", edge: null, glow: "rgba(127,240,220,.9)" });
+      ghostChar(c, 50, 74, .3, { eyes: "shock", mouth: "wail", edge: null, glow: "rgba(127,240,220,.9)" });
+      rrPath(c, 23, 30, 54, 58, 12); c.strokeStyle = "rgba(255,255,255,.85)"; c.lineWidth = 3; c.stroke();
+      line(c, [[30, 42], [30, 72]], "rgba(255,255,255,.6)", 3);
+      rr(c, 27, 19, 46, 13, 3, "#cf9446");
+      c.fillStyle = "#a96f2b"; c.fillRect(27, 27, 46, 5);
+      sparkle(c, 13, 30, 4.5, "#ffe9a8"); sparkle(c, 89, 70, 4, "#ffffff"); sparkle(c, 87, 24, 3, "#ffffff");
+    }
+  };
+
+  // ---------- the stamp ----------
+  function paintStamp(cv, b) {
+    const W = 120, H = 144, c = cv.getContext("2d");
+    const k = cv.width / W;
+    c.setTransform(k, 0, 0, k, 0, 0);
+    c.clearRect(0, 0, W, H);
+    c.fillStyle = "#fbf2de"; c.fillRect(0, 0, W, H);
+    c.globalCompositeOperation = "destination-out";
+    c.beginPath();
+    for (let x = 6; x < W; x += 12) { c.moveTo(x + 4.3, 0); c.arc(x, 0, 4.3, 0, TAU2); c.moveTo(x + 4.3, H); c.arc(x, H, 4.3, 0, TAU2); }
+    for (let y = 6; y < H; y += 12) { c.moveTo(4.3, y); c.arc(0, y, 4.3, 0, TAU2); c.moveTo(W + 4.3, y); c.arc(W, y, 4.3, 0, TAU2); }
+    c.fillStyle = "#000"; c.fill();
+    c.globalCompositeOperation = "source-over";
+
+    c.save();
+    c.beginPath(); c.rect(9, 9, 102, 126); c.clip();
+    c.fillStyle = b.bg; c.fillRect(9, 9, 102, 126);
+    if (b.rays) {
+      c.fillStyle = mix(b.bg, "#ffffff", .16);
+      for (let i = 0; i < 16; i++) {
+        const a = i * TAU2 / 16;
+        c.beginPath(); c.moveTo(60, 82);
+        c.lineTo(60 + Math.cos(a - .1) * 110, 82 + Math.sin(a - .1) * 110);
+        c.lineTo(60 + Math.cos(a + .1) * 110, 82 + Math.sin(a + .1) * 110);
+        c.closePath(); c.fill();
+      }
+    }
+    circ(c, 60, 82, 42, mix(b.bg, "#ffffff", .2));
+    c.save(); c.translate(60 - 43, 82 - 43); c.scale(.86, .86); ART[b.art](c); c.restore();
+    const g = c.createLinearGradient(9, 9, 80, 110);
+    g.addColorStop(0, "rgba(255,255,255,.22)"); g.addColorStop(.5, "rgba(255,255,255,0)");
+    c.fillStyle = g; c.fillRect(9, 9, 102, 126);
+    c.restore();
+
+    const ink = inkFor(b.bg);
+    c.strokeStyle = ink === "#ffffff" ? "rgba(255,255,255,.45)" : "rgba(74,46,0,.3)";
+    c.lineWidth = 1.2; c.strokeRect(13.5, 13.5, 93, 117);
+    c.fillStyle = ink;
+    c.font = "800 25px Grandstander, 'Arial Rounded MT Bold', sans-serif";
+    c.textBaseline = "alphabetic"; c.textAlign = "left";
+    if (b.val) c.fillText(b.val, 18, 38);
+    else star(c, 30, 28, 11, ink);
+  }
+
+  // ---------- the verdict scene: the worse it gets, the more ghosts ----------
+  function sky(c, W, H, a, b) { const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, a); g.addColorStop(1, b); c.fillStyle = g; c.fillRect(0, 0, W, H); }
+  function hill(c, W, H, y, amp, ph, f) {
+    c.beginPath(); c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 16) c.lineTo(x, y + Math.sin(x / 70 + ph) * amp + Math.sin(x / 31 + ph * 2) * amp * .35);
+    c.lineTo(W, H); c.closePath(); c.fillStyle = f; c.fill();
+  }
+  function bubble(c, x, y, w, h, text, col) {
+    rr(c, x, y, w, h, h / 2, "rgba(255,255,255,.95)");
+    poly(c, [[x + 10, y + h - 1], [x + 4, y + h + 9], [x + 18, y + h - 1]], "rgba(255,255,255,.95)");
+    c.fillStyle = col || INK; c.font = "800 18px Grandstander, sans-serif"; c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText(text, x + w / 2, y + h / 2 + 1);
+    c.textAlign = "left"; c.textBaseline = "alphabetic";
+  }
+  function townHouse(c, x, base, w, h, f, win) {
+    poly(c, [[x, base], [x, base - h], [x + w / 2, base - h - w * .45], [x + w, base - h], [x + w, base]], f);
+    if (win) rr(c, x + w / 2 - 4, base - h + 8, 8, 9, 1.5, win);
+  }
+  const bob = (t, ph, a = 4) => Math.sin(t * 2.2 + ph) * a;
+  function sceneGhost(c, W, H, level, t) {
+    switch (level) {
+      case "great": {
+        sky(c, W, H, "#bfe3ff", "#fff4d2");
+        c.save(); c.translate(84, 50); c.rotate(t * .25);
+        for (let i = 0; i < 12; i++) { c.rotate(TAU2 / 12); poly(c, [[0, -30], [5, -44], [-5, -44]], "rgba(255,210,63,.55)"); }
+        c.restore();
+        circ(c, 84, 50, 24, "#ffd23f");
+        [[200, 34, 1], [330, 52, .8]].forEach(([x, y, s], i) => { const dx = ((t * 8 + i * 140) % 560) - 40; oval(c, (x + dx) % 520, y, 26 * s, 9 * s, "rgba(255,255,255,.85)"); });
+        hill(c, W, H, 138, 8, 1, "#bfe6c6"); hill(c, W, H, 156, 6, 3, "#a5d9b2");
+        [[220, 96, 0], [282, 74, 2]].forEach(([x, y, ph]) => {
+          const yy = y + bob(t, ph, 5);
+          envelope(c, x, yy, -.1, 1.5, "#ffffff", "rgba(40,40,90,.3)");
+          c.save(); c.translate(x, yy + 2); c.scale(.55, .55); c.beginPath(); c.moveTo(0, 6); c.bezierCurveTo(-12, -4, -6, -14, 0, -6); c.bezierCurveTo(6, -14, 12, -4, 0, 6); c.fillStyle = "#e2557a"; c.fill(); c.restore();
+        });
+        ghostChar(c, 440 + Math.sin(t) * 6, 92 + bob(t, 1, 5), .42, { arms: "wave", eyes: "happy", mouth: "smile", alpha: .6, t });
+        bubble(c, 392, 40, 44, 26, "bye");
+        break;
+      }
+      case "fine": {
+        sky(c, W, H, "#d6eaff", "#f7f2ff");
+        circ(c, 400, 38, 18, "#fff1b8");
+        hill(c, W, H, 140, 7, 2, "#d8d2f2"); hill(c, W, H, 158, 6, 4, "#c9c1ec");
+        [[120, 0], [350, 2], [410, 4]].forEach(([x, ph], i) => envelope(c, x, 150 - ((t * 18 + i * 60) % 150), -.2 + i * .2, 1.2, "#ffffff", "rgba(40,40,90,.3)"));
+        ghostChar(c, 240, 92 + bob(t, 0, 5), .98, { arms: "wave", eyes: "happy", mouth: "smile", t });
+        break;
+      }
+      case "quiet": {
+        sky(c, W, H, "#ffd7bc", "#e7dcff");
+        circ(c, 372, 132, 30, "#ffb36b");
+        hill(c, W, H, 136, 8, 1.4, "#e2c3d6"); hill(c, W, H, 156, 6, 3.4, "#d2b0cb");
+        envelope(c, 90 + ((t * 14) % 60), 54 + bob(t, 3, 3), .2, 1.1, "#ffffff", "rgba(40,40,90,.3)");
+        ghostChar(c, 205, 98 + bob(t, 0, 4), .86, { eyes: "bored", mouth: "flat", arms: "down", alpha: .95 });
+        ghostChar(c, 300, 78 + bob(t, 1.7, 5), .66, { eyes: "dot", mouth: "wave", arms: "down", alpha: .9 });
+        bubble(c, 318, 22, 46, 26, "...");
+        break;
+      }
+      case "unusual": {
+        sky(c, W, H, "#5a4a95", "#dba9cd");
+        circ(c, 96, 40, 17, "#fff3d1");
+        for (const [x, w, h, win] of [[24, 46, 38, "#ffd36b"], [78, 40, 52, null], [128, 56, 30, "#ffd36b"], [300, 50, 44, "#ffd36b"], [356, 38, 30, null], [402, 54, 50, "#ffd36b"]]) townHouse(c, x, 168, w, h, "#3b2f66", win);
+        rr(c, 196, 120, 76, 48, 2, "#3b2f66"); rr(c, 190, 112, 88, 12, 2, "#43376f");
+        c.fillStyle = "#ffd36b"; c.font = "800 11px Grandstander, sans-serif"; c.textAlign = "center"; c.fillText("SALOON", 234, 122); c.textAlign = "left";
+        rr(c, 0, 166, W, 14, 0, "#2f2655");
+        const tx = ((t * 55) % 580) - 50;
+        c.save(); c.translate(tx, 158); c.rotate(t * 3);
+        c.strokeStyle = "#a07a46"; c.lineWidth = 1.6; for (let i = 0; i < 6; i++) { c.beginPath(); c.arc(0, 0, 9 - i, i, i + 4); c.stroke(); }
+        c.restore();
+        [[86, 98, .5, 0, "dot", "o"], [168, 70, .62, 1, "glow", "wave"], [258, 96, .56, 2, "dot", "wail"], [346, 64, .48, 3, "glow", "o"], [430, 102, .44, 4, "sad", "wave"]].forEach(([x, y, s, ph, e, m]) =>
+          ghostChar(c, x + Math.sin(t * .7 + ph) * 8, y + bob(t, ph, 5), s, { eyes: e === "glow" ? "dot" : e, glowEyes: e === "glow" ? "#7ff0dc" : null, mouth: m, arms: ph % 2 ? "up" : "down", alpha: .9 }));
+        break;
+      }
+      case "market": {
+        sky(c, W, H, "#120c29", "#3b2470");
+        for (let i = 0; i < 26; i++) { const x = (i * 97) % W, y = (i * 53) % 110; circ(c, x, y, 1.2, `rgba(255,255,255,${.35 + .35 * Math.sin(t * 2 + i)})`); }
+        circ(c, 392, 46, 26, "#f6edc8");
+        const flash = (t % 2.6) < .14;
+        if (flash) { c.fillStyle = "rgba(255,255,255,.14)"; c.fillRect(0, 0, W, H); poly(c, [[118, 0], [96, 58], [114, 58], [92, 120], [138, 46], [118, 46], [136, 0]], "#ffe066"); }
+        hill(c, W, H, 150, 7, 2.2, "#22183f");
+        const crowd = Array.from({ length: 10 }, (_, i) => { const a = t * .55 + i * TAU2 / 10; return { a, x: 240 + Math.cos(a) * 196, y: 96 + Math.sin(a) * 50, i }; });
+        const draw = g => ghostChar(c, g.x, g.y + bob(t, g.i, 3), .3 + .1 * ((Math.sin(g.a) + 1) / 2), { eyes: "dot", glowEyes: g.i % 3 ? "#7ff0dc" : null, mouth: g.i % 2 ? "wail" : "o", arms: g.i % 2 ? "up" : "down", alpha: .75 + .2 * ((Math.sin(g.a) + 1) / 2), edge: null });
+        crowd.filter(g => Math.sin(g.a) < 0).forEach(draw);
+        const ky = 98 + bob(t, 0, 4);
+        ghostChar(c, 240, ky, 1.1, { eyes: "dot", glowEyes: "#7ff0dc", mouth: "wail", arms: "up", glow: "rgba(167,148,255,.7)" });
+        poly(c, [[219, ky - 38], [223, ky - 56], [231, ky - 44], [240, ky - 60], [249, ky - 44], [257, ky - 56], [261, ky - 38]], "#ffcf3f");
+        crowd.filter(g => Math.sin(g.a) >= 0).forEach(draw);
+        break;
+      }
+      case "early": {
+        sky(c, W, H, "#cbd6ff", "#f3eeff");
+        circ(c, 404, 42, 18, "#fff7d6"); circ(c, 412, 36, 15, "#d6dcff");
+        hill(c, W, H, 140, 7, .6, "#d2cdf3"); hill(c, W, H, 158, 6, 2.6, "#c3bcec");
+        c.save(); c.setLineDash([4, 6]); c.strokeStyle = "rgba(90,70,200,.35)"; c.lineWidth = 2;
+        c.beginPath(); c.moveTo(20, 70); c.bezierCurveTo(140, 20, 300, 110, 470, 40); c.stroke(); c.restore();
+        const p = (t * .12) % 1, ex = 20 + p * 450, ey = 70 - Math.sin(p * Math.PI) * 30 + (p - .5) * 10;
+        envelope(c, ex, ey, -.15, 1.2, "#ffffff", "rgba(40,40,90,.3)");
+        ghostChar(c, 220, 102 + bob(t, 0, 3), .9, { eyes: "sleep", mouth: "o", arms: "down" });
+        c.fillStyle = "rgba(42,35,66,.6)"; c.font = "800 16px Grandstander, sans-serif";
+        for (let i = 0; i < 3; i++) { const q = ((t * .5 + i / 3) % 1); c.globalAlpha = 1 - q; c.fillText("z", 262 + q * 30 + i * 4, 70 - q * 40); }
+        c.globalAlpha = 1;
+        break;
+      }
+      default: {
+        sky(c, W, H, "#ece6ff", "#fdfcff");
+        hill(c, W, H, 140, 7, 1, "#ddd5f6"); hill(c, W, H, 158, 6, 3, "#cfc6ef");
+        ghostChar(c, 240, 94 + bob(t, 0, 4), .95, { eyes: "dot", mouth: "o", arms: "down" });
+        bubble(c, 286, 26, 34, 28, "?");
+      }
+    }
+  }
+
+  const THEME = {
+    key: "ghost",
+    name: "Am I Being Ghosted?",
+    fontsToLoad: ["800 25px Grandstander", "400 16px 'Atkinson Hyperlegible'"],
+    levels: {
+      start:   { name: "Ghost check", color: "--early", msg: "Enter your numbers to see where you stand." },
+      early:   { name: "Too early for ghosts", color: "--early", msg: "Replies usually take one to three weeks, and most of your applications have not had that time yet. Keep going and check back in a week." },
+      great:   { name: "Ghost-free", color: "--great", msg: "Your rate is likely above the typical 3% to 6%. The ghosts are leaving. Whatever you are doing, keep doing it." },
+      fine:    { name: "Normal ghosting", color: "--ok", msg: "Everyone gets ghosted, and your numbers are right in the normal range. It's not you, so there is no reason to rewrite everything." },
+      quiet:   { name: "A little haunted", color: "--quiet", msg: "A few more ghosts than usual, but plenty of people with a typical rate go through the same stretch. Don't panic yet, and keep sending before you change much." },
+      unusual: { name: "Ghost town", color: "--unusual", msg: "Fewer replies than typical, and probably more than bad luck. Look at the roles you pick and how your CV reads, and change one thing at a time." },
+      market:  { name: "Haunted market?", color: "--bad", msg: "Far below typical. Maybe the market really is haunted. It could also be your CV or the roles you pick, and those are the part you control, so check them first." }
+    },
+    badges: {
+      a10:  { t: "Take Off",        art: "plane",     bg: "#3a74e0", val: "10",  f: "The first ten are the hardest. Your ghost is officially in the air." },
+      a25:  { t: "Paper Trail",     art: "envelopes", bg: "#139f8c", val: "25",  f: "Twenty-five applications are out there with your name on them." },
+      a50:  { t: "Heavy Mailbag",   art: "mailbag",   bg: "#7350d2", val: "50",  f: "Fifty applications. Even the ghost had to climb into the bag to fit them all." },
+      a100: { t: "Centurion",       art: "helmet",    bg: "#c2352c", val: "100", f: "A hundred applications. That takes real stamina." },
+      d14:  { t: "Two Weeks In",    art: "calendar",  bg: "#f0912a", val: "14",  f: "Two weeks in. Your first applications have had time to get replies." },
+      d30:  { t: "Full Moon",       art: "moon",      bg: "#263b8c", val: "30",  f: "A whole month of applying. Ghosts love a full moon, and so do people who keep going." },
+      d60:  { t: "Still Standing",  art: "cactus",    bg: "#e8b33a", val: "60",  f: "Sixty days and still going. Cacti get through dry spells too." },
+      s3:   { t: "Spark",           art: "spark",     bg: "#f0603a", val: "3",   f: "Three days in a row. That is how a habit starts." },
+      s7:   { t: "On Fire",         art: "fire",      bg: "#d23a6a", val: "7",   f: "A full week without missing a day. Keep the fire fed." },
+      log:  { t: "Logbook",         art: "notebook",  bg: "#3f9a4f", val: "5",   f: "Five check-ins. Your log is starting to tell a story." },
+      k1:   { t: "First Bite",      art: "fish",      bg: "#1593c8", val: "1",   f: "Someone wants to talk. One reply changes the whole mood." },
+      k3:   { t: "Hat Trick",       art: "hat",       bg: "#a23fbf", val: "3",   f: "Three interviews. Whatever is working, keep doing it." },
+      great:{ t: "Landing Well",    art: "landing",   bg: "#f0b400", val: "", rays: true, f: "Your rate is likely above the typical 3% to 6%. The last ghost is waving goodbye." },
+      g20:  { t: "Ghosted ×20",     art: "ghost",     bg: "#7e88a3", val: "20",  f: "Twenty applications and no interview yet. Statistically normal, still rude." },
+      g50:  { t: "Ghost Collector", art: "jar",       bg: "#4e4380", val: "50",  f: "Fifty without an interview. Worth a fresh look at your CV and the roles you pick." }
+    },
+    scene: sceneGhost,
+    spookCount: { start: 0, great: 0, fine: 1, early: 1, quiet: 2, unusual: 4, market: 9 },
+    sprite(c, x, y, s, a, t) {
+      ghostChar(c, x, y, s, { alpha: a, eyes: "dot", mouth: "o", arms: "up", tilt: Math.sin(t * 3) * .2, edge: null, glow: "rgba(167,148,255,.6)" });
+    },
+    confetti: { shape: "rect", extra: ["#ffd23f", "#ffffff", "#7ff0dc"] },
+    rv: {
+      share: "Share my card",
+      envText: (r, apps) => `RE: your ${apps}`,
+      postmark: (L, date) => ({ top: date, big: "", small: L.name })
+    },
+    card: {
+      ink: "#221d3a", muted: "#67617f", accent: "#5b46c9", label: "AM I BEING GHOSTED?",
+      level: { start: "#6c7890", early: "#6c7890", great: "#2a76b8", fine: "#2b8a6c", quiet: "#a77c12", unusual: "#cc6019", market: "#b8336a" },
+      font: { display: "Grandstander, 'Arial Rounded MT Bold', sans-serif", body: "'Atkinson Hyperlegible', sans-serif", mono: "'Courier Prime', monospace" },
+      frame(ctx, W, H) {
+        ctx.fillStyle = "#2a2250"; ctx.fillRect(0, 0, W, H);
+        const spots = [];
+        for (let x = 40; x < W; x += 66) { spots.push([x, 17], [x + 30, H - 17]); }
+        for (let y = 70; y < H - 40; y += 66) { spots.push([17, y], [W - 17, y + 30]); }
+        spots.forEach(([x, y], i) => ghostChar(ctx, x, y, .25, { eyes: "dot", mouth: "o", arms: "down", edge: null, alpha: .9, tilt: (i % 3 - 1) * .2, blush: false }));
+        ctx.fillStyle = "#f7f5fc";
+        roundRect(ctx, 34, 34, W - 68, H - 68, 18); ctx.fill();
+      },
+      decor(ctx, s, W, H, sc) {
+        const r = 128, cx = W - 96 - r, cy = 210;
+        ctx.save();
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU2); ctx.clip();
+        const side = sc.height;
+        ctx.drawImage(sc, (sc.width - side) / 2, 0, side, side, cx - r, cy - r, 2 * r, 2 * r);
+        ctx.restore();
+        ctx.lineWidth = 10; ctx.strokeStyle = "#2a2250";
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU2); ctx.stroke();
+        ctx.lineWidth = 3; ctx.strokeStyle = "#a594ff";
+        ctx.beginPath(); ctx.arc(cx, cy, r + 9, 0, TAU2); ctx.stroke();
+      },
+      pill(ctx, s, L, x, y, maxW) {
+        ctx.font = `800 54px ${this.font.display}`;
+        const tw = ctx.measureText(L.name).width;
+        ctx.fillStyle = this.level[s.level];
+        roundRect(ctx, x, y, Math.min(tw + 64, maxW), 92, 46); ctx.fill();
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(L.name, x + 32, y + 64);
+      }
+    }
+  };
+
+
+  // ---------- statistics ----------
+  const TAU = 7;              // days; most invites arrive within ~3 weeks (95% by day 21)
+  const LOW = 0.03, HIGH = 0.06;
+  const STORE_KEY = "iijm.v1";
+
+  function logGamma(z) {
+    const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+      771.32342877765313, -176.61502916214059, 12.507343278686905,
+      -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - logGamma(1 - z);
+    z -= 1;
+    let x = c[0];
+    for (let i = 1; i < 9; i++) x += c[i] / (z + i);
+    const t = z + 7.5;
+    return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+  }
+  function betacf(a, b, x) {
+    const FPMIN = 1e-300, EPS = 3e-14;
+    const qab = a + b, qap = a + 1, qam = a - 1;
+    let c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    d = 1 / d;
+    let h = d;
+    for (let m = 1; m <= 400; m++) {
+      const m2 = 2 * m;
+      let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d; h *= d * c;
+      aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d;
+      const del = d * c;
+      h *= del;
+      if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+  }
+  // Regularised incomplete beta I_x(a, b) = P(rate < x) for rate ~ Beta(a, b)
+  function ibeta(x, a, b) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    const lbt = logGamma(a + b) - logGamma(a) - logGamma(b) + a * Math.log(x) + b * Math.log(1 - x);
+    const bt = Math.exp(lbt);
+    if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
+    return 1 - bt * betacf(b, a, 1 - x) / b;
+  }
+  function betaQuantile(p, a, b) {
+    let lo = 0, hi = 1;
+    for (let i = 0; i < 80; i++) {
+      const mid = (lo + hi) / 2;
+      if (ibeta(mid, a, b) < p) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+  // Share of the eventual invites that have arrived, averaged over
+  // applications spread evenly across D days, when an invite comes after
+  // an exponential wait with mean TAU days.
+  function maturity(D) {
+    if (D <= 0) return 0;
+    return 1 - (TAU / D) * (1 - Math.exp(-D / TAU));
+  }
+  function assess(days, n, k) {
+    const neff = k + (n - k) * maturity(days);
+    const a = 1 + k, b = 1 + Math.max(0, neff - k);
+    const pLow = ibeta(LOW, a, b);
+    const pHigh = 1 - ibeta(HIGH, a, b);
+    const lo = betaQuantile(0.025, a, b), hi = betaQuantile(0.975, a, b);
+    let level;
+    if (n === 0) level = "start";
+    else if (k === 0 && neff < 5) level = "early";
+    else if (pHigh >= 0.8) level = "great";
+    else if (pLow < 0.5) level = "fine";
+    else if (pLow < 0.8) level = "quiet";
+    else if (pLow < 0.95) level = "unusual";
+    else level = "market";
+    return { days, n, k, neff, pLow, pHigh, lo, hi, level,
+      zeroLow: Math.pow(1 - HIGH, neff), zeroHigh: Math.pow(1 - LOW, neff),
+      expLow: neff * LOW, expHigh: neff * HIGH };
+  }
+
+  const LEVELS = THEME.levels;
+
+  // ---------- badges ----------
+  // Each badge is drawn as a postage stamp: art picks the picture, bg the stamp colour, val the denomination.
+  const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+  const BADGES = [
+    { id: "a10",  d: "Sent 10 applications",           ok: s => s.n >= 10,         prog: s => [s.n, 10],          need: m => `${plural(m, "more application")} to go` },
+    { id: "a25",  d: "Sent 25 applications",           ok: s => s.n >= 25,         prog: s => [s.n, 25],          need: m => `${plural(m, "more application")} to go` },
+    { id: "a50",  d: "Sent 50 applications",           ok: s => s.n >= 50,         prog: s => [s.n, 50],          need: m => `${plural(m, "more application")} to go` },
+    { id: "a100", d: "Sent 100 applications",          ok: s => s.n >= 100,        prog: s => [s.n, 100],         need: m => `${plural(m, "more application")} to go` },
+    { id: "d14",  d: "14 days of applying",            ok: s => s.days >= 14,      prog: s => [s.days, 14],       need: m => `${plural(m, "more day")} to go` },
+    { id: "d30",  d: "30 days of applying",            ok: s => s.days >= 30,      prog: s => [s.days, 30],       need: m => `${plural(m, "more day")} to go` },
+    { id: "d60",  d: "60 days and still going",        ok: s => s.days >= 60,      prog: s => [s.days, 60],       need: m => `${plural(m, "more day")} to go` },
+    { id: "s3",   d: "3 day streak",                   ok: s => s.streak >= 3,     prog: s => [s.streak, 3],      need: m => `Check in ${plural(m, "more day")} in a row` },
+    { id: "s7",   d: "7 day streak",                   ok: s => s.streak >= 7,     prog: s => [s.streak, 7],      need: m => `Check in ${plural(m, "more day")} in a row` },
+    { id: "log",  d: "Checked in on 5 different days", ok: s => s.loggedDays >= 5, prog: s => [s.loggedDays, 5],  need: m => `Check in on ${plural(m, "more day")}` },
+    { id: "k1",   d: "Got a first interview",          ok: s => s.k >= 1,          prog: s => [s.k, 1],           need: () => "Unlocks with your first interview" },
+    { id: "k3",   d: "Got 3 interviews",               ok: s => s.k >= 3,          prog: s => [s.k, 3],           need: m => `${plural(m, "more interview")} to go` },
+    { id: "k5",   d: "Got 5 interviews",               ok: s => s.k >= 5,          prog: s => [s.k, 5],           need: m => `${plural(m, "more interview")} to go` },
+    { id: "k9",   d: "Got 9 interviews",               ok: s => s.k >= 9,          prog: s => [s.k, 9],           need: m => `${plural(m, "more interview")} to go` },
+    { id: "o1",   d: "Got a first offer",              ok: s => s.o >= 1,          prog: s => [s.o, 1],           need: () => "Unlocks with your first offer" },
+    { id: "o2",   d: "Got 2 offers",                   ok: s => s.o >= 2,          prog: s => [s.o, 2],           need: m => `${plural(m, "more offer")} to go` },
+    { id: "great",d: "Rate likely above typical",      ok: s => s.level === "great" },
+    { id: "g20",  d: "20 sent, still no interview",    ok: s => s.n >= 20 && s.k === 0, prog: s => s.k === 0 ? [s.n, 20] : null, funny: true, need: m => `${plural(m, "more application")} without an interview` },
+    { id: "g50",  d: "50 sent, still no interview",    ok: s => s.n >= 50 && s.k === 0, prog: s => s.k === 0 ? [s.n, 50] : null, funny: true, need: m => `${plural(m, "more application")} without an interview` }
+  ].filter(b => THEME.badges[b.id]).map(b => Object.assign(b, THEME.badges[b.id]));
+  // badges you get by keeping at it, offered as the next goal
+  const NEXT_IDS = ["a10", "a25", "a50", "a100", "d14", "d30", "d60", "s3", "s7", "log"];
+  // most notable first, for the reveal stamps and the share card
+  const RANK = ["o2", "o1", "great", "k9", "k5", "g50", "g20", "a100", "k3", "k1", "d60", "s7", "a50", "d30", "s3", "a25", "log", "d14", "a10"];
+  const byRank = list => [...list].sort((x, y) => RANK.indexOf(x.id) - RANK.indexOf(y.id));
+  // the earned badges that go on the share card, best first
+  const cardBadges = s => byRank(earnedList(s).filter(b => !cardHide.has(b.id)));
+  const tiltOf = id => { let h = 7; for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) % 997; return (h % 9) - 4; };
+
+  const stampScale = () => Math.min(3, Math.max(2, window.devicePixelRatio || 1));
+  function stampCanvas(b) {
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(120 * stampScale());
+    cv.height = Math.round(144 * stampScale());
+    cv.setAttribute("aria-hidden", "true");
+    paintStamp(cv, b);
+    return cv;
+  }
+
+  // ---------- storage (per browser, optional) ----------
+  function loadStore() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      if (!s || !Array.isArray(s.log) || !s.start) return null;
+      return s;
+    } catch (e) { return null; }
+  }
+  function saveStore(s) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); return true; }
+    catch (e) { return false; }
+  }
+  function clearStore() { try { localStorage.removeItem(STORE_KEY); } catch (e) {} }
+
+  // ---------- dates ----------
+  const DAY = 86400000;
+  function todayStr(d = new Date()) {
+    const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, "0"), dd = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${dd}`;
+  }
+  function parseDay(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); }
+  function daysBetween(a, b) { return Math.round((parseDay(b) - parseDay(a)) / DAY); }
+  function addDays(s, n) { const d = parseDay(s); d.setDate(d.getDate() + n); return todayStr(d); }
+
+  function streakInfo(log) {
+    // days on which the saved application count went up
+    const active = new Set();
+    let prev = 0;
+    [...log].sort((x, y) => x.d < y.d ? -1 : 1).forEach(e => { if (e.n > prev) active.add(e.d); prev = Math.max(prev, e.n); });
+    const today = todayStr();
+    let cur = active.has(today) ? today : addDays(today, -1);
+    let streak = 0;
+    while (active.has(cur)) { streak++; cur = addDays(cur, -1); }
+    return { streak, loggedDays: new Set(log.map(e => e.d)).size, activeToday: active.has(today) };
+  }
+
+  // ---------- state ----------
+  const EXAMPLE = { days: 34, n: 52, k: 1, o: 0 };
+  let store = loadStore();
+  let storageOk = true;
+  let state;
+  if (store) {
+    const last = store.log[store.log.length - 1] || { n: 0, k: 0, o: 0 };
+    state = { start: store.start, days: Math.max(0, daysBetween(store.start, todayStr())), n: last.n, k: last.k, o: last.o || 0, example: false };
+  } else {
+    state = { start: addDays(todayStr(), -EXAMPLE.days), ...EXAMPLE, example: true };
+  }
+
+  const $ = id => document.getElementById(id);
+  const inputs = { start: $("start"), apps: $("apps"), ints: $("ints"), offers: $("offers"), market: $("market"), field: $("field"), channel: $("channel") };
+
+  function readInputs() {
+    const v = el => { const x = Math.floor(Number(el.value)); return Number.isFinite(x) && x > 0 ? x : 0; };
+    const start = /^\d{4}-\d{2}-\d{2}$/.test(inputs.start.value) ? inputs.start.value : "";
+    const days = start ? daysBetween(start, todayStr()) : 0;
+    return { start, days, n: v(inputs.apps), k: v(inputs.ints), o: v(inputs.offers) };
+  }
+  function readProfile() {
+    return { market: inputs.market.value || null, field: inputs.field.value || null, channel: inputs.channel.value || null };
+  }
+  function writeInputs() {
+    inputs.start.value = state.start;
+    inputs.start.max = todayStr();
+    inputs.apps.value = state.n;
+    inputs.ints.value = state.k;
+    inputs.offers.value = state.o || 0;
+    const pr = (store && !state.example && store.profile) || {};
+    inputs.market.value = pr.market || ""; inputs.field.value = pr.field || ""; inputs.channel.value = pr.channel || "";
+  }
+
+  const pct = (x, digits) => {
+    const v = x * 100;
+    if (digits === undefined) digits = v < 10 ? 1 : 0;
+    return v.toFixed(digits) + "%";
+  };
+  const whole = x => Math.round(x * 100) + "%";
+
+  function pinPosition(pLow) {
+    // four equal bands: [0,.5) [.5,.8) [.8,.95) [.95,1]
+    const edges = [0, 0.5, 0.8, 0.95, 1];
+    for (let i = 0; i < 4; i++) {
+      if (pLow < edges[i + 1] || i === 3) {
+        const f = (Math.min(pLow, 1) - edges[i]) / (edges[i + 1] - edges[i]);
+        return (i + Math.max(0, Math.min(1, f))) * 25;
+      }
+    }
+    return 0;
+  }
+
+  let current = null;   // result on screen, from the last checked numbers
+  let shown = null;     // the numbers behind it
+
+  function validate(v) {
+    return !v.start ? "Pick the date of your first application."
+      : v.days < 0 ? "The first application cannot be in the future."
+      : v.k > v.n ? "Interviews cannot be more than applications sent."
+      : v.o > v.k ? "Offers cannot be more than interviews." : "";
+  }
+  function updateHint(v) {
+    $("start-hint").textContent = !v.start || v.days < 0 ? "The day count updates by itself every day."
+      : v.days === 0 ? "That is today. The day count updates by itself every day."
+      : `That is ${v.days} day${v.days === 1 ? "" : "s"} ago. The count updates by itself every day.`;
+  }
+  function compute(v) {
+    const r = assess(v.days, v.n, v.k);
+    const st = (store && !state.example) ? streakInfo(store.log) : { streak: 0, loggedDays: 0, activeToday: false };
+    return { ...r, o: v.o || 0, streak: st.streak, loggedDays: st.loggedDays, activeToday: st.activeToday };
+  }
+  function setStale(on) {
+    $("verdict").classList.toggle("stale", on);
+    $("stale-note").hidden = !on;
+  }
+  function paint(r) {
+    current = r;
+    shown = { start: state.start, n: r.n, k: r.k, o: r.o };
+
+    const L = LEVELS[r.level];
+    const statusEl = $("status");
+    statusEl.textContent = L.name;
+    statusEl.style.setProperty("--lvl", `var(${L.color})`);
+    $("status-msg").textContent = L.msg;
+    $("day-pill").textContent = `Day ${r.days}`;
+
+    const showNums = r.level !== "start";
+    $("s-plow").textContent = showNums ? whole(r.pLow) : "–";
+    $("s-range").textContent = showNums ? `${pct(r.lo)} to ${pct(r.hi)}` : "–";
+    $("s-neff").textContent = showNums ? `${Math.round(r.neff)} of ${r.n}` : "–";
+    $("s-offer-box").hidden = !(showNums && r.o > 0);
+    $("s-offer-box").parentElement.classList.toggle("four", !$("s-offer-box").hidden);
+    $("s-offer").textContent = r.o > 0 ? `${r.o} of ${r.k}` : "–";
+
+    const segs = document.querySelectorAll(".meter-seg");
+    const band = r.pLow < 0.5 ? 0 : r.pLow < 0.8 ? 1 : r.pLow < 0.95 ? 2 : 3;
+    const meterOn = showNums && r.level !== "early";
+    segs.forEach((s, i) => s.classList.toggle("on", meterOn && i === band));
+    $("meter").style.setProperty("--lvl", `var(${L.color})`);
+    document.querySelectorAll(".meter-labels span").forEach((s, i) => s.classList.toggle("on", meterOn && i === band));
+    $("pin").style.left = (meterOn ? pinPosition(r.pLow) : 0) + "%";
+    $("meter").hidden = !meterOn;
+
+    const ex = $("explain");
+    ex.textContent = "";
+    const add = t => { const li = document.createElement("li"); li.textContent = t; ex.appendChild(li); };
+    if (showNums) {
+      if (r.neff < r.n - 0.5) add(`Your most recent applications count only partly, because their replies may still be on the way. Counted so far: about ${Math.round(r.neff)} of ${r.n}.`);
+      if (r.k === 0 && r.level !== "early") {
+        add(`At a typical rate of 3% to 6%, between ${whole(r.zeroLow)} and ${whole(r.zeroHigh)} of people with the same counted applications would also have zero interviews.`);
+      } else if (r.k > 0) {
+        add(`At a typical rate you would expect about ${r.expLow.toFixed(1)} to ${r.expHigh.toFixed(1)} interviews by now. You have ${r.k}.`);
+      }
+      add(`Your true interview rate is between ${pct(r.lo)} and ${pct(r.hi)} with 95% probability. The typical range is 3% to 6%.`);
+      if (r.o > 0) add(`You turned ${plural(r.k, "interview")} into ${plural(r.o, "offer")}. The rate above still only looks at interviews.`);
+    }
+
+    sceneLevel = r.level;
+    drawScene(performance.now() / 1000);
+    startScene();
+    renderBadges(r);
+    $("st-day").textContent = r.days;
+    $("st-streak").textContent = r.streak;
+    $("streak-note").textContent = ((store && !state.example)
+      ? (r.activeToday ? "Today counts toward your streak." : "Check in with new applications today to keep your streak going.")
+      : "Your streak counts days in a row on which you checked in with new applications. Check your numbers to start one.")
+      + " Tap any badge to see it up close.";
+
+    $("mode-pill").textContent = state.example ? "Example numbers" : "Your numbers";
+    $("vd-share").hidden = state.example || r.level === "start";
+    $("share-open").disabled = r.level === "start";
+    $("post").value = postText(r);
+    scheduleCard();
+    setStale(false);
+  }
+  function onEdit(ev) {
+    if (state.example) {
+      state.example = false;
+      $("mode-pill").textContent = "Your numbers";
+    }
+    const v = readInputs();
+    const problem = validate(v);
+    const err = $("err");
+    err.textContent = problem;
+    err.hidden = !problem;
+    updateHint(v);
+    setStale(!shown || v.start !== shown.start || v.n !== shown.n || v.k !== shown.k || v.o !== shown.o);
+  }
+
+  // Badges stay earned once you have them, even if the numbers move on.
+  function earnedList(s) {
+    const kept = (!state.example && store && Array.isArray(store.seen)) ? new Set(store.seen) : new Set();
+    return BADGES.filter(b => b.ok(s) || kept.has(b.id));
+  }
+  const shortDate = d => { const x = parseDay(d); return `${x.getDate()} ${x.toLocaleString("en-GB", { month: "short" })}`; };
+  function renderBadges(s) {
+    const wrap = $("badges");
+    wrap.textContent = "";
+    const earned = new Set(earnedList(s).map(b => b.id));
+    const dates = (!state.example && store && store.earned) || {};
+    const today = todayStr();
+    $("st-earned").textContent = earned.size;
+    $("st-total").textContent = BADGES.length;
+    BADGES.forEach(b => {
+      const has = earned.has(b.id);
+      const item = document.createElement("div");
+      item.setAttribute("role", "listitem");
+      const el = document.createElement("button");
+      el.type = "button";
+      el.className = "badge " + (has ? "earned" : "locked");
+      el.dataset.id = b.id;
+      item.appendChild(el);
+      const slot = document.createElement("span");
+      slot.className = "slot";
+      slot.style.setProperty("--tilt", `${tiltOf(b.id)}deg`);
+      slot.appendChild(stampCanvas(b));
+      if (has && dates[b.id] === today) {
+        const tag = document.createElement("span");
+        tag.className = "new-tag";
+        tag.textContent = "New";
+        slot.appendChild(tag);
+      }
+      const t = document.createElement("span"); t.className = "bt"; t.textContent = b.t;
+      const d = document.createElement("span"); d.className = "bd"; d.textContent = b.d;
+      el.append(slot, t, d);
+      let status;
+      const p = !has && b.prog ? b.prog(s) : null;
+      if (p) {
+        const cur = Math.min(p[0], p[1]);
+        const bp = document.createElement("span"); bp.className = "bp";
+        const bar = document.createElement("span"); bar.className = "bar";
+        const fill = document.createElement("i"); fill.style.width = `${cur / p[1] * 100}%`;
+        bar.appendChild(fill);
+        const num = document.createElement("span"); num.textContent = `${cur} / ${p[1]}`;
+        bp.append(bar, num);
+        el.appendChild(bp);
+        status = `Not earned yet, ${cur} of ${p[1]}`;
+      } else {
+        const m = document.createElement("span"); m.className = "bm";
+        m.textContent = has ? (dates[b.id] ? `Earned ${shortDate(dates[b.id])}` : "Earned") : (b.funny ? "Dodged" : "Not yet");
+        el.appendChild(m);
+        status = has ? m.textContent : (b.funny ? "Dodged, you already have an interview" : "Not earned yet");
+      }
+      el.setAttribute("aria-label", `${b.t}. ${b.d}. ${status}. Open a larger view.`);
+      wrap.appendChild(item);
+    });
+    renderNext(s, earned);
+  }
+  function renderNext(s, earned) {
+    let best = null;
+    BADGES.forEach(b => {
+      if (!NEXT_IDS.includes(b.id) || earned.has(b.id)) return;
+      const [cur, goal] = b.prog(s);
+      const f = cur / goal;
+      if (!best || f > best.f) best = { b, cur, goal, f };
+    });
+    $("next").hidden = !best;
+    if (!best) return;
+    const { b, cur, goal } = best;
+    $("next").dataset.id = b.id;
+    $("next").setAttribute("aria-label", `Next badge, ${b.t}. ${b.need(goal - cur)}. Open a larger view.`);
+    const cv = $("next-cv");
+    cv.width = Math.round(120 * stampScale());
+    cv.height = Math.round(144 * stampScale());
+    paintStamp(cv, b);
+    $("next-t").textContent = b.t;
+    $("next-d").textContent = b.need(goal - cur);
+    $("next-bar").style.width = `${Math.min(100, cur / goal * 100)}%`;
+    $("next-n").textContent = `${cur} / ${goal}`;
+  }
+
+  // "52 applications, 3 interviews, 1 offer"; offers only appear once there is one
+  function numsText(s) {
+    return `${plural(s.n, "application")}, ${plural(s.k, "interview")}` + (s.o > 0 ? `, ${plural(s.o, "offer")}` : "");
+  }
+  function postText(s) {
+    if (s.level === "start") return "";
+    const L = LEVELS[s.level];
+    const lines = [
+      `Day ${s.days} of my job hunt. ${numsText(s)}.`,
+      `Status: ${L.name}.`
+    ];
+    if (s.level !== "early") lines.push(`Chance my interview rate is below the typical 3%: ${whole(s.pLow)}.`);
+    const b = cardBadges(s).map(x => x.t);
+    if (b.length) lines.push(`Badges so far: ${b.length > 6 ? `${b.slice(0, 5).join(", ")} and ${b.length - 5} more` : b.join(", ")}.`);
+    lines.push(`Checked with ${THEME.name}, a small Bayesian tool for job hunt numbers.`);
+    return lines.join("\n");
+  }
+
+  // ---------- share card (canvas) ----------
+  const CARD = THEME.card;
+  let cardTimer = null;
+  function scheduleCard() { clearTimeout(cardTimer); cardTimer = setTimeout(drawCard, 120); }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function wrapText(ctx, text, x, y, maxW, lh) {
+    const words = text.split(" ");
+    let line = "";
+    for (const w of words) {
+      const test = line ? line + " " + w : w;
+      if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, x, y); line = w; y += lh; }
+      else line = test;
+    }
+    if (line) ctx.fillText(line, x, y);
+    return y + lh;
+  }
+  function sceneImage(level, scale) {
+    const sc = document.createElement("canvas");
+    sc.width = Math.round(480 * scale); sc.height = Math.round(180 * scale);
+    const x = sc.getContext("2d");
+    x.scale(scale, scale);
+    THEME.scene(x, 480, 180, level, 1.6);
+    return sc;
+  }
+  function drawCard() {
+    if (!current) return;
+    const s = current;
+    const cv = $("card");
+    const ctx = cv.getContext("2d");
+    const W = cv.width, H = cv.height, F = CARD.font;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.textBaseline = "alphabetic"; ctx.textAlign = "left";
+    CARD.frame(ctx, W, H);
+    CARD.decor(ctx, s, W, H, sceneImage(s.level, 1.4));
+
+    const X = 96;
+    ctx.fillStyle = CARD.accent;
+    ctx.font = `700 30px ${F.mono}`;
+    if ("letterSpacing" in ctx) ctx.letterSpacing = "4px";
+    ctx.fillText(CARD.label, X, 150);
+    if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+    ctx.fillStyle = CARD.ink;
+    ctx.font = `800 150px ${F.display}`;
+    ctx.fillText(`Day ${s.days}`, X, 320);
+    ctx.font = `400 40px ${F.body}`;
+    ctx.fillStyle = CARD.muted;
+    ctx.fillText("of the job hunt", X, 398);
+
+    const nums = [[s.n, s.n === 1 ? "application" : "applications"], [s.k, s.k === 1 ? "interview" : "interviews"]];
+    if (s.o > 0) nums.push([s.o, s.o === 1 ? "offer" : "offers"]);
+    const colW = (W - 2 * X) / nums.length;
+    nums.forEach(([num, lab], i) => {
+      const x = X + i * colW;
+      ctx.fillStyle = CARD.ink;
+      ctx.font = `800 ${nums.length > 2 ? 110 : 120}px ${F.display}`;
+      ctx.fillText(String(num), x, 540);
+      ctx.fillStyle = CARD.muted;
+      ctx.font = `400 36px ${F.body}`;
+      ctx.fillText(lab, x, 590);
+    });
+
+    const L = LEVELS[s.level];
+    CARD.pill(ctx, s, L, X, 650, W - 2 * X);
+
+    ctx.fillStyle = CARD.ink;
+    ctx.font = `400 36px ${F.body}`;
+    let y = 810;
+    if (s.level !== "start" && s.level !== "early") {
+      y = wrapText(ctx, `Chance my interview rate is below the typical 3%: ${whole(s.pLow)}`, X, y, W - 2 * X, 48);
+      y = wrapText(ctx, `Likely rate: ${pct(s.lo)} to ${pct(s.hi)}`, X, y, W - 2 * X, 48);
+    } else if (s.level === "early") {
+      y = wrapText(ctx, "Too soon to judge. Most replies take one to three weeks.", X, y, W - 2 * X, 48);
+    }
+
+    const earned = earnedList(s);
+    const picks = cardBadges(s);
+    if (picks.length) {
+      // one row with names for up to five, then two or three rows of smaller stamps
+      const rows = picks.length <= 5 ? 1 : picks.length <= 12 ? 2 : 3;
+      const labelY = rows === 1 ? 952 : rows === 2 ? 910 : 896;
+      ctx.fillStyle = CARD.muted;
+      ctx.font = `700 26px ${F.mono}`;
+      ctx.fillText(`BADGES ${earned.length}/${BADGES.length}`, X, labelY);
+      const width = W - 2 * X, top = labelY + 26, bottom = H - 128;
+      const cols = rows === 1 ? 5 : Math.ceil(picks.length / rows);
+      const step = width / cols, gap = rows === 1 ? 0 : rows === 2 ? 16 : 12;
+      const sh = rows === 1 ? 158.4 : Math.min((bottom - top - gap * (rows - 1)) / rows, step * .84 * 1.2), sw = sh / 1.2;
+      picks.forEach((b, i) => {
+        const row = Math.floor(i / cols), col = i % cols, inRow = Math.min(cols, picks.length - row * cols);
+        const x0 = rows === 1 ? X : X + (width - inRow * step) / 2;
+        const mx = x0 + step * col + step / 2, my = top + row * (sh + gap) + sh / 2;
+        const off = document.createElement("canvas");
+        off.width = Math.round(sw * 2); off.height = Math.round(sh * 2);
+        paintStamp(off, b);
+        ctx.save();
+        ctx.translate(mx, my);
+        ctx.rotate(tiltOf(b.id) * Math.PI / 180);
+        ctx.shadowColor = "rgba(27, 37, 55, .28)"; ctx.shadowBlur = 18 * sw / 132; ctx.shadowOffsetY = 7 * sw / 132;
+        ctx.drawImage(off, -sw / 2, -sh / 2, sw, sh);
+        ctx.restore();
+        if (rows === 1) {
+          ctx.fillStyle = CARD.ink; ctx.textAlign = "center";
+          ctx.font = `700 21px ${F.body}`;
+          ctx.fillText(b.t, mx, top + sh + 40);
+          ctx.textAlign = "left";
+        }
+      });
+    }
+
+    ctx.fillStyle = CARD.muted;
+    ctx.font = `400 24px ${F.body}`;
+    ctx.fillText("Checked against a typical interview rate of 3% to 6% per application.", X, H - 92);
+
+    try {
+      const url = cv.toDataURL("image/png");
+      $("card-img").src = url;
+      if (!$("sharer").hidden) $("sr-img").src = url;
+    } catch (e) {}
+    const shown = picks.length ? `, ${picks.length} badge${picks.length === 1 ? "" : "s"}` : "";
+    $("card-img").alt = `Share card. Day ${s.days}, ${numsText(s)}, ${LEVELS[s.level].name}${shown}.`;
+    srBlob = null;
+    if (!$("sharer").hidden) prepareBlob();
+  }
+
+  // ---------- reply letter reveal ----------
+  const reduceMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  let revealRun = 0;
+  function anim(el, keyframes, opts) {
+    try {
+      return el.animate(keyframes, Object.assign({ fill: "forwards", easing: "cubic-bezier(.2,.8,.2,1)" }, opts)).finished.catch(() => {});
+    } catch (e) { return Promise.resolve(); }
+  }
+  function fillReveal(r, badges, isExample) {
+    const L = LEVELS[r.level];
+    const apps = `${r.n} application${r.n === 1 ? "" : "s"}`;
+    $("rv-example").hidden = !isExample;
+    $("rv-share").hidden = isExample;
+    $("rv-share-t").textContent = THEME.rv.share || "Share my card";
+    $("rv-title").textContent = `Day ${r.days} of your hunt`;
+    $("rv-nums").textContent = numsText(r);
+    $("rv-msg").textContent = L.msg;
+    $("rv-env-to").textContent = THEME.rv.envText(r, apps);
+    $("rv-postmark").style.setProperty("--lvl", `var(${L.color})`);
+    const dt = new Date();
+    const pm = THEME.rv.postmark(L, `${dt.getDate()} ${dt.toLocaleString("en-GB", { month: "short" }).toUpperCase()} ${dt.getFullYear()}`);
+    $("rv-pm-date").textContent = pm.top;
+    $("rv-pm-big").textContent = pm.big || "";
+    $("rv-pm-status").textContent = pm.small;
+    const ranked = byRank(badges);
+    const list = ranked.slice(0, 6).reverse();   // the best one lands last
+    const more = ranked.length - list.length;
+    $("rv-more").hidden = more === 0;
+    $("rv-more").textContent = `And ${more} more under Badges.`;
+    const wrap = $("rv-stamps");
+    wrap.textContent = "";
+    wrap.classList.toggle("big", list.length <= 2);
+    $("rv-stamps-wrap").hidden = list.length === 0;
+    $("rv-stamps-label").textContent = isExample ? "Badges in this example" : (list.length === 1 ? "New badge" : "New badges");
+    list.forEach(b => {
+      const f = document.createElement("button");
+      f.type = "button";
+      f.className = "rv-stamp";
+      f.dataset.id = b.id;
+      f.dataset.tilt = tiltOf(b.id);
+      f.dataset.color = b.bg;
+      f.setAttribute("aria-label", `${b.t}. Open a larger view.`);
+      const t = document.createElement("span"); t.textContent = b.t;
+      f.append(stampCanvas(b), t);
+      wrap.appendChild(f);
+    });
+  }
+  async function playReveal(r, badges, isExample) {
+    const run = ++revealRun;
+    const alive = () => run === revealRun;
+    fillReveal(r, badges, isExample);
+    const ov = $("reveal"), env = $("rv-env"), flap = $("rv-flap"), letter = $("rv-letter"), pm = $("rv-postmark"), done = $("rv-done"), share = $("rv-share");
+    const stamps = [...document.querySelectorAll("#rv-stamps .rv-stamp")];
+    [letter, pm, done, share, ...stamps].forEach(el => { el.style.opacity = "0"; });
+    ov.hidden = false;
+    ov.scrollTop = 0;
+    $("rv-skip").hidden = false;
+    document.querySelector(".wrap").inert = true;
+    document.body.style.overflow = "hidden";
+    $("rv-skip").focus({ preventScroll: true });
+
+    await anim(env, [{ transform: "translateY(70vh) rotate(-6deg)" }, { transform: "translateY(0) rotate(0deg)" }], { duration: 450 });
+    if (!alive()) return;
+    await anim(flap, [{ transform: "rotateX(0deg)" }, { transform: "rotateX(-180deg)" }], { duration: 320, easing: "ease-in-out" });
+    if (!alive()) return;
+    const eb = env.getBoundingClientRect();
+    spooks(eb.left + eb.width / 2, eb.top + eb.height * .35, THEME.spookCount[r.level] || 0);
+    anim(env, [{ transform: "translateY(0)", opacity: 1 }, { transform: "translateY(150px)", opacity: 0 }], { duration: 420, easing: "ease-in" });
+    letter.style.opacity = "";
+    await anim(letter, [{ opacity: 0, transform: "translateY(60px) scale(.94)" }, { opacity: 1, transform: "translateY(0) scale(1)" }], { duration: 500 });
+    if (!alive()) return;
+    pm.style.opacity = "";
+    await anim(pm, [{ opacity: 0, transform: "scale(2.2) rotate(-26deg)" }, { opacity: 1, transform: "scale(1) rotate(-10deg)" }], { duration: 260, easing: "cubic-bezier(.3,1.4,.5,1)" });
+    if (!alive()) return;
+    anim(letter, [{ transform: "translateX(0)" }, { transform: "translateX(-3px)" }, { transform: "translateX(3px)" }, { transform: "translateX(0)" }], { duration: 160 });
+    for (const st of stamps) {
+      if (!alive()) return;
+      st.style.opacity = "";
+      const cv = st.querySelector("canvas"), tilt = Number(st.dataset.tilt) || 0;
+      anim(st.querySelector("span"), [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+      await anim(cv, [{ opacity: 0, transform: `scale(1.8) rotate(${tilt - 16}deg)` }, { opacity: 1, transform: `scale(1) rotate(${tilt}deg)` }], { duration: stamps.length > 2 ? 230 : 300, easing: "cubic-bezier(.3,1.4,.5,1)" });
+    }
+    if (!alive()) return;
+    if (stamps.length) {
+      const box = stamps[stamps.length - 1].querySelector("canvas").getBoundingClientRect();
+      confetti(box.left + box.width / 2, box.top + box.height / 2, stamps.map(st => st.dataset.color).concat(THEME.confetti.extra));
+    }
+    [done, share].forEach(el => { el.style.opacity = ""; anim(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 220 }); });
+    $("rv-skip").hidden = true;
+    (share.hidden ? done : share).focus({ preventScroll: true });
+    // on short screens the buttons can sit below the fold of the overlay
+    const below = $("rv-actions").getBoundingClientRect().bottom + 24 - window.innerHeight;
+    if (below > 0) ov.scrollBy({ top: below, behavior: reduceMotion() ? "auto" : "smooth" });
+  }
+  // one overlay canvas for confetti and for the little spirits that escape the envelope
+  let fxRaf = 0, fxItems = [];
+  function fxStart() {
+    const cv = $("rv-confetti");
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = window.innerWidth, h = window.innerHeight;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    if (fxRaf) return;
+    let last = performance.now();
+    const step = now => {
+      const k = Math.min(3, (now - last) / 16.7);
+      last = now;
+      const c = cv.getContext("2d");
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
+      c.clearRect(0, 0, w, h);
+      fxItems.forEach(p => { p.age += k / 60; if (p.age >= 0) { p.update(k); p.draw(c); } });
+      fxItems = fxItems.filter(p => p.age < p.max);
+      fxRaf = fxItems.length ? requestAnimationFrame(step) : 0;
+      if (!fxRaf) c.clearRect(0, 0, w, h);
+    };
+    fxRaf = requestAnimationFrame(step);
+  }
+  function confetti(x, y, colors) {
+    const petal = THEME.confetti.shape === "petal";
+    for (let i = 0; i < 44; i++) {
+      const a = -Math.PI / 2 + (Math.random() - .5) * 2.6, v = 5 + Math.random() * 7;
+      const p = { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, w: 6 + Math.random() * 5, h: 3 + Math.random() * 4,
+        r: Math.random() * 6, vr: (Math.random() - .5) * .35, col: colors[i % colors.length], age: 0, max: petal ? 1.8 : 1.4 };
+      p.update = k => {
+        p.vy += (petal ? .2 : .34) * k; p.vx *= Math.pow(petal ? .97 : .985, k);
+        p.x += (p.vx + (petal ? Math.sin(p.age * 7 + p.r) * .8 : 0)) * k; p.y += p.vy * k; p.r += p.vr * k;
+      };
+      p.draw = c => {
+        c.save();
+        c.globalAlpha = Math.max(0, 1 - p.age / p.max);
+        c.translate(p.x, p.y); c.rotate(p.r);
+        c.fillStyle = p.col;
+        if (petal) { c.beginPath(); c.ellipse(0, 0, p.w * .75, p.h * .8, 0, 0, Math.PI * 2); c.fill(); }
+        else c.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        c.restore();
+      };
+      fxItems.push(p);
+    }
+    fxStart();
+  }
+  function spooks(x, y, n) {
+    for (let i = 0; i < n; i++) {
+      const p = { x: x + (Math.random() - .5) * 70, y: y + Math.random() * 20, vx: (Math.random() - .5) * 2.2, vy: -(1.4 + Math.random() * 1.5),
+        s: .3 + Math.random() * .24, ph: Math.random() * 6, age: -i * .09, max: 2 };
+      p.update = k => { p.x += (p.vx + Math.sin(p.age * 5 + p.ph) * .7) * k; p.y += p.vy * k; };
+      p.draw = c => THEME.sprite(c, p.x, p.y, p.s, Math.min(1, p.age * 4) * Math.max(0, 1 - p.age / p.max), p.age + p.ph);
+      fxItems.push(p);
+    }
+    if (n) fxStart();
+  }
+  function stopConfetti() {
+    cancelAnimationFrame(fxRaf);
+    fxRaf = 0; fxItems = [];
+    const cv = $("rv-confetti");
+    cv.getContext("2d").clearRect(0, 0, cv.width, cv.height);
+  }
+  function closeReveal() {
+    const ov = $("reveal");
+    if (ov.hidden) return;
+    revealRun++;
+    stopConfetti();
+    if (typeof ov.getAnimations === "function") ov.getAnimations({ subtree: true }).forEach(a => a.cancel());
+    ["rv-letter", "rv-postmark", "rv-done", "rv-share", "rv-env"].forEach(id => { $(id).style.opacity = ""; });
+    document.querySelectorAll("#rv-stamps .rv-stamp").forEach(el => { el.style.opacity = ""; });
+    ov.hidden = true;
+    document.querySelector(".wrap").inert = false;
+    document.body.style.overflow = "";
+    showResults();
+  }
+  function showResults() {
+    $("verdict").scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+    $("out-h").focus({ preventScroll: true });
+  }
+  $("rv-skip").addEventListener("click", closeReveal);
+  $("rv-done").addEventListener("click", closeReveal);
+  $("reveal").addEventListener("click", e => { if (e.target === e.currentTarget) closeReveal(); });
+  $("rv-stamps").addEventListener("click", e => {
+    const btn = e.target.closest(".rv-stamp");
+    if (btn) openViewer(btn.dataset.id, btn);
+  });
+  // ---------- badge viewer ----------
+  let vwIndex = 0, vwOpener = null, swipeX = null;
+  function fillViewer() {
+    const b = BADGES[vwIndex], s = current;
+    const has = earnedList(s).some(x => x.id === b.id);
+    const dates = (!state.example && store && store.earned) || {};
+    $("viewer").classList.toggle("locked", !has);
+    const cv = $("vw-cv");
+    const k = Math.min(3, Math.max(2, window.devicePixelRatio || 1)) * 260 / 120;
+    cv.width = Math.round(120 * k); cv.height = Math.round(144 * k);
+    paintStamp(cv, b);
+    $("vw-k").textContent = `Badge ${vwIndex + 1} of ${BADGES.length}`;
+    $("vw-title").textContent = b.t;
+    $("vw-d").textContent = b.d;
+    $("vw-flavor").textContent = b.f;
+    $("vw-story").hidden = !b.story;
+    $("vw-story-t").textContent = b.story || "";
+    const p = !has && b.prog ? b.prog(s) : null;
+    $("vw-status").textContent = has
+      ? (state.example ? "Earned in the example" : dates[b.id] ? `Earned ${shortDate(dates[b.id])}` : "Earned")
+      : p ? `Locked, ${Math.min(p[0], p[1])} / ${p[1]}`
+      : b.funny ? "Dodged, you already have an interview" : "Locked";
+    $("vw-prog").hidden = !p;
+    if (p) {
+      const cur = Math.min(p[0], p[1]);
+      $("vw-bar").style.width = `${cur / p[1] * 100}%`;
+      $("vw-need").textContent = b.need ? b.need(p[1] - cur) : "";
+    } else if (!has && b.id === "great") {
+      $("vw-status").textContent = "Locked, needs a rate likely above 6%";
+    }
+  }
+  function resetTilt() {
+    const t = $("vw-tilt");
+    t.style.setProperty("--rx", "0deg"); t.style.setProperty("--ry", "0deg");
+    t.style.setProperty("--mx", "30%"); t.style.setProperty("--my", "20%");
+  }
+  function openViewer(id, opener) {
+    if (!current) return;
+    vwIndex = Math.max(0, BADGES.findIndex(b => b.id === id));
+    vwOpener = opener || null;
+    fillViewer();
+    resetTilt();
+    const ov = $("viewer");
+    ov.hidden = false;
+    ov.scrollTop = 0;
+    document.querySelector(".wrap").inert = true;
+    $("reveal").inert = !$("reveal").hidden;
+    document.body.style.overflow = "hidden";
+    $("vw-close").focus({ preventScroll: true });
+    if (reduceMotion()) return;
+    anim(ov, [{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "ease-out", fill: "none" });
+    const src = opener && opener.querySelector("canvas"), fly = $("vw-fly");
+    const a = src ? src.getBoundingClientRect() : null, z = fly.getBoundingClientRect();
+    if (a && a.width && z.width) {
+      const dx = a.left + a.width / 2 - (z.left + z.width / 2), dy = a.top + a.height / 2 - (z.top + z.height / 2);
+      anim(fly, [{ transform: `translate(${dx}px, ${dy}px) scale(${a.width / z.width}) rotate(${tiltOf(BADGES[vwIndex].id)}deg)` }, { transform: "none" }],
+        { duration: 460, easing: "cubic-bezier(.2, .9, .25, 1.08)", fill: "none" });
+    }
+    anim($("vw-info"), [{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "none" }], { duration: 320, delay: 140, fill: "both" });
+  }
+  function stepViewer(d) {
+    vwIndex = (vwIndex + d + BADGES.length) % BADGES.length;
+    fillViewer();
+    resetTilt();
+    if (vwOpener && vwOpener.classList.contains("badge")) vwOpener = document.querySelector(`.badge[data-id="${BADGES[vwIndex].id}"]`) || vwOpener;
+    if (!reduceMotion()) anim($("vw-fly"), [{ opacity: 0, transform: `translateX(${d * 48}px) rotate(${d * 6}deg)` }, { opacity: 1, transform: "none" }], { duration: 280, fill: "none" });
+  }
+  function closeViewer() {
+    const ov = $("viewer");
+    if (ov.hidden) return;
+    if (typeof ov.getAnimations === "function") ov.getAnimations({ subtree: true }).forEach(a => a.cancel());
+    ov.hidden = true;
+    $("reveal").inert = false;
+    if ($("reveal").hidden) {
+      document.querySelector(".wrap").inert = false;
+      document.body.style.overflow = "";
+    }
+    if (vwOpener && document.contains(vwOpener)) vwOpener.focus({ preventScroll: true });
+  }
+  $("badges").addEventListener("click", e => {
+    const btn = e.target.closest(".badge");
+    if (btn) openViewer(btn.dataset.id, btn);
+  });
+  $("next").addEventListener("click", () => openViewer($("next").dataset.id, $("next")));
+  $("vw-close").addEventListener("click", closeViewer);
+  $("vw-prev").addEventListener("click", () => stepViewer(-1));
+  $("vw-next").addEventListener("click", () => stepViewer(1));
+  $("viewer").addEventListener("click", e => { if (e.target === e.currentTarget || e.target.id === "vw-body") closeViewer(); });
+  const stage = $("vw-stage");
+  stage.addEventListener("pointermove", e => {
+    if (reduceMotion()) return;
+    const r = stage.getBoundingClientRect(), t = $("vw-tilt");
+    const x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+    t.style.setProperty("--ry", `${(x - .5) * 24}deg`);
+    t.style.setProperty("--rx", `${(.5 - y) * 20}deg`);
+    t.style.setProperty("--mx", `${x * 100}%`);
+    t.style.setProperty("--my", `${y * 100}%`);
+  });
+  stage.addEventListener("pointerleave", resetTilt);
+  stage.addEventListener("pointerdown", e => { swipeX = e.clientX; });
+  stage.addEventListener("pointerup", e => {
+    if (swipeX !== null && Math.abs(e.clientX - swipeX) > 50) stepViewer(e.clientX < swipeX ? 1 : -1);
+    swipeX = null;
+  });
+  stage.addEventListener("pointercancel", () => { swipeX = null; resetTilt(); });
+
+  function trapTab(e, items) {
+    const i = items.indexOf(document.activeElement);
+    e.preventDefault();
+    items[(i + (e.shiftKey ? -1 : 1) + items.length) % items.length].focus();
+  }
+  document.addEventListener("keydown", e => {
+    if (!$("sharer").hidden) {
+      if (e.key === "Escape") closeSharer();
+      else if (e.key === "Tab") trapTab(e, [...$("sharer").querySelectorAll("button, textarea")].filter(el => !el.hidden && !el.disabled && el.offsetParent !== null));
+      return;
+    }
+    if (!$("viewer").hidden) {
+      if (e.key === "Escape") closeViewer();
+      else if (e.key === "ArrowRight") stepViewer(1);
+      else if (e.key === "ArrowLeft") stepViewer(-1);
+      else if (e.key === "Tab") trapTab(e, [$("vw-close"), $("vw-prev"), $("vw-next")]);
+      return;
+    }
+    if ($("reveal").hidden) return;
+    if (e.key === "Escape") { closeReveal(); return; }
+    // keep keyboard focus inside the letter while it is open
+    if (e.key === "Tab") trapTab(e, [...$("reveal").querySelectorAll("button")].filter(el => !el.hidden && el.style.opacity !== "0" && el.offsetParent !== null));
+  });
+
+  // ---------- events ----------
+  Object.values(inputs).forEach(el => { el.addEventListener("input", onEdit); el.addEventListener("change", onEdit); });
+  document.querySelectorAll("[data-step]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const el = inputs[btn.dataset.step];
+      el.value = Math.max(0, (Math.floor(Number(el.value)) || 0) + Number(btn.dataset.d));
+      onEdit({ target: el });
+    });
+  });
+
+  $("save").addEventListener("click", () => {
+    const v = readInputs();
+    const problem = validate(v) || (v.n === 0 ? "Enter how many applications you have sent so far." : "");
+    const err = $("err");
+    err.textContent = problem;
+    err.hidden = !problem;
+    if (problem) return;
+    state.start = v.start; state.days = v.days; state.n = v.n; state.k = v.k; state.o = v.o;
+
+    if (state.example) {
+      const r = compute(v);
+      paint(r);
+      $("save-note").textContent = "That was the example. Enter your own numbers and check again to start your log.";
+      if (reduceMotion()) showResults(); else playReveal(r, earnedList(r), true);
+      return;
+    }
+
+    const today = todayStr();
+    const prevLevel = store ? store.lastLevel : undefined;
+    const first = prevLevel === undefined;
+    const prevSeen = new Set(store && Array.isArray(store.seen) ? store.seen : []);
+    if (!store) store = { start: v.start, log: [] };
+    store.start = v.start;
+    store.log = store.log.filter(e => e.d !== today);
+    store.log.push({ d: today, n: v.n, k: v.k, o: v.o });
+    store.profile = readProfile();
+    const r = compute(v);
+    const fresh = BADGES.filter(b => b.ok(r) && !prevSeen.has(b.id));
+    const levelChanged = !first && prevLevel !== r.level;
+    store.lastLevel = r.level;
+    store.seen = [...new Set([...prevSeen, ...fresh.map(b => b.id)])];
+    store.earned = Object.assign({}, store.earned);
+    fresh.forEach(b => { if (!store.earned[b.id]) store.earned[b.id] = today; });
+    storageOk = saveStore(store);
+    const sent = sendCheck(v);
+    paint(r);
+    renderDataset();
+    const news = first || levelChanged || fresh.length > 0;
+    $("save-note").textContent = !storageOk
+      ? "This browser is not keeping data for this page, so your streak and badges reset when you leave."
+      : news ? (sent ? "Checked and saved in this browser. Your numbers were added to the anonymous dataset." : "Checked and saved in this browser. Nothing is sent anywhere.")
+      : "Checked and saved. Same status as last time and no new badges.";
+    if (news && !reduceMotion()) playReveal(r, first ? earnedList(r) : fresh, false);
+    else showResults();
+  });
+
+  let resetArmed = false, resetTimer = null;
+  $("reset").addEventListener("click", () => {
+    const btn = $("reset");
+    if (!resetArmed) {
+      resetArmed = true;
+      btn.textContent = "Tap again to erase";
+      btn.classList.add("danger-ok");
+      resetTimer = setTimeout(() => { resetArmed = false; btn.textContent = "Start over"; btn.classList.remove("danger-ok"); }, 4000);
+      return;
+    }
+    clearTimeout(resetTimer);
+    resetArmed = false;
+    btn.textContent = "Start over";
+    btn.classList.remove("danger-ok");
+    clearStore();
+    store = null;
+    state = { start: todayStr(), days: 0, n: 0, k: 0, o: 0, example: false };
+    writeInputs();
+    updateHint(readInputs());
+    $("err").hidden = true;
+    $("save-note").textContent = "Erased. Enter your numbers and check them to start a new log.";
+    paint(compute(readInputs()));
+    renderDataset();
+  });
+
+  $("copy").addEventListener("click", () => {
+    const text = $("post").value;
+    const note = $("share-note");
+    const fallback = () => { const ta = $("post"); ta.focus(); ta.select(); note.textContent = "Text selected. Copy it with your keyboard or the share menu."; };
+    if (!text) { note.textContent = "Enter your numbers first."; return; }
+    try {
+      navigator.clipboard.writeText(text).then(() => { note.textContent = "Copied. Paste it into your post."; }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  // ---------- the job hunt dataset: own checks are added unless the box says no ----------
+  // Google Apps Script web app that appends rows to a sheet. Only the GitHub Pages build loads
+  // config.js, so inside Claude this stays empty and nothing is ever sent.
+  const CONF = window.GHOSTED_CONFIG || null;
+  const STANDALONE = !!CONF;
+  const ENDPOINT = CONF && /^https:\/\/script\.google\.com\/(a\/macros\/[A-Za-z0-9.-]+|macros)\/s\/[A-Za-z0-9_-]+\/exec$/.test(String(CONF.endpoint || "")) ? CONF.endpoint : "";
+  // the opt-out lives outside the log, so Start over and restores never undo it
+  const OPT_KEY = "iijm.nolog";
+  let optOut = (() => { try { return localStorage.getItem(OPT_KEY) === "1"; } catch (e) { return false; } })();
+  let restoreArmed = null;
+  function setOptOut(on) {
+    optOut = !!on;
+    try { if (optOut) localStorage.setItem(OPT_KEY, "1"); else localStorage.removeItem(OPT_KEY); } catch (e) {}
+    renderDataset();
+  }
+  function post(body) {
+    if (!ENDPOINT) return;
+    try { fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(body) }).catch(() => {}); } catch (e) {}
+  }
+  function sendCheck(v) {
+    if (!ENDPOINT || optOut || !store) return false;
+    const pr = store.profile || {};
+    const body = { v: 2, theme: THEME.key, start: v.start, days: v.days, n: v.n, k: v.k, o: v.o, market: pr.market || null, field: pr.field || null, channel: pr.channel || null };
+    // the same numbers twice on one day add nothing new
+    const sig = [todayStr(), v.start, v.n, v.k, v.o, body.market, body.field, body.channel].join("|");
+    if (store.lastSent === sig) return true;
+    store.lastSent = sig;
+    saveStore(store);
+    post(body);
+    return true;
+  }
+  function renderDataset() {
+    $("no-log").checked = optOut;
+    $("ds-status").textContent = !ENDPOINT
+      ? "Adding to the dataset is not switched on in this version, so nothing leaves this browser."
+      : optOut ? "You opted out, so your checks are not added." : "Your checks are added without anything that identifies you. Thank you.";
+  }
+  $("no-log").addEventListener("change", e => setOptOut(e.target.checked));
+  ["market", "field", "channel"].forEach(k => inputs[k].addEventListener("change", () => {
+    if (store && !state.example) { store.profile = readProfile(); saveStore(store); }
+  }));
+
+  // ---------- backup code: move a log to another browser without an account ----------
+  function b64e(str) {
+    let bin = "";
+    new TextEncoder().encode(str).forEach(x => { bin += String.fromCharCode(x); });
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64d(str) {
+    const bin = atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+    return new TextDecoder().decode(Uint8Array.from(bin, ch => ch.charCodeAt(0)));
+  }
+  const isDay = x => typeof x === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x);
+  function backupCode() {
+    const pack = { v: 2, s: store.start, l: store.log.map(e => [e.d, e.n, e.k, e.o || 0]), pr: store.profile || null,
+      lv: store.lastLevel || null, se: store.seen || [], ea: store.earned || {}, no: optOut ? 1 : 0 };
+    return "GHOST1." + b64e(JSON.stringify(pack));
+  }
+  function parseBackup(text) {
+    const m = /^GHOST1\.([A-Za-z0-9_-]+)$/.exec((text || "").replace(/\s+/g, ""));
+    if (!m) return null;
+    try {
+      const x = JSON.parse(b64d(m[1]));
+      if (!x || (x.v !== 1 && x.v !== 2) || !isDay(x.s) || !Array.isArray(x.l)) return null;
+      const num = y => Math.max(0, Math.min(5000, Math.floor(Number(y)) || 0));
+      // version 1 codes kept rejections in the fourth place, which are not offers
+      const log = x.l.filter(e => Array.isArray(e) && isDay(e[0])).map(([d, n, k, o]) => {
+        const e = { d, n: num(n), k: num(k), o: x.v === 2 ? num(o) : 0 };
+        e.k = Math.min(e.k, e.n); e.o = Math.min(e.o, e.k);
+        return e;
+      });
+      const earned = {};
+      if (x.ea && typeof x.ea === "object") Object.keys(x.ea).forEach(id => { if (isDay(x.ea[id])) earned[id] = x.ea[id]; });
+      const pr = x.pr && typeof x.pr === "object" ? x.pr : {};
+      const opt = (sel, val) => typeof val === "string" && val !== "" && [...sel.options].some(o => o.value === val) ? val : null;
+      const profile = { market: opt(inputs.market, pr.market), field: opt(inputs.field, pr.field), channel: opt(inputs.channel, pr.channel) };
+      const out = { start: x.s, log, profile, seen: Array.isArray(x.se) ? x.se.filter(id => typeof id === "string") : [], earned };
+      if (typeof x.lv === "string") out.lastLevel = x.lv;
+      return { store: out, optOut: x.no === 1 };
+    } catch (e) { return null; }
+  }
+  const checkins = n => `${n} check-in${n === 1 ? "" : "s"}`;
+  $("bk-copy").addEventListener("click", () => {
+    const note = $("bk-note");
+    if (!store || state.example) { note.textContent = "Check your own numbers once first. Then there is a log to back up."; return; }
+    const code = backupCode();
+    const fallback = () => { const ta = $("bk-in"); ta.value = code; ta.focus(); ta.select(); note.textContent = "The code is selected in the box. Copy it and keep it somewhere safe."; };
+    try {
+      navigator.clipboard.writeText(code).then(() => { note.textContent = `Copied. It holds ${checkins(store.log.length)}. Keep it in a note or an email to yourself.`; }, fallback);
+    } catch (e) { fallback(); }
+  });
+  $("bk-restore").addEventListener("click", () => {
+    const note = $("bk-note"), btn = $("bk-restore"), text = $("bk-in").value;
+    const got = parseBackup(text);
+    const parsed = got && got.store;
+    if (!parsed) { note.textContent = "That does not look like a backup code. It starts with GHOST1 and is one long line."; return; }
+    if (store && !state.example && restoreArmed !== text) {
+      restoreArmed = text;
+      btn.textContent = "Tap again to replace this browser's log";
+      btn.classList.add("danger-ok");
+      note.textContent = `The code holds ${checkins(parsed.log.length)} since ${shortDate(parsed.start)}. Restoring replaces the log in this browser.`;
+      return;
+    }
+    restoreArmed = null;
+    btn.textContent = "Restore from code";
+    btn.classList.remove("danger-ok");
+    store = parsed;
+    storageOk = saveStore(store);
+    if (got.optOut) setOptOut(true);
+    const last = store.log[store.log.length - 1] || { n: 0, k: 0, o: 0 };
+    state = { start: store.start, days: Math.max(0, daysBetween(store.start, todayStr())), n: last.n, k: last.k, o: last.o || 0, example: false };
+    writeInputs();
+    updateHint(readInputs());
+    paint(compute(readInputs()));
+    renderDataset();
+    $("bk-in").value = "";
+    note.textContent = `Restored ${checkins(store.log.length)} since ${shortDate(store.start)}.`;
+  });
+
+  // ---------- share sheet ----------
+  // which earned badges stay off the card; everything is on unless someone takes it off
+  const HIDE_KEY = "iijm.cardhide";
+  let cardHide = new Set((() => { try { const a = JSON.parse(localStorage.getItem(HIDE_KEY) || "[]"); return Array.isArray(a) ? a.filter(x => typeof x === "string") : []; } catch (e) { return []; } })());
+  let srOpener = null, srBlob = null, srBlobWait = null;
+  function prepareBlob() {
+    if (srBlob || srBlobWait) return srBlobWait || Promise.resolve(srBlob);
+    srBlobWait = new Promise(res => $("card").toBlob(b => { srBlob = b; srBlobWait = null; res(b); }, "image/png"));
+    return srBlobWait;
+  }
+  const cardBlob = () => srBlob ? Promise.resolve(srBlob) : prepareBlob();
+  const cardName = () => `job-hunt-day-${current.days}.png`;
+  const pageLink = () => STANDALONE ? `${location.origin}${location.pathname}` : "";
+  const shareText = () => postText(current) + (pageLink() ? `\n${pageLink()}` : "");
+  const pasteKey = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "") ? "Cmd+V" : "Ctrl+V";
+  let canFileShare = false;
+  try { canFileShare = !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/png" })], "card.png", { type: "image/png" })] })); } catch (e) {}
+  const canCopyImage = !!(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
+  $("sr-native").hidden = !canFileShare;
+  $("sr-copyimg").hidden = !canCopyImage;
+  // the phone share sheet leads when there is one, otherwise LinkedIn
+  (canFileShare ? $("sr-native") : $("sr-li")).classList.add("primary");
+
+  function renderChips() {
+    const wrap = $("sr-chips");
+    wrap.textContent = "";
+    const earned = byRank(earnedList(current));
+    $("sr-pick").hidden = earned.length === 0;
+    earned.forEach(b => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "sr-chip";
+      btn.dataset.id = b.id;
+      const cv = document.createElement("canvas");
+      cv.width = 96; cv.height = 115;
+      cv.setAttribute("aria-hidden", "true");
+      paintStamp(cv, b);
+      const t = document.createElement("span");
+      t.textContent = b.t;
+      btn.append(cv, t);
+      wrap.appendChild(btn);
+    });
+    syncChips();
+  }
+  function syncChips() {
+    document.querySelectorAll(".sr-chip").forEach(btn => {
+      const on = !cardHide.has(btn.dataset.id);
+      btn.setAttribute("aria-pressed", String(on));
+    });
+    $("sr-pick-n").textContent = `${cardBadges(current).length} of ${earnedList(current).length}`;
+  }
+  function setHidden(ids) {
+    cardHide = new Set(ids);
+    if (!state.example) { try { localStorage.setItem(HIDE_KEY, JSON.stringify([...cardHide])); } catch (e) {} }
+    syncChips();
+    drawCard();
+    $("post").value = postText(current);
+    $("sr-text").value = shareText();
+  }
+  function openSharer(opener) {
+    if (!current || current.level === "start") return;
+    srOpener = opener || null;
+    const ov = $("sharer");
+    ov.hidden = false;
+    drawCard();
+    renderChips();
+    $("sr-example").hidden = !state.example;
+    $("sr-note").textContent = "";
+    $("sr-text").hidden = true;
+    $("sr-text").value = shareText();
+    ov.scrollTop = 0;
+    document.querySelector(".wrap").inert = true;
+    $("reveal").inert = !$("reveal").hidden;
+    document.body.style.overflow = "hidden";
+    $("sr-close").focus({ preventScroll: true });
+    if (!reduceMotion()) {
+      anim(ov, [{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: "ease-out", fill: "none" });
+      anim($("sr-img"), [{ opacity: 0, transform: "translateY(16px) scale(.97)" }, { opacity: 1, transform: "none" }], { duration: 320, fill: "none" });
+    }
+  }
+  function closeSharer() {
+    const ov = $("sharer");
+    if (ov.hidden) return;
+    ov.hidden = true;
+    $("reveal").inert = false;
+    if ($("reveal").hidden) {
+      document.querySelector(".wrap").inert = false;
+      document.body.style.overflow = "";
+    }
+    if (srOpener && document.contains(srOpener)) srOpener.focus({ preventScroll: true });
+  }
+  const srNote = (text, link) => {
+    const n = $("sr-note");
+    n.textContent = text;
+    if (link) {
+      const a = document.createElement("a");
+      a.href = link.href; a.target = "_blank"; a.rel = "noopener"; a.textContent = link.text;
+      n.append(" ", a);
+    }
+  };
+  async function copyCardImage() {
+    const blob = await cardBlob();
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+  }
+  ["rv-share", "vd-share", "share-open", "card-open"].forEach(id => $(id).addEventListener("click", () => openSharer($(id))));
+  $("sr-close").addEventListener("click", closeSharer);
+  $("sharer").addEventListener("click", e => { if (e.target === e.currentTarget || e.target.id === "sr-body") closeSharer(); });
+  $("sr-chips").addEventListener("click", e => {
+    const btn = e.target.closest(".sr-chip");
+    if (!btn) return;
+    const next = new Set(cardHide);
+    if (next.has(btn.dataset.id)) next.delete(btn.dataset.id); else next.add(btn.dataset.id);
+    setHidden(next);
+  });
+  $("sr-all").addEventListener("click", () => setHidden([]));
+  $("sr-none").addEventListener("click", () => setHidden(earnedList(current).map(b => b.id)));
+  $("sr-native").addEventListener("click", async () => {
+    const ready = !!srBlob;
+    try {
+      const blob = await cardBlob();
+      await navigator.share({ files: [new File([blob], cardName(), { type: "image/png" })], text: shareText(), title: THEME.name });
+      srNote("Shared.");
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+      if (e && e.name === "NotAllowedError" && !ready) { srNote("Tap Share once more."); return; }
+      $("sr-native").hidden = true;
+      $("sr-li").classList.add("primary");
+      srNote("This browser cannot share the image directly. Post it on LinkedIn or save it instead.");
+    }
+  });
+  $("sr-li").addEventListener("click", async () => {
+    let copied = false;
+    if (canCopyImage) { try { await copyCardImage(); copied = true; } catch (e) {} }
+    const href = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText());
+    window.open(href, "_blank", "noopener");
+    srNote(copied
+      ? `LinkedIn opens with your post text. Press ${pasteKey} in the post to add the card image.`
+      : "LinkedIn opens with your post text. Save the image and add it to the post.", { href, text: "Open LinkedIn again" });
+  });
+  $("sr-copyimg").addEventListener("click", async () => {
+    try { await copyCardImage(); srNote("Card image copied. Paste it into a post or a chat."); }
+    catch (e) { $("sr-copyimg").hidden = true; srNote("This browser does not let pages copy images. Save the image instead."); }
+  });
+  $("sr-copytxt").addEventListener("click", () => {
+    const text = shareText();
+    const fallback = () => { const ta = $("sr-text"); ta.value = text; ta.hidden = false; ta.focus(); ta.select(); srNote("The text is selected below. Copy it with your keyboard or the share menu."); };
+    try { navigator.clipboard.writeText(text).then(() => srNote("Post text copied."), fallback); } catch (e) { fallback(); }
+  });
+
+  // saving: the downloads capability inside Claude, a plain link on the website
+  let downloads = null;
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("downloads").then(d => { downloads = d; $("sr-save").hidden = !d; }).catch(() => {});
+  } else if (STANDALONE) $("sr-save").hidden = false;
+  $("sr-save").addEventListener("click", async () => {
+    if (!downloads && !STANDALONE) return;
+    const blob = await cardBlob();
+    if (!blob) { srNote("The image could not be created. Try again."); return; }
+    if (!downloads) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = cardName();
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+      srNote("Card saved.");
+      return;
+    }
+    downloads.save({ filename: cardName(), data: blob })
+      .then(() => srNote("Card saved."))
+      .catch(e => {
+        const code = e && e.code;
+        if (code === "declined") srNote("Not saved.");
+        else if (code === "rate_limited") srNote("A save is already waiting for your answer.");
+        else { srNote("Saving is not available here. Long-press or right-click the card to save it."); $("sr-save").hidden = true; }
+      });
+  });
+
+  // ---------- verdict scene: the worse it looks, the more ghosts ----------
+  let sceneLevel = "start", sceneRaf = 0, sceneOn = true, sceneLast = 0;
+  function drawScene(t) {
+    const cv = $("scene");
+    const w = cv.clientWidth;
+    if (!w) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const Wp = Math.round(w * dpr), Hp = Math.round(w * 3 / 8 * dpr);
+    if (cv.width !== Wp || cv.height !== Hp) { cv.width = Wp; cv.height = Hp; }
+    const c = cv.getContext("2d");
+    c.setTransform(Wp / 480, 0, 0, Wp / 480, 0, 0);
+    c.clearRect(0, 0, 480, 180);
+    THEME.scene(c, 480, 180, sceneLevel, t);
+  }
+  function sceneLoop(now) {
+    sceneRaf = 0;
+    if (!sceneOn || document.hidden || reduceMotion()) return;
+    if (now - sceneLast > 33) { sceneLast = now; drawScene(now / 1000); }
+    sceneRaf = requestAnimationFrame(sceneLoop);
+  }
+  function startScene() {
+    if (reduceMotion()) { drawScene(1.6); return; }
+    if (!sceneRaf) sceneRaf = requestAnimationFrame(sceneLoop);
+  }
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(es => { sceneOn = es[es.length - 1].isIntersecting; if (sceneOn) startScene(); }).observe($("scene"));
+  }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) startScene(); });
+  window.addEventListener("resize", () => drawScene(performance.now() / 1000));
+
+  writeInputs();
+  updateHint(readInputs());
+  paint(compute(readInputs()));
+  renderDataset();
+  if (document.fonts && document.fonts.ready) {
+    Promise.all([document.fonts.ready, ...THEME.fontsToLoad.map(f => document.fonts.load(f).catch(() => {}))])
+      .then(() => { if (current) renderBadges(current); drawScene(performance.now() / 1000); drawCard(); });
+  }
+})();
+</script>
+
+</html>

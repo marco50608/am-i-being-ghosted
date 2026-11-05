@@ -1,0 +1,2771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A Bayesian reality check for your job hunt. Enter your applications and interviews and find out whether the silence is ordinary ghosting.">
+<meta property="og:title" content="Am I Being Ghosted? Yokai Edition">
+<meta property="og:description" content="A Bayesian reality check for your job hunt. Enter your applications and interviews and find out whether the silence is ordinary ghosting.">
+<meta property="og:type" content="website">
+<script src="config.js"></script>
+<title>Am I Being Ghosted? Yokai Edition</title>
+<link rel="stylesheet" href="fonts/yokai.css">
+<style>
+/* Layout: a shrine fortune stall. A string of lanterns on top, inputs and the yokai scene side by side on wide screens, the yokai collection and share card below. */
+:root {
+  --paper: #f3ece0;
+  --card: #fffaf2;
+  --ink: #241c17;
+  --muted: #6f6257;
+  --line: #e3d6c2;
+  --chip: #efe5d4;
+  --accent: #b8372b;
+  --tag: #b8372b;
+  --on-red: #ffffff;
+  --ok: #3d7a57;
+  --quiet: #b0821f;
+  --unusual: #c4612a;
+  --bad: #9e2a3a;
+  --great: #2b5c9b;
+  --early: #7b7468;
+  --display: "Kaisei Decol", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  --brush: "Yuji Boku", "Kaisei Decol", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Courier Prime", "Courier New", ui-monospace, monospace;
+  --radius: 10px;
+  --shadow: rgba(60, 35, 20, .18);
+  --locked: .4;
+  --scrim: rgba(18, 10, 8, .98);
+  --scrim-ink: #f6eee2;
+  --scrim-muted: #c9bba8;
+  --scrim-chip: rgba(255, 255, 255, .13);
+  --scrim-track: rgba(255, 255, 255, .18);
+  --stamp-drop: rgba(0, 0, 0, .5);
+  --seal: #c0392b;
+  --band: #b8372b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14100e;
+    --card: #1f1916;
+    --ink: #f2e9dc;
+    --muted: #b3a796;
+    --line: #352c26;
+    --chip: #2a221e;
+    --accent: #ef6a50;
+    --tag: #ef6a50;
+    --ok: #6cbf8c;
+    --quiet: #e2b456;
+    --unusual: #ee8c52;
+    --bad: #ef6f7a;
+    --great: #7fa9e6;
+    --early: #a69c8e;
+    --shadow: rgba(0, 0, 0, .55);
+    --locked: .32;
+    --seal: #d8432f;
+    --band: #ef6a50;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14100e;
+  --card: #1f1916;
+  --ink: #f2e9dc;
+  --muted: #b3a796;
+  --line: #352c26;
+  --chip: #2a221e;
+  --accent: #ef6a50;
+  --tag: #ef6a50;
+  --ok: #6cbf8c;
+  --quiet: #e2b456;
+  --unusual: #ee8c52;
+  --bad: #ef6f7a;
+  --great: #7fa9e6;
+  --early: #a69c8e;
+  --shadow: rgba(0, 0, 0, .55);
+  --locked: .32;
+  --seal: #d8432f;
+  --band: #ef6a50;
+  color-scheme: dark;
+}
+
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+  display: grid;
+  gap: 28px;
+}
+header { display: grid; gap: 6px; }
+.eyebrow {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1 {
+  font-family: var(--display);
+  font-stretch: 112%;
+  font-weight: 800;
+  font-size: clamp(36px, 7vw, 60px);
+  line-height: 1;
+  margin: 0;
+  text-wrap: balance;
+}
+.lede { margin: 4px 0 0; max-width: 60ch; color: var(--muted); font-size: 18px; }
+h2 {
+  font-family: var(--display);
+  font-stretch: 105%;
+  font-weight: 700;
+  font-size: 22px;
+  margin: 0;
+  text-wrap: balance;
+}
+.grid2 { display: grid; gap: 20px; grid-template-columns: 1fr; }
+@media (min-width: 820px) { .grid2 { grid-template-columns: 5fr 7fr; align-items: start; } }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.pill {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--muted);
+}
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 700; }
+.field .hint { font-size: 14px; color: var(--muted); margin: 0; }
+.stepper { display: grid; grid-template-columns: 44px 1fr 44px; gap: 8px; }
+.stepper input {
+  width: 100%;
+  min-width: 0;
+  font: 700 22px/1 var(--mono);
+  text-align: center;
+  padding: 10px 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.stepper input::-webkit-inner-spin-button, .stepper input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+.date {
+  width: 100%;
+  min-width: 0;
+  font: 700 20px/1.2 var(--mono);
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.stepper button, .btn {
+  font: 700 16px/1 var(--body);
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--chip);
+  color: var(--ink);
+  cursor: pointer;
+}
+.stepper button { font-size: 22px; }
+.btn { padding: 12px 16px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--card); }
+.btn:disabled { opacity: .5; cursor: default; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.note { font-size: 14px; color: var(--muted); margin: 0; }
+.error { color: var(--bad); font-weight: 700; margin: 0; }
+
+.verdict { display: grid; gap: 10px; }
+.status {
+  justify-self: start;
+  font-family: var(--display);
+  font-stretch: 108%;
+  font-weight: 800;
+  font-size: clamp(26px, 4.6vw, 38px);
+  line-height: 1.05;
+  color: var(--lvl, var(--early));
+  text-wrap: balance;
+}
+.status-msg { margin: 0; font-size: 17px; max-width: 58ch; }
+
+.scene { display: block; width: 100%; aspect-ratio: 8 / 3; border-radius: 12px; background: var(--chip); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .scene { filter: brightness(.88) saturate(.95); } }
+:root[data-theme="dark"] .scene { filter: brightness(.88) saturate(.95); }
+.meter { display: grid; gap: 8px; }
+.meter-track { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.meter-seg { height: 14px; border-radius: 4px; opacity: .3; }
+.meter-seg.on { opacity: 1; }
+.seg-ok { background: var(--ok); }
+.seg-quiet { background: var(--quiet); }
+.seg-unusual { background: var(--unusual); }
+.seg-bad { background: var(--bad); }
+.meter-pin {
+  position: absolute;
+  top: -6px;
+  width: 4px;
+  height: 26px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: left .5s ease;
+}
+.meter-labels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; font-size: 12px; color: var(--muted); }
+.meter-labels span { min-width: 0; display: grid; gap: 4px; align-content: start; }
+.meter-ico { display: flex; gap: 1px; height: 18px; align-items: flex-end; color: var(--muted); font-style: normal; }
+.meter-ico svg { height: 100%; width: auto; overflow: visible; }
+.meter-labels span.on .meter-ico { color: var(--lvl, var(--ink)); }
+.meter-labels span.on { color: var(--lvl, var(--ink)); font-weight: 700; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.stats.four { grid-template-columns: repeat(auto-fit, minmax(max(150px, calc(50% - 6px)), 1fr)); }
+.stat { background: var(--paper); border-radius: 10px; padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
+.stat .k { font-size: 13px; color: var(--muted); }
+.stat .v { font: 700 21px/1.15 var(--mono); font-variant-numeric: tabular-nums; }
+.opt { font: 400 12px/1 var(--body); color: var(--muted); margin-left: 6px; }
+.sel { width: 100%; min-width: 0; font: 400 16px/1.2 var(--body); padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); }
+.more { border: 1px solid var(--line); border-radius: 10px; padding: 0 14px; }
+.more > summary { cursor: pointer; padding: 12px 0; font-weight: 700; }
+.more[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.more-body { display: grid; gap: 12px; padding-bottom: 14px; }
+.consent { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; color: var(--muted); cursor: pointer; }
+.consent input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); }
+.consent a, .log-col a { color: var(--accent); }
+.log-grid { display: grid; gap: 24px; }
+@media (min-width: 820px) { .log-grid { grid-template-columns: 1fr 1fr; } }
+.log-col { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.log-col h3 { margin: 0; font-family: var(--display); font-size: 18px; line-height: 1.2; }
+.log-col p { margin: 0; max-width: 60ch; }
+.log-col textarea { width: 100%; min-height: 76px; resize: vertical; font: 13px/1.4 var(--mono); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); word-break: break-all; }
+select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.explain { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.explain li { padding-left: 18px; position: relative; max-width: 64ch; }
+.explain li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+
+.streakbar { display: flex; gap: 18px; flex-wrap: wrap; font-family: var(--mono); font-size: 15px; }
+.streakbar b { font-size: 20px; font-variant-numeric: tabular-nums; }
+
+/* badge album: every badge is a postage stamp, locked ones wait in a dashed slot */
+.next { appearance: none; width: 100%; margin: 0; border: 0; font: inherit; color: inherit; text-align: left; cursor: zoom-in;
+  display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 14px; align-items: center; padding: 12px 16px 12px 12px; border-radius: 12px; background: var(--paper); }
+.next:hover { background: var(--chip); }
+.next-slot { width: 60px; aspect-ratio: 5 / 6; border: 2px dashed var(--line); border-radius: 6px; display: grid; place-items: center; }
+.next-slot canvas { width: 80%; height: 80%; display: block; }
+.next-body { display: grid; gap: 2px; min-width: 0; }
+.next-k { font: 700 11px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.next-t { font-family: var(--display); font-stretch: 105%; font-weight: 800; font-size: 20px; line-height: 1.1; }
+.next-d { font-size: 14px; color: var(--muted); }
+.next-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.next-row .bar { flex: 1; }
+.next-n { font: 700 13px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.badges { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 10px; padding-top: 6px; }
+@media (min-width: 720px) { .badges { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 32px 16px; } }
+.badges > div { display: grid; min-width: 0; }
+.badge { appearance: none; margin: 0; padding: 8px 4px 10px; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; cursor: zoom-in;
+  display: grid; justify-items: center; align-content: start; gap: 3px; text-align: center; min-width: 0; width: 100%; }
+.badge:focus-visible, .next:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.badge.locked:hover .slot { border-color: var(--accent); }
+.slot { position: relative; width: min(112px, 100%); aspect-ratio: 5 / 6; margin-bottom: 8px; display: grid; place-items: center; }
+.slot canvas { display: block; width: 100%; height: 100%; }
+.badge.locked .slot { border: 2px dashed var(--line); border-radius: 8px; }
+.badge.locked .slot canvas { width: 82%; height: 82%; filter: grayscale(1); opacity: var(--locked); }
+.badge.earned .slot canvas { transform: rotate(var(--tilt, 0deg)); filter: drop-shadow(0 6px 8px var(--shadow)); transition: transform .25s cubic-bezier(.3, 1.4, .5, 1); }
+.badge.earned:hover .slot canvas { transform: rotate(0deg) translateY(-4px) scale(1.05); }
+.new-tag { position: absolute; top: -8px; right: -6px; padding: 4px 8px; border-radius: 999px; background: var(--tag); color: var(--on-red); font: 700 11px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; transform: rotate(8deg); box-shadow: 0 2px 6px var(--shadow); }
+.bt { font-weight: 700; font-size: 15px; line-height: 1.2; }
+.bd { font-size: 13px; line-height: 1.3; color: var(--muted); }
+.bm { margin-top: 5px; font: 700 12px/1.2 var(--mono); color: var(--accent); }
+.badge.locked .bm { color: var(--muted); }
+.bp { width: min(112px, 100%); display: grid; gap: 5px; margin-top: 6px; }
+.bp span { font: 700 12px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { display: block; height: 6px; border-radius: 999px; background: var(--chip); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent); }
+@media (max-width: 719px) { .bm, .bp span { font-size: 11px; } }
+
+.share { display: grid; gap: 16px; }
+@media (min-width: 820px) { .share { grid-template-columns: 360px 1fr; align-items: start; } }
+.share img { width: 100%; max-width: 360px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); }
+.share textarea {
+  width: 100%; min-height: 120px; resize: vertical;
+  font: 15px/1.45 var(--body); padding: 10px 12px;
+  border-radius: 10px; border: 1px solid var(--line);
+  background: var(--paper); color: var(--ink);
+}
+.how { display: grid; gap: 12px; }
+.how p { margin: 0; max-width: 66ch; }
+footer { font-size: 14px; color: var(--muted); display: grid; gap: 4px; }
+footer a { color: var(--accent); }
+.danger-ok { color: var(--bad); border-color: var(--bad); }
+/* results waiting for a new check */
+.verdict.stale > :not(.stale-note) { opacity: .35; }
+.stale-note { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--chip); font-weight: 700; }
+
+/* reply letter reveal */
+.reveal {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: max(56px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.reveal::before { content: ""; position: fixed; inset: 0; background: var(--paper); opacity: .96; }
+.rv-skip { position: fixed; z-index: 3; top: max(12px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+.rv-stage { position: relative; z-index: 1; margin: auto; width: min(420px, 100%); display: grid; gap: 18px; justify-items: center; }
+.rv-letter {
+  position: relative; width: 100%;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 22px 20px 20px; box-shadow: 0 18px 40px var(--shadow);
+  display: grid; gap: 8px;
+}
+.rv-label { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font: 700 12px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); padding-right: 92px; }
+.rv-title { font-family: var(--display); font-stretch: 110%; font-weight: 800; font-size: 30px; line-height: 1.05; margin: 2px 0 0; padding-right: 92px; text-wrap: balance; }
+.rv-nums { margin: 0; font: 700 16px/1.35 var(--mono); padding-right: 84px; font-variant-numeric: tabular-nums; }
+.rv-msg { margin: 6px 0 0; font-size: 16px; }
+.rv-stamps-label { font: 700 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.rv-stamps { display: flex; flex-wrap: wrap; gap: 16px 14px; margin-top: 12px; }
+.rv-stamp { appearance: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: zoom-in; width: 86px; display: grid; gap: 8px; justify-items: center; text-align: center; border-radius: 8px; }
+.rv-stamp:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.rv-stamp canvas { width: 84px; height: 100.8px; display: block; filter: drop-shadow(0 5px 7px var(--shadow)); }
+.rv-stamps.big { gap: 16px 22px; }
+.rv-stamps.big .rv-stamp { width: 124px; }
+.rv-stamps.big .rv-stamp canvas { width: 116px; height: 139.2px; }
+.rv-stamp span { font-size: 12px; line-height: 1.2; font-weight: 700; }
+.rv-stamps.big .rv-stamp span { font-size: 14px; }
+.rv-confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.rv-more { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+.rv-postmark {
+  position: absolute; top: -20px; right: -8px; width: 108px; height: 108px; border-radius: 50%;
+  border: 4px double var(--lvl, var(--accent)); color: var(--lvl, var(--accent)); background: var(--card);
+  display: grid; align-content: center; justify-items: center; gap: 5px; padding: 10px; text-align: center;
+  transform: rotate(-10deg);
+}
+.rv-pm-date { font: 700 10px/1 var(--mono); letter-spacing: .08em; }
+.rv-pm-big:empty { display: none; }
+.rv-pm-status { font-family: var(--display); font-stretch: 80%; font-weight: 800; font-size: 13px; line-height: 1.05; text-transform: uppercase; }
+.rv-env {
+  position: absolute; inset: 0; margin: auto; z-index: 2; pointer-events: none;
+  width: min(320px, 82vw); height: calc(min(320px, 82vw) / 1.6);
+  perspective: 900px;
+}
+.rv-env-body { position: absolute; inset: 0; box-shadow: 0 16px 36px var(--shadow); }
+.rv-flap { position: absolute; left: 8px; right: 8px; top: 8px; height: 56%; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: 50% 0; }
+/* badge viewer: one stamp, big, on a dark scrim */
+.viewer {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: max(64px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.viewer::before { content: ""; position: fixed; inset: 0; background: var(--scrim); }
+.vw-close { position: fixed; z-index: 2; top: max(12px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+.vw-body { position: relative; z-index: 1; margin: auto; width: min(420px, 100%); display: grid; justify-items: center; gap: 20px; text-align: center; color: var(--scrim-ink); }
+.vw-stage { width: min(260px, 64vw); aspect-ratio: 5 / 6; perspective: 900px; touch-action: pan-y; cursor: grab; }
+.vw-fly { width: 100%; height: 100%; }
+.vw-tilt { position: relative; width: 100%; height: 100%; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .18s ease-out; }
+.vw-tilt canvas { display: block; width: 100%; height: 100%; filter: drop-shadow(0 22px 30px var(--stamp-drop)); }
+.vw-sheen { position: absolute; inset: 6.25% 7.5%; pointer-events: none; mix-blend-mode: soft-light;
+  background: radial-gradient(circle at var(--mx, 30%) var(--my, 20%), rgba(255, 255, 255, .8), rgba(255, 255, 255, 0) 55%); }
+.viewer.locked .vw-tilt canvas { filter: grayscale(1) brightness(.55) drop-shadow(0 22px 30px var(--stamp-drop)); }
+.viewer.locked .vw-sheen { display: none; }
+.vw-info { display: grid; gap: 8px; justify-items: center; }
+.vw-k { font: 700 12px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--scrim-muted); }
+.vw-title { margin: 0; font-family: var(--display); font-stretch: 110%; font-weight: 800; font-size: clamp(28px, 7vw, 38px); line-height: 1.05; text-wrap: balance; }
+.vw-d { margin: 0; font-size: 16px; color: var(--scrim-muted); }
+.vw-flavor { margin: 4px 0 0; max-width: 34ch; font-size: 18px; line-height: 1.45; text-wrap: balance; }
+.vw-story { width: min(420px, 100%); margin-top: 6px; padding: 12px 16px 14px; border-radius: 12px; background: var(--scrim-chip); text-align: left; display: grid; gap: 6px; }
+.vw-story-k { font: 700 11px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--scrim-muted); }
+.vw-story p { margin: 0; font-size: 15px; line-height: 1.55; }
+.vw-status { margin-top: 4px; padding: 6px 14px; border-radius: 999px; background: var(--scrim-chip); font: 700 14px/1.2 var(--mono); }
+.vw-prog { width: min(280px, 100%); display: grid; gap: 7px; justify-items: center; }
+.vw-prog .bar { width: 100%; height: 8px; background: var(--scrim-track); }
+.vw-prog .bar i { background: var(--scrim-ink); }
+.vw-prog span { font-size: 15px; color: var(--scrim-muted); }
+.vw-nav { display: flex; gap: 10px; }
+h2[tabindex="-1"]:focus { outline: none; }
+@media (prefers-reduced-motion: reduce) { .meter-pin, .badge.earned .slot canvas, .vw-tilt { transition: none; } }
+.ico { width: 1.1em; height: 1.1em; vertical-align: -.2em; margin-right: 7px; }
+.btn.sm { padding: 7px 12px; font-size: 14px; }
+.head-r { display: flex; align-items: center; gap: 8px; }
+.card-open { appearance: none; position: relative; display: block; width: 100%; max-width: 360px; margin: 0; padding: 0; border: 0; border-radius: 10px; background: none; cursor: zoom-in; }
+.card-open:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.card-open img { display: block; }
+.card-open-hint { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; font: 700 13px/1.3 var(--body); color: var(--muted); }
+.card-open:hover .card-open-hint { color: var(--accent); }
+.rv-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+/* share sheet: the whole card, which badges go on it, and the ways out */
+.sharer {
+  position: fixed; inset: 0; z-index: 70;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: max(60px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.sharer::before { content: ""; position: fixed; inset: 0; background: linear-gradient(var(--scrim), var(--scrim)), var(--scrim); }
+.sr-close { position: fixed; z-index: 2; top: max(12px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+.sr-body { position: relative; z-index: 1; margin: auto; width: min(1000px, 100%); display: grid; gap: 22px; color: var(--scrim-ink); }
+@media (min-width: 860px) { .sr-body { grid-template-columns: auto minmax(300px, 1fr); align-items: start; } }
+.sr-card { display: grid; justify-items: center; }
+.sr-card img { display: block; width: min(100%, 520px, calc((100vh - 110px) * .8)); height: auto; border-radius: 12px; box-shadow: 0 24px 50px rgba(0, 0, 0, .45); }
+.sr-side { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.sr-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sr-title { font-family: var(--display); font-stretch: 108%; font-weight: 800; font-size: clamp(24px, 5vw, 30px); line-height: 1.1; margin: 0; }
+.sr-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.sr-note { margin: 0; min-height: 1.4em; font-size: 15px; color: var(--scrim-muted); }
+.sr-note a { color: var(--scrim-ink); }
+.sr-text { width: 100%; min-height: 110px; font: 14px/1.45 var(--body); padding: 10px 12px; border-radius: 10px; border: 0; background: var(--scrim-chip); color: var(--scrim-ink); }
+.sr-pick { display: grid; gap: 10px; padding-top: 4px; }
+.sr-pick-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.sr-pick-k { font: 700 12px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--scrim-muted); }
+.sr-pick-n { font: 700 13px/1 var(--mono); color: var(--scrim-muted); font-variant-numeric: tabular-nums; }
+.sr-link { appearance: none; margin: 0; padding: 2px 0; border: 0; background: none; color: var(--scrim-ink); font: 700 14px/1.2 var(--body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.sr-chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
+.sr-chip { appearance: none; position: relative; margin: 0; padding: 6px 4px 7px; border: 2px solid transparent; border-radius: 12px; background: var(--scrim-chip); color: var(--scrim-ink); font: 700 11px/1.15 var(--body); cursor: pointer; display: grid; justify-items: center; gap: 5px; text-align: center; min-width: 0; }
+.sr-chip canvas { width: 44px; height: 52.8px; display: block; }
+.sr-chip span { overflow-wrap: anywhere; }
+.sr-chip[aria-pressed="true"] { border-color: var(--scrim-ink); }
+.sr-chip[aria-pressed="true"]::after { content: "✓"; position: absolute; top: -7px; right: -6px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--scrim-ink); color: #1a1412; font: 700 12px/1 var(--body); }
+.sr-chip[aria-pressed="false"] canvas { filter: grayscale(1); opacity: .35; }
+.sr-chip[aria-pressed="false"] { color: var(--scrim-muted); }
+.sr-chip:focus-visible, .sr-link:focus-visible { outline: 3px solid var(--scrim-ink); outline-offset: 2px; }
+.stripe {
+  height: 30px;
+  margin-top: 4px;
+  background: var(--band);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 30'%3E%3Cpath fill-rule='evenodd' d='M0 2 H44 V3.4 H0 Z M21.3 3 H22.7 V6.4 H21.3 Z M17 6 H27 V8.8 H17 Z M17.6 8.8 C12.4 12.4 12.4 21.2 17.6 24.8 H26.4 C31.6 21.2 31.6 12.4 26.4 8.8 Z M17 24.6 H27 V27.2 H17 Z M20.2 14 a1.8 2.3 0 1 0 3.6 0 a1.8 2.3 0 1 0 -3.6 0 Z M18.4 18.6 Q22 21.6 25.6 18.6 Q22 19.9 18.4 18.6 Z'/%3E%3C/svg%3E") left top / 44px 30px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 30'%3E%3Cpath fill-rule='evenodd' d='M0 2 H44 V3.4 H0 Z M21.3 3 H22.7 V6.4 H21.3 Z M17 6 H27 V8.8 H17 Z M17.6 8.8 C12.4 12.4 12.4 21.2 17.6 24.8 H26.4 C31.6 21.2 31.6 12.4 26.4 8.8 Z M17 24.6 H27 V27.2 H17 Z M20.2 14 a1.8 2.3 0 1 0 3.6 0 a1.8 2.3 0 1 0 -3.6 0 Z M18.4 18.6 Q22 21.6 25.6 18.6 Q22 19.9 18.4 18.6 Z'/%3E%3C/svg%3E") left top / 44px 30px repeat-x;
+}
+.eyebrow .jp { font: 400 15px/1 var(--brush); letter-spacing: .1em; margin-left: 6px; color: var(--ink); }
+h1 { font-weight: 700; letter-spacing: -.01em; }
+.title-row { display: flex; align-items: center; gap: 14px; }
+.mascot { flex: none; width: clamp(50px, 9vw, 80px); height: auto; overflow: visible; transform-origin: 50% 0; filter: drop-shadow(0 8px 10px var(--shadow)); animation: swing 3.4s ease-in-out infinite; }
+.mascot .m-cord { stroke: var(--ink); stroke-width: 2; }
+.mascot .m-cap { fill: #2b2420; }
+.mascot .m-paper { fill: #fff2d6; }
+.mascot .m-band { fill: #d8432f; }
+.mascot .m-rib { fill: none; stroke: rgba(150, 100, 60, .35); stroke-width: 1.4; }
+.mascot .m-ink { fill: #2a2225; }
+.mascot .m-hi { fill: #ffffff; }
+.mascot .m-tongue { fill: #ff7f9a; }
+.mascot .m-blush { fill: rgba(255, 120, 150, .45); }
+@keyframes swing { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(7deg); } }
+.status { font-weight: 700; }
+.vw-title, .rv-title, .next-t, h2 { font-weight: 700; }
+.meter-ico.jp { font: 400 17px/1 var(--brush); height: auto; color: var(--muted); }
+.meter-labels span.on .meter-ico.jp { color: var(--lvl, var(--ink)); }
+.rv-env-body { background: var(--card); border: 2px solid var(--accent); }
+.rv-env-body::before { content: ""; position: absolute; top: 0; bottom: 0; right: 44px; width: 3px; background: var(--accent); opacity: .6; }
+.kuji { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); writing-mode: vertical-rl; font: 400 20px/1.1 var(--brush); color: var(--accent); letter-spacing: .12em; }
+.rv-env-to { position: absolute; left: 14px; bottom: 12px; font: 700 13px/1.2 var(--mono); letter-spacing: .06em; color: var(--muted); }
+.rv-flap { background: var(--chip); }
+.rv-postmark { border-radius: 12px; border: 0; background: var(--seal); color: #fffaf0; box-shadow: inset 0 0 0 4px var(--seal), inset 0 0 0 6px rgba(255, 255, 255, .6); gap: 3px; }
+.rv-pm-date { font-size: 9px; opacity: .85; }
+.rv-pm-big { font: 400 34px/1 var(--brush); }
+.rv-pm-status { font-family: var(--body); font-stretch: normal; font-weight: 700; font-size: 10px; line-height: 1.1; text-transform: none; }
+@media (prefers-reduced-motion: reduce) { .mascot { animation: none; } }
+
+</style>
+
+<div class="stripe" aria-hidden="true"></div>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">A job hunt reality check <span class="jp">妖怪版</span></div>
+    <div class="title-row">
+      <h1>Am I Being Ghosted?</h1>
+      <svg class="mascot" viewBox="0 0 100 100" aria-hidden="true">
+        <defs><clipPath id="lantern-clip"><path d="M31 20 C18 38 18 70 31 88 L69 88 C82 70 82 38 69 20 Z"/></clipPath></defs>
+        <path class="m-cord" d="M50 0 V13"/>
+        <rect class="m-cap" x="34" y="11" width="32" height="9" rx="2.5"/>
+        <path class="m-paper" d="M31 20 C18 38 18 70 31 88 L69 88 C82 70 82 38 69 20 Z"/>
+        <g clip-path="url(#lantern-clip)">
+          <rect class="m-band" x="0" y="20" width="100" height="8"/><rect class="m-band" x="0" y="80" width="100" height="8"/>
+          <path class="m-rib" d="M18 35 Q50 39 82 35 M18 43 Q50 47 82 43 M18 51 Q50 55 82 51 M18 59 Q50 63 82 59 M18 67 Q50 71 82 67"/>
+        </g>
+        <rect class="m-cap" x="34" y="87" width="32" height="7" rx="2.5"/>
+        <ellipse class="m-ink" cx="50" cy="44" rx="7.6" ry="9.2"/><circle class="m-hi" cx="52.6" cy="40.4" r="2.6"/>
+        <path class="m-ink" d="M33 57 Q50 72 67 57 Q50 64 33 57 Z"/>
+        <path class="m-tongue" d="M46.5 62.5 C45.5 75 52 83 58 78.5 C62 75 58 70 55 63.5 Z"/>
+        <ellipse class="m-blush" cx="31" cy="51" rx="4.4" ry="2.6"/><ellipse class="m-blush" cx="69" cy="51" rx="4.4" ry="2.6"/>
+      </svg>
+    </div>
+    <p class="lede">Enter the date you started applying, how many applications you sent and how many interviews you got. Draw your job hunt fortune, from 大吉 (great blessing) to 大凶 (great curse), and collect a yokai for every milestone.</p>
+  </header>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="in-h">
+      <div class="card-head">
+        <h2 id="in-h">Your numbers</h2>
+        <span class="pill" id="mode-pill">Example numbers</span>
+      </div>
+      <div class="field">
+        <label for="start">Date of your first application</label>
+        <input id="start" class="date" type="date">
+        <p class="hint" id="start-hint">The day count updates by itself every day.</p>
+      </div>
+      <div class="field">
+        <label for="apps">Applications sent</label>
+        <div class="stepper">
+          <button type="button" data-step="apps" data-d="-1" aria-label="One application less">−</button>
+          <input id="apps" type="number" inputmode="numeric" min="0" max="5000" step="1">
+          <button type="button" data-step="apps" data-d="1" aria-label="One application more">+</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ints">Interviews you got</label>
+        <div class="stepper">
+          <button type="button" data-step="ints" data-d="-1" aria-label="One interview less">−</button>
+          <input id="ints" type="number" inputmode="numeric" min="0" max="5000" step="1">
+          <button type="button" data-step="ints" data-d="1" aria-label="One interview more">+</button>
+        </div>
+        <p class="hint">Count each application that led to an interview. A first phone screen counts.</p>
+      </div>
+      <div class="field">
+        <label for="offers">Offers</label>
+        <div class="stepper">
+          <button type="button" data-step="offers" data-d="-1" aria-label="One offer less">−</button>
+          <input id="offers" type="number" inputmode="numeric" min="0" max="5000" step="1">
+          <button type="button" data-step="offers" data-d="1" aria-label="One offer more">+</button>
+        </div>
+        <p class="hint">Job offers so far, written or spoken.</p>
+      </div>
+      <details class="more" id="more">
+        <summary>About your search <span class="opt">optional</span></summary>
+        <div class="more-body">
+          <div class="field">
+            <label for="market">Where you are applying</label>
+            <select id="market" class="sel">
+              <option value="">Choose</option><option value="de">Germany</option><option value="eu">Elsewhere in the EU</option>
+              <option value="uk">United Kingdom</option><option value="us">United States</option><option value="other">Somewhere else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="field">Your field</label>
+            <select id="field" class="sel">
+              <option value="">Choose</option><option value="data">Data and analytics</option><option value="software">Software and IT</option>
+              <option value="product">Product and design</option><option value="business">Business, finance and consulting</option>
+              <option value="marketing">Marketing, sales and communications</option><option value="engineering">Engineering and science</option>
+              <option value="other">Something else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="channel">How you mostly apply</label>
+            <select id="channel" class="sel">
+              <option value="">Choose</option><option value="cold">Mostly cold applications</option><option value="mix">A mix</option>
+              <option value="referral">Mostly referrals or recruiters</option>
+            </select>
+          </div>
+        </div>
+      </details>
+      <p class="error" id="err" hidden></p>
+      <div class="row">
+        <button type="button" class="btn primary" id="save">Check my numbers</button>
+        <button type="button" class="btn" id="reset">Start over</button>
+      </div>
+      <p class="note" id="save-note">Checking also saves your numbers in this browser, so your day count, streak and badges carry over.</p>
+      <label class="consent" for="no-log">
+        <input type="checkbox" id="no-log">
+        <span>Don't add my numbers to the anonymous job hunt dataset. <a href="#log-h">What is added</a></span>
+      </label>
+    </section>
+
+    <section class="card verdict" id="verdict" aria-labelledby="out-h" aria-live="polite">
+      <div class="card-head">
+        <h2 id="out-h" tabindex="-1">Where you stand</h2>
+        <div class="head-r"><button type="button" class="btn sm" id="vd-share" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share</button><span class="pill" id="day-pill">Day 0</span></div>
+      </div>
+      <canvas class="scene" id="scene" aria-hidden="true"></canvas>
+      <p class="stale-note" id="stale-note" hidden>Your numbers changed. Press Check my numbers to see the new read.</p>
+      <div class="status" id="status">Ready when you are</div>
+      <p class="status-msg" id="status-msg">Enter your numbers to see where you stand.</p>
+      <div class="meter" id="meter">
+        <div class="meter-track" aria-hidden="true">
+          <div class="meter-seg seg-ok"></div>
+          <div class="meter-seg seg-quiet"></div>
+          <div class="meter-seg seg-unusual"></div>
+          <div class="meter-seg seg-bad"></div>
+          <div class="meter-pin" id="pin" style="left:0%"></div>
+        </div>
+        <div class="meter-labels" aria-hidden="true">
+<span><i class="meter-ico jp">吉</i>Normal ghosting</span><span><i class="meter-ico jp">末吉</i>A little haunted</span><span><i class="meter-ico jp">凶</i>Ghost town</span><span><i class="meter-ico jp">大凶</i>Haunted market?</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Chance your rate is below 3%</span><span class="v" id="s-plow">–</span></div>
+        <div class="stat"><span class="k">Your likely interview rate</span><span class="v" id="s-range">–</span></div>
+        <div class="stat"><span class="k">Applications counted so far</span><span class="v" id="s-neff">–</span></div>
+        <div class="stat" id="s-offer-box" hidden><span class="k">Offers from your interviews</span><span class="v" id="s-offer">–</span></div>
+      </div>
+      <ul class="explain" id="explain"></ul>
+    </section>
+  </div>
+
+  <section class="card" aria-labelledby="b-h">
+    <div class="card-head">
+      <h2 id="b-h">Badges</h2>
+      <div class="streakbar">
+        <span><b id="st-day">0</b> days in</span>
+        <span><b id="st-streak">0</b> day streak</span>
+        <span><b id="st-earned">0</b> of <span id="st-total">15</span> badges</span>
+      </div>
+    </div>
+    <button type="button" class="next" id="next" hidden>
+      <span class="next-slot"><canvas id="next-cv" width="240" height="288" aria-hidden="true"></canvas></span>
+      <span class="next-body">
+        <span class="next-k">Next badge</span>
+        <span class="next-t" id="next-t"></span>
+        <span class="next-d" id="next-d"></span>
+        <span class="next-row"><span class="bar"><i id="next-bar"></i></span><span class="next-n" id="next-n"></span></span>
+      </span>
+    </button>
+    <p class="note" id="streak-note">Your streak counts days in a row on which you checked in with new applications.</p>
+    <div class="badges" id="badges" role="list"></div>
+  </section>
+
+  <section class="card" aria-labelledby="sh-h">
+    <div class="card-head"><h2 id="sh-h">Share your card</h2></div>
+    <div class="share">
+      <button type="button" class="card-open" id="card-open" aria-label="Open the full card, pick its badges and share it">
+        <img id="card-img" alt="">
+        <span class="card-open-hint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Full size and badge picker</span>
+      </button>
+      <div class="how">
+        <p>Post it with your numbers. People in the same boat find it reassuring, and recruiters see someone who tracks their work. You can pick which badges go on the card.</p>
+        <div class="row">
+          <button type="button" class="btn primary" id="share-open"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share my card</button>
+          <button type="button" class="btn" id="copy">Copy post text</button>
+        </div>
+        <label class="note" for="post">Post text</label>
+        <textarea id="post" readonly></textarea>
+        <p class="note" id="share-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="log-h">
+    <h2 id="log-h" tabindex="-1">Your log</h2>
+    <div class="log-grid">
+      <div class="log-col">
+        <h3>Keep it on another device</h3>
+        <p class="note">Your numbers live in this browser, with no account. Copy a backup code and paste it on another phone or computer to bring back your log, streak and badges. Clearing site data removes the log, so keep the code somewhere safe.</p>
+        <div class="row"><button type="button" class="btn" id="bk-copy">Copy backup code</button></div>
+        <label class="note" for="bk-in">Paste a backup code</label>
+        <textarea id="bk-in" rows="3" placeholder="GHOST1..." spellcheck="false"></textarea>
+        <div class="row"><button type="button" class="btn" id="bk-restore">Restore from code</button></div>
+        <p class="note" id="bk-note" aria-live="polite"></p>
+      </div>
+      <div class="log-col">
+        <h3>The job hunt dataset</h3>
+        <p class="note">Each check of your own numbers adds one row to an anonymous dataset about job hunts. The row holds your start date, applications, interviews and offers, plus your answers about your search if you gave any. The dataset stores no name, email address, IP address, cookie or ID, so a row cannot be traced back to you. The example numbers are never added.</p>
+        <p class="note">To opt out, tick Don't add my numbers under Check my numbers. This browser remembers the choice. Legal basis: GDPR Art. 6(1)(f), a legitimate interest in understanding how job hunts go and improving this tool.</p>
+        <p class="note" id="ds-status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card how" aria-labelledby="how-h">
+    <h2 id="how-h">How the read works</h2>
+    <p><b>Typical rate.</b> Across about two million applications tracked by Huntr, 3% to 6% led to an interview (about 3% with an untailored CV, about 6% with a tailored one). The data is mostly from the US and self-reported, so your field and country may differ.</p>
+    <p><b>Replies take time.</b> Interview invites usually arrive within one to three weeks. Applications from the last few weeks have not had their full chance yet, so they count only partly. The tool assumes your applications were spread evenly over your days of applying.</p>
+    <p><b>Your rate.</b> The estimate starts from "any rate is possible" and updates with your numbers (a Beta-Binomial model). The range covers your true rate with 95% probability.</p>
+    <p><b>The fortune</b> comes from the chance that your true rate is below 3%. Under 50% draws 吉 "Normal ghosting", 50% to 80% 末吉 "A little haunted", 80% to 95% 凶 "Ghost town" and above 95% 大凶 "Haunted market?". A rate likely above typical draws 大吉 "Ghost-free". The worse the fortune, the more yokai come out.</p>
+    <p><b>What it cannot tell you.</b> One person's numbers cannot separate a bad market from a CV or targeting problem. If you land in the last band, check the roles you pick and how your CV reads first, because that is the part you control.</p>
+  </section>
+
+  <footer>
+    <span>Made by Art Liu. The method comes from his <a href="https://github.com/marco50608/bayesian-resume-analysis" target="_blank" rel="noopener">Bayesian CV analysis</a>.</span>
+    <span>Your numbers stay in this browser. Clearing site data or a private window removes them, so keep a backup code from Your log.</span>
+  </footer>
+</div>
+
+<div class="reveal" id="reveal" role="dialog" aria-modal="true" aria-labelledby="rv-title" hidden>
+  <button type="button" class="btn rv-skip" id="rv-skip">Skip</button>
+  
+  <canvas class="rv-confetti" id="rv-confetti" aria-hidden="true"></canvas>
+  <div class="rv-stage">
+    <article class="rv-letter" id="rv-letter">
+      <div class="rv-label"><span>Your job hunt fortune</span><span class="pill" id="rv-example" hidden>Example</span></div>
+      <h2 class="rv-title" id="rv-title">Day 0 of your hunt</h2>
+      <p class="rv-nums" id="rv-nums"></p>
+      <p class="rv-msg" id="rv-msg"></p>
+      <div id="rv-stamps-wrap">
+        <div class="rv-stamps-label" id="rv-stamps-label">New badges</div>
+        <div class="rv-stamps" id="rv-stamps"></div>
+        <p class="rv-more" id="rv-more" hidden></p>
+      </div>
+      <div class="rv-postmark" id="rv-postmark">
+        <span class="rv-pm-date" id="rv-pm-date"></span>
+        <span class="rv-pm-big" id="rv-pm-big"></span>
+        <span class="rv-pm-status" id="rv-pm-status"></span>
+      </div>
+    </article>
+    <div class="rv-env" id="rv-env" aria-hidden="true">
+      <div class="rv-env-body"><span class="kuji">御神籤</span><span class="rv-env-to" id="rv-env-to"></span></div>
+      <div class="rv-flap" id="rv-flap"></div>
+    </div>
+    <div class="rv-actions" id="rv-actions">
+      <button type="button" class="btn primary" id="rv-share" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="rv-share-t">Share my card</span></button>
+      <button type="button" class="btn" id="rv-done">See the details</button>
+    </div>
+  </div>
+</div>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="vw-title" hidden>
+  <button type="button" class="btn vw-close" id="vw-close">Close</button>
+  <div class="vw-body" id="vw-body">
+    <div class="vw-stage" id="vw-stage">
+      <div class="vw-fly" id="vw-fly">
+        <div class="vw-tilt" id="vw-tilt">
+          <canvas id="vw-cv" width="600" height="720" aria-hidden="true"></canvas>
+          <div class="vw-sheen"></div>
+        </div>
+      </div>
+    </div>
+    <div class="vw-info" id="vw-info">
+      <span class="vw-k" id="vw-k"></span>
+      <h2 class="vw-title" id="vw-title"></h2>
+      <p class="vw-d" id="vw-d"></p>
+      <p class="vw-flavor" id="vw-flavor"></p>
+      <div class="vw-story" id="vw-story" hidden><span class="vw-story-k">The legend</span><p id="vw-story-t"></p></div>
+      <span class="vw-status" id="vw-status"></span>
+      <div class="vw-prog" id="vw-prog" hidden>
+        <span class="bar"><i id="vw-bar"></i></span>
+        <span id="vw-need"></span>
+      </div>
+    </div>
+    <div class="vw-nav">
+      <button type="button" class="btn" id="vw-prev">‹ Previous</button>
+      <button type="button" class="btn" id="vw-next">Next ›</button>
+    </div>
+  </div>
+</div>
+
+<div class="sharer" id="sharer" role="dialog" aria-modal="true" aria-labelledby="sr-title" hidden>
+  <button type="button" class="btn sr-close" id="sr-close">Close</button>
+  <div class="sr-body" id="sr-body">
+    <div class="sr-card"><img id="sr-img" alt="Your share card"></div>
+    <div class="sr-side">
+      <div class="sr-head"><h2 class="sr-title" id="sr-title">Share your card</h2><span class="pill" id="sr-example" hidden>Example numbers</span></div>
+      <div class="sr-actions">
+        <button type="button" class="btn" id="sr-native" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share</button>
+        <button type="button" class="btn" id="sr-li">Post on LinkedIn</button>
+        <button type="button" class="btn" id="sr-copyimg" hidden>Copy image</button>
+        <button type="button" class="btn" id="sr-save" hidden>Save image</button>
+        <button type="button" class="btn" id="sr-copytxt">Copy post text</button>
+      </div>
+      <p class="sr-note" id="sr-note" aria-live="polite"></p>
+      <textarea class="sr-text" id="sr-text" readonly hidden aria-label="Post text"></textarea>
+      <div class="sr-pick" id="sr-pick">
+        <div class="sr-pick-head">
+          <span class="sr-pick-k">Badges on the card</span>
+          <span class="sr-pick-n" id="sr-pick-n"></span>
+          <button type="button" class="sr-link" id="sr-all">All</button>
+          <button type="button" class="sr-link" id="sr-none">None</button>
+        </div>
+        <div class="sr-chips" id="sr-chips" role="group" aria-label="Badges on the card"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<canvas id="card" width="1080" height="1350" hidden></canvas>
+
+<script>
+(() => {
+  "use strict";
+
+  // ===================== theme: Japanese yokai =====================
+  const TAU2 = Math.PI * 2;
+  function rrPath(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.arcTo(x + w, y, x + w, y + h, r);
+    c.arcTo(x + w, y + h, x, y + h, r);
+    c.arcTo(x, y + h, x, y, r);
+    c.arcTo(x, y, x + w, y, r);
+    c.closePath();
+  }
+  function rr(c, x, y, w, h, r, f) { rrPath(c, x, y, w, h, r); c.fillStyle = f; c.fill(); }
+  function circ(c, x, y, r, f) { c.beginPath(); c.arc(x, y, r, 0, TAU2); c.fillStyle = f; c.fill(); }
+  function oval(c, x, y, rx, ry, f, rot = 0) { c.beginPath(); c.ellipse(x, y, rx, ry, rot, 0, TAU2); c.fillStyle = f; c.fill(); }
+  function poly(c, pts, f) { c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.closePath(); c.fillStyle = f; c.fill(); }
+  function shape(c, d, f) { c.fillStyle = f; c.fill(new Path2D(d)); }
+  function line(c, pts, s, w) {
+    c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y));
+    c.strokeStyle = s; c.lineWidth = w; c.lineCap = "round"; c.lineJoin = "round"; c.stroke();
+  }
+  function arcEye(c, x, y, up, col, w = 2.6) {
+    c.beginPath(); c.moveTo(x - 4.5, y); c.quadraticCurveTo(x, y + (up ? -6 : 5), x + 4.5, y);
+    c.strokeStyle = col; c.lineWidth = w; c.lineCap = "round"; c.stroke();
+  }
+  function sparkle(c, x, y, r, f) {
+    c.beginPath();
+    c.moveTo(x, y - r); c.quadraticCurveTo(x, y, x + r, y); c.quadraticCurveTo(x, y, x, y + r);
+    c.quadraticCurveTo(x, y, x - r, y); c.quadraticCurveTo(x, y, x, y - r);
+    c.fillStyle = f; c.fill();
+  }
+  function mix(hex, to, t) {
+    const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+    const a = p(hex), b = p(to);
+    return "#" + a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, "0")).join("");
+  }
+  const BRUSH = "'Yuji Boku', 'Kaisei Decol', 'Hiragino Mincho ProN', 'Yu Mincho', serif";
+  function kanji(c, text, x, y, size, col, vertical) {
+    c.fillStyle = col; c.font = `400 ${size}px ${BRUSH}`; c.textAlign = "center"; c.textBaseline = "middle";
+    if (vertical) [...text].forEach((ch, i) => c.fillText(ch, x, y + i * size * 1.02));
+    else c.fillText(text, x, y);
+    c.textAlign = "left"; c.textBaseline = "alphabetic";
+  }
+
+  const INK = "#2a2225";
+  const BLUSH = "rgba(255,120,150,.45)";
+  // every yokai is drawn in a 100 x 100 box; put() places one
+  function put(c, fn, x, y, s, o = {}) {
+    c.save(); c.translate(x, y); if (o.tilt) c.rotate(o.tilt); c.scale(o.flip ? -s : s, s); c.translate(-50, -55);
+    if (o.alpha !== undefined) c.globalAlpha *= o.alpha;
+    fn(c, o); c.restore();
+  }
+
+  // ---------- the yokai ----------
+  function chochin(c, o) {
+    line(c, [[50, 0], [50, 13]], "#3a2a20", 2);
+    rr(c, 34, 11, 32, 9, 2.5, "#2b2420");
+    const body = new Path2D("M31 20 C18 38 18 70 31 88 L69 88 C82 70 82 38 69 20 Z");
+    c.fillStyle = o.paper || "#fff2d6"; c.fill(body);
+    c.save(); c.clip(body);
+    c.fillStyle = o.band || "#d8432f"; c.fillRect(0, 20, 100, 8); c.fillRect(0, 80, 100, 8);
+    c.strokeStyle = "rgba(150,100,60,.35)"; c.lineWidth = 1.4;
+    for (let y = 35; y <= 74; y += 8) { c.beginPath(); c.moveTo(18, y); c.quadraticCurveTo(50, y + 4, 82, y); c.stroke(); }
+    c.restore();
+    rr(c, 34, 87, 32, 7, 2.5, "#2b2420");
+    if (o.plain) return;
+    if (o.sleep) arcEye(c, 50, 44, false, INK, 3);
+    else { oval(c, 50, 44, 7.6, 9.2, INK); circ(c, 52.6, 40.4, 2.6, "#ffffff"); }
+    shape(c, "M33 57 Q50 72 67 57 Q50 64 33 57 Z", INK);
+    if (!o.sleep) shape(c, "M46.5 62.5 C45.5 75 52 83 58 78.5 C62 75 58 70 55 63.5 Z", "#ff7f9a");
+    oval(c, 31, 51, 4.4, 2.6, BLUSH); oval(c, 69, 51, 4.4, 2.6, BLUSH);
+  }
+  function kasa(c, o) {
+    shape(c, "M8 62 Q50 -6 92 62 Q71 54 50 62 Q29 54 8 62 Z", o.paper || "#f0c062");
+    c.strokeStyle = "rgba(120,70,20,.45)"; c.lineWidth = 1.4;
+    [[8, 62], [29, 58], [71, 58], [92, 62]].forEach(([x, y]) => { c.beginPath(); c.moveTo(50, 13); c.lineTo(x, y); c.stroke(); });
+    shape(c, "M8 62 Q29 54 50 62 Q71 54 92 62 L92 58 Q71 50 50 58 Q29 50 8 58 Z", "rgba(170,60,30,.55)");
+    circ(c, 50, 13, 3.2, "#7a4a24");
+    oval(c, 50, 35, 7.4, 9, INK); circ(c, 52.4, 31.6, 2.4, "#ffffff");
+    shape(c, "M41 47 Q50 55 59 47 Z", INK);
+    shape(c, "M47 49.5 C46 59 52 65 57 61 C60 58 56 54 54.5 49.5 Z", "#ff7f9a");
+    line(c, [[50, 61], [50, 84]], "#e9d3b0", 4.6);
+    rr(c, 37, 84, 26, 5, 2, "#7a4a24"); rr(c, 40, 89, 5, 6, 1, "#5a3518"); rr(c, 55, 89, 5, 6, 1, "#5a3518");
+  }
+  function hitodama(c, o) {
+    const col = o.col || "#7fd4ff";
+    c.save(); c.shadowColor = col; c.shadowBlur = 18;
+    shape(c, "M50 90 C34 90 26 78 28 66 C30 54 40 48 46 36 C50 28 50 18 46 8 C58 16 64 28 64 40 C70 48 74 56 72 68 C70 82 62 90 50 90 Z", col);
+    c.restore();
+    shape(c, "M50 84 C40 84 35 76 36 68 C37 60 44 56 48 48 C52 56 60 60 62 68 C63 77 58 84 50 84 Z", "#eaf8ff");
+    if (o.face !== false) { oval(c, 44.5, 70, 2.6, 3.4, INK); oval(c, 55.5, 70, 2.6, 3.4, INK); shape(c, "M47 75.5 Q50 79 53 75.5 Z", INK); }
+  }
+  function noppera(c, o) {
+    shape(c, "M25 94 C25 71 34 61 50 61 C66 61 75 71 75 94 Z", o.kimono || "#3b5a8a");
+    shape(c, "M50 61 L41 94 L50 94 Z", "rgba(0,0,0,.18)");
+    poly(c, [[43.5, 61], [50, 75], [56.5, 61]], "#f2e6d0");
+    oval(c, 50, 39, 19, 23, "#f6e2c8");
+    oval(c, 57, 32, 5.5, 8.5, "rgba(255,255,255,.4)");
+    shape(c, "M31 32 C31 15 43 10 50 10 C57 10 69 15 69 32 C63 23 57 21 50 21 C43 21 37 23 31 32 Z", "#2a2320");
+    circ(c, 50, 9.5, 5.4, "#2a2320");
+    oval(c, 39.5, 46, 3.8, 2.3, BLUSH); oval(c, 60.5, 46, 3.8, 2.3, BLUSH);
+  }
+  function yurei(c, o) {
+    shape(c, "M31 44 C29 62 34 74 40 84 C45 92 53 97 63 95 C55 91 53 85 57 79 C65 71 71 59 69 44 Z", "#f8f6ff");
+    shape(c, "M33 49 C24 51 17 55 15 60 C22 62 30 59 37 55 Z", "#ece8fa");
+    shape(c, "M67 49 C76 51 83 55 85 60 C78 62 70 59 63 55 Z", "#ece8fa");
+    oval(c, 14.5, 61.5, 3.4, 4.6, "#f3e0dc", .4); oval(c, 85.5, 61.5, 3.4, 4.6, "#f3e0dc", -.4);
+    shape(c, "M29 40 C27 21 38 11 50 11 C62 11 73 21 71 40 C71 53 67 61 64 66 L36 66 C33 61 29 53 29 40 Z", "#1f1a24");
+    poly(c, [[39, 47], [50, 61], [61, 47]], "#ece8fa");
+    oval(c, 50, 34, 13.5, 15.5, "#f7eef4");
+    poly(c, [[42.5, 22.5], [57.5, 22.5], [50, 13.5]], "#ffffff");
+    c.strokeStyle = "rgba(0,0,0,.15)"; c.lineWidth = .8; c.beginPath(); c.moveTo(42.5, 22.5); c.lineTo(50, 13.5); c.lineTo(57.5, 22.5); c.closePath(); c.stroke();
+    arcEye(c, 44.5, 35, false, INK, 2.2); arcEye(c, 55.5, 35, false, INK, 2.2);
+    oval(c, 50, 42.5, 2, 1.6, INK);
+    oval(c, 40.5, 40, 3, 1.8, BLUSH); oval(c, 59.5, 40, 3, 1.8, BLUSH);
+  }
+  function tanuki(c, o) {
+    if (o.bundle) {
+      rr(c, 18, 26, 64, 52, 16, "#3e8c5c");
+      c.strokeStyle = "rgba(255,255,255,.75)"; c.lineWidth = 1.6;
+      [[30, 40], [58, 36], [44, 58], [70, 58], [26, 62]].forEach(([x, y]) => { c.beginPath(); c.arc(x, y, 5, 0, 4.4); c.stroke(); c.beginPath(); c.arc(x + 4, y + 2, 2.2, 3, 7); c.stroke(); });
+      shape(c, "M42 26 C38 16 46 12 50 20 C54 12 62 16 58 26 Z", "#3e8c5c");
+      const letter = (x, y, a, f) => { c.save(); c.translate(x, y); c.rotate(a); rr(c, -9, -6.5, 18, 13, 1.5, f); line(c, [[-7.5, -5], [0, .8], [7.5, -5]], "rgba(90,60,40,.45)", 1.3); c.restore(); };
+      letter(28, 24, -.4, "#ffffff"); letter(70, 22, .35, "#ffe9a6");
+    }
+    shape(c, "M70 74 C86 70 92 58 86 50 C84 62 78 66 68 66 Z", "#8b5a2b");
+    line(c, [[78, 66], [84, 60]], "#5a3a1e", 2);
+    oval(c, 50, 72, 23, 21, "#a8743f");
+    oval(c, 50, 76, 14.5, 14, "#f1dcb8");
+    circ(c, 34, 30, 6.5, "#8b5a2b"); circ(c, 66, 30, 6.5, "#8b5a2b");
+    oval(c, 50, 44, 21, 18, "#a8743f");
+    oval(c, 41, 45, 7.6, 5.6, "#5a3a1e", -.3); oval(c, 59, 45, 7.6, 5.6, "#5a3a1e", .3);
+    if (o.sleep) { arcEye(c, 41.5, 45, false, "#f1dcb8", 2); arcEye(c, 58.5, 45, false, "#f1dcb8", 2); }
+    else { circ(c, 41.5, 45, 2.8, "#ffffff"); circ(c, 58.5, 45, 2.8, "#ffffff"); circ(c, 42, 45.4, 1.7, INK); circ(c, 58, 45.4, 1.7, INK); }
+    oval(c, 50, 52.5, 7.2, 5, "#f1dcb8"); oval(c, 50, 50.5, 2.6, 2, INK);
+    if (!o.bundle) {
+      shape(c, "M50 27 C44 19 46 11 56 9 C58 17 56 23 50 27 Z", "#5aa65a");
+      line(c, [[50, 27], [54, 13]], "#3e7d3e", 1.2);
+    }
+    oval(c, 33, 70, 5, 6.4, "#8b5a2b"); oval(c, 67, 70, 5, 6.4, "#8b5a2b");
+    oval(c, 40, 92, 7, 4, "#8b5a2b"); oval(c, 60, 92, 7, 4, "#8b5a2b");
+  }
+  function kitsune(c, o) {
+    const n = o.tails === undefined ? 1 : o.tails;
+    const fur = o.gold ? "#ffe6a3" : "#fffaf3", belly = o.gold ? "#fff3d1" : "#f3e7d8";
+    for (let i = 0; i < n; i++) {
+      c.save(); c.translate(64, 84); c.rotate(n === 1 ? .1 : -.2 + i * (1.1 / (n - 1))); c.scale(.92, .92);
+      const tail = new Path2D("M0 0 C12 -8 16 -30 8 -46 C18 -38 26 -30 25 -14 C24 -3 12 4 0 0 Z");
+      c.fillStyle = "#fff8ee"; c.fill(tail);
+      c.strokeStyle = "rgba(170,70,50,.4)"; c.lineWidth = 1.4; c.stroke(tail);
+      shape(c, "M8 -46 C14 -42 20 -37 22 -30 C17 -33 12 -38 8 -46 Z", "#e0453a");
+      c.restore();
+    }
+    shape(c, "M35 93 C33 72 39 58 50 58 C61 58 67 72 65 93 Z", fur);
+    oval(c, 50, 80, 8, 10, belly);
+    poly(c, [[33, 34], [35, 11], [47, 26]], fur); poly(c, [[67, 34], [65, 11], [53, 26]], fur);
+    poly(c, [[36, 29], [37, 16.5], [43.5, 25.5]], "#e0453a"); poly(c, [[64, 29], [63, 16.5], [56.5, 25.5]], "#e0453a");
+    shape(c, "M28 42 C28 29 38 22 50 22 C62 22 72 29 72 42 C72 52 61 60 50 61 C39 60 28 52 28 42 Z", fur);
+    line(c, [[37, 41], [41, 38.5], [46, 41]], "#e0453a", 2.2); line(c, [[54, 41], [59, 38.5], [63, 41]], "#e0453a", 2.2);
+    arcEye(c, 41.5, 44, true, INK, 2.2); arcEye(c, 58.5, 44, true, INK, 2.2);
+    oval(c, 50, 52, 2.6, 2, INK);
+    line(c, [[46, 30], [50, 26], [54, 30]], "#e0453a", 2);
+    oval(c, 36, 50, 3.6, 2.2, BLUSH); oval(c, 64, 50, 3.6, 2.2, BLUSH);
+  }
+  function kappa(c, o) {
+    oval(c, 67, 70, 15, 19, "#7a5a2e");
+    c.strokeStyle = "rgba(255,230,180,.35)"; c.lineWidth = 1.2;
+    [[60, 62, 72, 62], [58, 72, 76, 72], [62, 82, 72, 82]].forEach(([a, b, x, y]) => { c.beginPath(); c.moveTo(a, b); c.lineTo(x, y); c.stroke(); });
+    oval(c, 47, 72, 18, 18, "#5fae5a");
+    oval(c, 47, 76, 11, 11, "#cfe9a8");
+    circ(c, 47, 42, 20, "#6cc06a");
+    shape(c, "M27 40 C27 26 36 20 47 20 C58 20 67 26 67 40 C63 32 58 30 54 31 C50 28 44 28 40 31 C36 30 31 32 27 40 Z", "#2f6b2f");
+    oval(c, 47, 23.5, 12.5, 4.6, "#e8f4f8"); oval(c, 47, 22.6, 9, 2.8, "#bfe3ee");
+    circ(c, 39, 43, 3.4, INK); circ(c, 55, 43, 3.4, INK); circ(c, 40.2, 41.8, 1.2, "#ffffff"); circ(c, 56.2, 41.8, 1.2, "#ffffff");
+    oval(c, 47, 51.5, 8.5, 4.6, "#f2b33d"); line(c, [[39.5, 51.5], [54.5, 51.5]], "#b8791f", 1.2);
+    oval(c, 33, 50, 3.6, 2.2, BLUSH); oval(c, 61, 50, 3.6, 2.2, BLUSH);
+    oval(c, 31, 70, 5, 6.4, "#5fae5a"); oval(c, 63, 66, 5, 6.4, "#5fae5a");
+    oval(c, 39, 92, 7, 4, "#4f9a4a"); oval(c, 56, 92, 7, 4, "#4f9a4a");
+  }
+  function daruma(c, o) {
+    shape(c, "M50 10 C73 10 86 31 86 56 C86 81 71 93 50 93 C29 93 14 81 14 56 C14 31 27 10 50 10 Z", "#d63a2f");
+    shape(c, "M67 14 C80 22 86 38 86 56 C86 72 80 84 70 89 C78 78 80 64 78 50 C76 34 72 22 67 14 Z", "rgba(0,0,0,.12)");
+    shape(c, "M50 23 C65 23 73 33 73 46 C73 58 63 65 50 65 C37 65 27 58 27 46 C27 33 35 23 50 23 Z", "#fff4e6");
+    shape(c, "M31 36 C35 30 41 29 46 33 C41 33 37 35 33 39 Z", "#1f1a17");
+    shape(c, "M69 36 C65 30 59 29 54 33 C59 33 63 35 67 39 Z", "#1f1a17");
+    circ(c, 40.5, 45, 6.6, "#ffffff"); circ(c, 40.5, 45, 4.6, INK); circ(c, 42, 43.5, 1.4, "#ffffff");
+    circ(c, 59.5, 45, 6.6, "#ffffff"); c.beginPath(); c.arc(59.5, 45, 6.6, 0, TAU2); c.strokeStyle = "rgba(0,0,0,.35)"; c.lineWidth = 1; c.stroke();
+    shape(c, "M36 56 C42 52 46 55 50 57 C54 55 58 52 64 56 C59 62 54 63 50 61 C46 63 41 62 36 56 Z", "#1f1a17");
+    kanji(c, "必勝", 50, 79, 13, "#f3c34a");
+  }
+  function maneki(c, o) {
+    oval(c, 50, 74, 22, 20, "#fffaf3");
+    shape(c, "M70 84 C84 82 88 70 82 64 C80 72 74 76 68 76 Z", "#fffaf3");
+    oval(c, 63, 75, 9.5, 12.5, "#f3c34a"); oval(c, 63, 75, 7, 10, "#f7d872");
+    line(c, [[59, 70], [67, 70]], "#c9952a", 1); line(c, [[59, 80], [67, 80]], "#c9952a", 1);
+    oval(c, 58, 82, 5, 4.4, "#fffaf3");
+    shape(c, "M30 56 C26 46 24 36 26 28 C30 26 34 28 35 32 C34 40 36 48 40 54 Z", "#fffaf3");
+    oval(c, 29, 27, 6, 6.6, "#fffaf3"); line(c, [[27, 23], [27, 27]], "rgba(0,0,0,.25)", 1); line(c, [[30.5, 22.5], [30.5, 26.5]], "rgba(0,0,0,.25)", 1);
+    oval(c, 50, 42, 21, 18, "#fffaf3");
+    poly(c, [[31, 34], [33, 18], [44, 27]], "#fffaf3"); poly(c, [[69, 34], [67, 18], [56, 27]], "#fffaf3");
+    poly(c, [[34, 30], [35, 22], [41, 27]], "#ffb3c1"); poly(c, [[66, 30], [65, 22], [59, 27]], "#ffb3c1");
+    shape(c, "M56 26 C62 24 68 28 70 36 C66 33 61 31 56 31 Z", "#f0a24a");
+    arcEye(c, 42, 43, true, INK, 2.4); arcEye(c, 58, 43, true, INK, 2.4);
+    line(c, [[46, 51], [48, 53], [50, 51], [52, 53], [54, 51]], INK, 1.6);
+    oval(c, 50, 48.5, 2.2, 1.6, "#ff8fa8");
+    [[29, 47, 21, 45], [29, 50, 21, 51], [71, 47, 79, 45], [71, 50, 79, 51]].forEach(([a, b, x, y]) => line(c, [[a, b], [x, y]], "rgba(0,0,0,.3)", .9));
+    oval(c, 37, 50, 3.6, 2.2, BLUSH); oval(c, 63, 50, 3.6, 2.2, BLUSH);
+    rr(c, 35, 57, 30, 5, 2.5, "#d63a2f");
+    circ(c, 50, 63, 4.4, "#f3c34a"); line(c, [[46, 63], [54, 63]], "#c9952a", 1);
+  }
+  function usagi(c, o) {
+    shape(c, "M54 92 L58 74 L82 74 L86 92 Z", "#8a5a33");
+    oval(c, 70, 74, 14, 3.4, "#6e4424");
+    shape(c, "M60 73 C60 66 66 64 70 64 C74 64 80 66 80 73 Z", "#ffffff");
+    oval(c, 36, 74, 16, 15, "#ffffff");
+    oval(c, 34, 50, 13, 12, "#ffffff");
+    shape(c, "M26 42 C21 28 22 16 27 14 C31 16 33 28 32 42 Z", "#ffffff");
+    shape(c, "M36 41 C36 27 40 16 45 16 C48 20 45 32 41 42 Z", "#ffffff");
+    shape(c, "M27.5 38 C25 28 25.5 20 27.5 18 C29.5 21 30 29 29.6 38 Z", "#ffc9d3");
+    shape(c, "M38.4 38 C38.6 29 41 21 43.6 20 C44.4 24 42.4 31 39.8 38 Z", "#ffc9d3");
+    circ(c, 39, 50, 2.2, "#d63a2f");
+    oval(c, 44.5, 54, 1.8, 1.4, "#ff8fa8");
+    oval(c, 31, 54.5, 3, 1.8, BLUSH);
+    c.save(); c.translate(52, 60); c.rotate(-.55);
+    rr(c, -2, -30, 4, 34, 2, "#b58351");
+    rr(c, -9, -40, 18, 12, 4, "#9a6b3e");
+    c.restore();
+    oval(c, 48, 62, 4.4, 4, "#ffffff");
+  }
+  function ittan(c, o) {
+    const band = new Path2D("M6 76 C22 60 32 78 48 66 C64 54 68 36 86 26 L94 34 C78 42 74 62 58 72 C42 82 30 68 12 82 Z");
+    c.fillStyle = "#fbfbf6"; c.fill(band);
+    c.save(); c.clip(band); c.fillStyle = "rgba(160,160,190,.25)"; c.fillRect(0, 60, 100, 40); c.restore();
+    c.strokeStyle = "rgba(60,60,90,.25)"; c.lineWidth = 1.2; c.stroke(band);
+    circ(c, 82, 34, 2.4, INK); circ(c, 88.5, 31, 2.4, INK);
+    line(c, [[80, 40], [74, 46]], "#fbfbf6", 2.4); line(c, [[90, 38], [94, 44]], "#fbfbf6", 2.4);
+    oval(c, 79, 39, 2.6, 1.5, BLUSH);
+  }
+  function shikigami(c, o) {
+    const doll = (x, y, a, s) => {
+      c.save(); c.translate(x, y); c.rotate(a); c.scale(s, s);
+      circ(c, 0, -18, 6.4, "#fffdf6");
+      shape(c, "M-6.5 -11 L6.5 -11 L15 -4 L10 0 L6.5 -3 L7.5 17 L2 17 L0 7 L-2 17 L-7.5 17 L-6.5 -3 L-10 0 L-15 -4 Z", "#fffdf6");
+      c.strokeStyle = "rgba(60,40,30,.2)"; c.lineWidth = .8;
+      c.beginPath(); c.moveTo(0, -11); c.lineTo(0, 7); c.stroke();
+      circ(c, 0, 2, 2.6, "#d8432f");
+      c.restore();
+    };
+    [[18, 40], [12, 54], [22, 66]].forEach(([x, y]) => line(c, [[x, y], [x - 9, y + 3]], "rgba(255,255,255,.5)", 2));
+    doll(32, 58, -.3, 1.15); doll(55, 44, .08, 1.35); doll(77, 62, .32, 1.1);
+  }
+  function nekomata(c, o) {
+    shape(c, "M64 82 C80 80 84 60 78 40 C86 52 90 70 80 84 Z", "#4a4458");
+    shape(c, "M62 86 C84 90 94 76 92 58 C96 72 94 90 76 92 Z", "#4a4458");
+    rr(c, 8, 74, 40, 18, 3, "#fff6e3");
+    c.strokeStyle = "rgba(40,30,30,.55)"; c.lineWidth = 1.4;
+    [[14, 79, 36], [14, 84, 40], [14, 89, 30]].forEach(([x, y, w]) => { c.beginPath(); c.moveTo(x, y); c.lineTo(x + w - 10, y); c.stroke(); });
+    rr(c, 6, 72, 4, 22, 2, "#b5823f");
+    oval(c, 58, 74, 18, 17, "#4a4458");
+    oval(c, 58, 79, 9, 10, "#efe7f6");
+    oval(c, 55, 46, 18, 15.5, "#4a4458");
+    poly(c, [[39, 40], [40, 22], [50, 33]], "#4a4458"); poly(c, [[71, 40], [70, 22], [60, 33]], "#4a4458");
+    poly(c, [[42, 36], [42.5, 27], [47.5, 33]], "#ff9fb3"); poly(c, [[68, 36], [67.5, 27], [62.5, 33]], "#ff9fb3");
+    oval(c, 48, 46, 4.2, 5, "#ffd23f"); oval(c, 62, 46, 4.2, 5, "#ffd23f");
+    oval(c, 48, 46, 1.4, 4, INK); oval(c, 62, 46, 1.4, 4, INK);
+    oval(c, 55, 53, 6, 4, "#efe7f6"); oval(c, 55, 51.8, 1.8, 1.4, "#ff8fa8");
+    c.save(); c.translate(40, 70); c.rotate(-.7);
+    rr(c, -1.6, -14, 3.2, 20, 1.6, "#7a4a24");
+    shape(c, "M-2 6 L2 6 L0 13 Z", INK);
+    c.restore();
+    oval(c, 42, 70, 4.6, 4, "#4a4458");
+  }
+  function tengu(c, o) {
+    // a feather fan shaped like a yatsude leaf
+    c.save(); c.translate(17, 34); c.rotate(-.35);
+    for (let i = 0; i < 7; i++) { const a = -2.75 + i * .42; oval(c, Math.cos(a) * 9.5, Math.sin(a) * 9.5, 9, 3.6, i % 2 ? "#4f9a4a" : "#5fae5a", a); }
+    circ(c, 0, 0, 4, "#3e7d3e");
+    rr(c, -1.6, 0, 3.2, 26, 1.6, "#7a4a24");
+    c.restore();
+    // the robe of a mountain monk, with its pompoms
+    shape(c, "M27 95 C27 75 36 64 50 64 C64 64 73 75 73 95 Z", "#f4efe4");
+    shape(c, "M50 64 L40 95 L50 95 Z", "rgba(0,0,0,.08)");
+    poly(c, [[43, 64], [50, 76], [57, 64]], "#c93a30");
+    [[41, 72, "#e9a23b"], [40, 82, "#3f8f5a"], [59, 72, "#e9a23b"], [60, 82, "#3f8f5a"]].forEach(([x, y, f]) => circ(c, x, y, 4.2, f));
+    oval(c, 26, 61, 5, 4.6, "#d9473b");
+    // white hair, red face
+    shape(c, "M33 50 C28 47 27 41 30 36 C31.5 41 34 45 38 48 Z", "#f7f3ea");
+    shape(c, "M67 50 C72 47 73 41 70 36 C68.5 41 66 45 62 48 Z", "#f7f3ea");
+    oval(c, 50, 41, 18.5, 18, "#d9473b");
+    oval(c, 43, 32, 6, 4.5, "rgba(255,255,255,.18)");
+    shape(c, "M41 57 C44 63 56 63 59 57 C55 59.6 45 59.6 41 57 Z", "#f7f3ea");
+    line(c, [[46, 55], [50, 57], [54, 55]], INK, 1.6);
+    shape(c, "M35 30.5 L46 33.1 L45.2 35.9 L34.6 33.1 Z", "#f7f3ea");
+    shape(c, "M65 30.5 L54 33.1 L54.8 35.9 L65.4 33.1 Z", "#f7f3ea");
+    circ(c, 41, 39, 3, INK); circ(c, 59, 39, 3, INK);
+    circ(c, 42, 37.9, 1.1, "#ffffff"); circ(c, 60, 37.9, 1.1, "#ffffff");
+    oval(c, 36, 48, 3.6, 2.2, "rgba(255,190,190,.6)"); oval(c, 64, 48, 3.6, 2.2, "rgba(255,190,190,.6)");
+    // the famous nose
+    shape(c, "M47 46.5 C56 46 70 42.5 84 37.5 C86.6 36.8 87.6 39.6 85.6 40.6 C72 46 59 51 52 52 C48 52.4 45.4 48.6 47 46.5 Z", "#c43328");
+    line(c, [[54, 47.2], [79, 40.6]], "rgba(255,255,255,.35)", 1.4);
+    // the small black tokin cap
+    shape(c, "M43 26 L43 19 L50 14 L57 19 L57 26 Q50 24 43 26 Z", "#1f1a17");
+    line(c, [[42.5, 25], [37, 29]], "#1f1a17", 1.2); line(c, [[57.5, 25], [63, 29]], "#1f1a17", 1.2);
+  }
+  function koi(c, o) {
+    // facing right, head on the right
+    shape(c, "M20 52 C12 40 6 38 2 41 C6 47 6 56 2 62 C7 65 13 62 20 54 Z", "#ff9e7a");
+    shape(c, "M40 40 C44 30 56 28 64 36 C56 36 48 37 40 40 Z", "#ff9e7a");
+    const body = new Path2D("M18 52 C26 36 56 30 78 44 C82 47 82 51 78 54 C60 66 32 66 18 52 Z");
+    c.fillStyle = "#fffaf3"; c.fill(body);
+    c.save(); c.clip(body);
+    oval(c, 44, 42, 12, 7, "#e8532f", -.15); oval(c, 67, 41, 9, 6, "#e8532f", .2); oval(c, 29, 55, 7, 5, "#e8532f");
+    c.strokeStyle = "rgba(180,90,60,.25)"; c.lineWidth = 1;
+    for (let x = 28; x < 70; x += 7) for (let y = 46; y < 62; y += 6) { c.beginPath(); c.arc(x, y, 3.2, .2, Math.PI - .2); c.stroke(); }
+    c.restore();
+    shape(c, "M52 56 C56 64 62 66 66 64 C62 60 58 57 54 55 Z", "#ff9e7a");
+    circ(c, 71, 46, 3, INK); circ(c, 72, 45, 1.1, "#ffffff");
+    line(c, [[79, 50], [88, 55]], "#e8532f", 1.4); line(c, [[78, 52], [85, 60]], "#e8532f", 1.4);
+    oval(c, 67, 52, 3.4, 2, BLUSH);
+    // dragon horns starting to grow
+    line(c, [[68, 39], [66, 29], [62, 26]], "#f3c34a", 2.4); line(c, [[66, 32], [70, 28]], "#f3c34a", 2);
+    line(c, [[74, 41], [76, 31], [80, 27]], "#f3c34a", 2.4); line(c, [[76, 34], [72, 30]], "#f3c34a", 2);
+  }
+  // night parade silhouettes, marching to the right
+  function marcher(c, kind, x, y, s, col, eye, t) {
+    c.save(); c.translate(x, y + Math.sin(t * 7 + x) * 1.4); c.scale(s, s);
+    c.fillStyle = col;
+    switch (kind) {
+      case "kasa": c.fill(new Path2D("M-16 -6 Q0 -30 16 -6 Q0 -9 -16 -6 Z")); c.fillRect(-1.2, -6, 2.4, 14); c.fillRect(-6, 7, 12, 2.5); circ(c, 0, -15, 2.2, eye); break;
+      case "lantern": c.fill(new Path2D("M-8 -24 C-14 -16 -14 0 -8 6 L8 6 C14 0 14 -16 8 -24 Z")); c.fillRect(-1, -30, 2, 7); circ(c, 0, -12, 2.4, eye); break;
+      case "oni": c.fill(new Path2D("M-10 8 C-12 -4 -10 -16 0 -18 C10 -16 12 -4 10 8 Z")); poly(c, [[-8, -15], [-11, -26], [-4, -17]], col); poly(c, [[8, -15], [11, -26], [4, -17]], col); c.fillRect(10, -14, 3, 22); circ(c, -4, -8, 1.8, eye); circ(c, 4, -8, 1.8, eye); break;
+      case "fox": c.fill(new Path2D("M-8 8 C-9 -2 -6 -10 0 -12 C6 -10 9 -2 8 8 Z")); poly(c, [[-7, -9], [-6, -20], [-1, -12]], col); poly(c, [[7, -9], [6, -20], [1, -12]], col); c.fill(new Path2D("M-8 4 C-18 2 -22 -10 -16 -16 C-16 -8 -12 -4 -6 -2 Z")); circ(c, -3, -5, 1.5, eye); circ(c, 3, -5, 1.5, eye); break;
+      case "ghost": c.fill(new Path2D("M-9 8 L-9 -6 C-9 -14 -4 -18 0 -18 C4 -18 9 -14 9 -6 L9 8 L5 5 L1 8 L-3 5 L-6 8 Z")); circ(c, -3, -8, 1.6, eye); circ(c, 3, -8, 1.6, eye); break;
+      default: c.fill(new Path2D("M0 8 C-8 8 -10 0 -7 -6 C-5 -10 -2 -14 -2 -22 C4 -16 8 -10 8 -2 C8 4 5 8 0 8 Z")); circ(c, -2, -1, 1.5, eye); circ(c, 2.5, -1, 1.5, eye);
+    }
+    c.restore();
+  }
+  function parade(c, W, base, s, t, col, eye, speed = 22) {
+    const kinds = ["lantern", "kasa", "oni", "fox", "wisp", "ghost", "kasa", "lantern", "oni", "fox", "ghost", "wisp"];
+    const gap = 46 * s, total = kinds.length * gap;
+    kinds.forEach((k, i) => {
+      const x = ((i * gap + t * speed * s) % (Math.max(W, total) + 60)) - 30;
+      marcher(c, k, x, base, s, col, eye, t);
+    });
+  }
+  function hyakki(c) {
+    circ(c, 66, 30, 18, "#f6edc8");
+    shape(c, "M0 80 C20 70 40 74 60 70 C78 66 90 70 100 66 L100 100 L0 100 Z", "#1a1430");
+    const kinds = ["lantern", "kasa", "oni", "fox", "ghost"];
+    kinds.forEach((k, i) => marcher(c, k, 12 + i * 19, 72 - i * 1.6, .82, "#1a1430", "#ffd36b", i));
+  }
+
+  // ---------- badge pictures ----------
+  const ART = {
+    ittan(c) { put(c, ittan, 50, 55, 1); },
+    shikigami(c) { put(c, shikigami, 50, 55, 1); },
+    tanuki(c) { put(c, tanuki, 50, 56, .96, { bundle: true }); },
+    hyakki(c) { hyakki(c); },
+    chochin(c) { put(c, chochin, 50, 54, .92); },
+    usagi(c) {
+      circ(c, 50, 46, 40, "#fbeeb8");
+      circ(c, 30, 30, 6, "#efdc98"); circ(c, 70, 24, 4, "#efdc98");
+      put(c, usagi, 50, 58, .92);
+    },
+    daruma(c) { put(c, daruma, 50, 55, .92); },
+    hitodama(c) { put(c, hitodama, 50, 56, .9); },
+    kitsunebi(c) {
+      for (let i = 0; i < 7; i++) { const a = Math.PI * (1.08 + i * .14); put(c, hitodama, 50 + Math.cos(a) * 38, 62 + Math.sin(a) * 40, .26, { col: i % 2 ? "#ffb35a" : "#7fd4ff", face: false }); }
+      put(c, kitsune, 50, 64, .62, { tails: 1 });
+    },
+    nekomata(c) { put(c, nekomata, 50, 55, .96); },
+    kappa(c) {
+      c.save(); c.globalAlpha = .35;
+      line(c, [[0, 86], [12, 83], [24, 86], [36, 83], [48, 86], [60, 83], [72, 86], [84, 83], [100, 86]], "#ffffff", 2.2);
+      c.restore();
+      put(c, kappa, 36, 56, .78);
+      line(c, [[42, 52], [88, 16]], "#7a4a24", 2.8);
+      line(c, [[88, 16], [84, 70]], "rgba(255,255,255,.9)", 1.2);
+      c.save(); c.translate(84, 76); c.rotate(.5); rr(c, -3.2, -9, 6.4, 18, 3, "#4f9a3e"); c.restore();
+      oval(c, 78, 84, 8, 4.4, "#ff9a3c", .2); circ(c, 74, 82.6, 1.2, INK);
+    },
+    kitsune(c) { put(c, kitsune, 48, 58, .96, { tails: 3 }); },
+    tengu(c) {
+      shape(c, "M0 80 L18 58 L30 70 L50 46 L70 68 L84 56 L100 70 L100 100 L0 100 Z", "rgba(10,40,25,.45)");
+      [[10, 74], [90, 72]].forEach(([x, y]) => poly(c, [[x, y - 18], [x - 7, y], [x + 7, y]], "rgba(10,40,25,.6)"));
+      sparkle(c, 84, 16, 4, "#ffe9a8");
+      put(c, tengu, 52, 57, .9);
+    },
+    kyubi(c) {
+      circ(c, 77, 21, 12, "#fbeeb8"); circ(c, 73, 18, 2.4, "#efdc98"); circ(c, 81, 25, 1.8, "#efdc98");
+      sparkle(c, 15, 20, 4, "#ffe9a8"); sparkle(c, 91, 50, 3, "#ffffff");
+      for (let i = 0; i < 9; i++) {
+        c.save(); c.translate(50, 82); c.rotate(-1.42 + i * (2.84 / 8)); c.scale(1.04, 1.04); c.translate(-4, 0);
+        const tail = new Path2D("M0 0 C12 -8 16 -30 8 -46 C18 -38 26 -30 25 -14 C24 -3 12 4 0 0 Z");
+        c.fillStyle = "#ffd977"; c.fill(tail);
+        c.strokeStyle = "rgba(170,110,30,.5)"; c.lineWidth = 1.3; c.stroke(tail);
+        shape(c, "M8 -46 C14 -42 20 -37 22 -30 C17 -33 12 -38 8 -46 Z", "#fffaf0");
+        c.restore();
+      }
+      put(c, kitsune, 50, 66, .66, { tails: 0, gold: true });
+    },
+    koi(c) {
+      c.fillStyle = "rgba(220,240,255,.9)"; c.fillRect(64, 26, 30, 62);
+      c.strokeStyle = "rgba(120,180,230,.7)"; c.lineWidth = 1.4;
+      [69, 75, 81, 87].forEach(x => { c.beginPath(); c.moveTo(x, 26); c.lineTo(x, 88); c.stroke(); });
+      torii(c, 79, 29, .27, "#d8432f", "#2b2420");
+      shape(c, "M0 86 C10 81 20 90 30 85 C40 80 50 89 60 85 C70 81 80 89 90 85 C94 83 97 83 100 84 L100 100 L0 100 Z", "#1d5a93");
+      [[66, 86, 7], [78, 88, 8], [92, 86, 7]].forEach(([x, y, r]) => oval(c, x, y, r, 3.4, "#ffffff"));
+      [[30, 80, 2.2], [24, 72, 1.8], [36, 70, 1.6], [20, 84, 2]].forEach(([x, y, r]) => circ(c, x, y, r, "rgba(255,255,255,.85)"));
+      put(c, koi, 40, 52, .74, { tilt: -1.0 });
+      sparkle(c, 54, 14, 5, "#ffe9a8"); sparkle(c, 40, 20, 3, "#ffffff");
+    },
+    takarabune(c) {
+      circ(c, 77, 28, 12, "#e8553b");
+      line(c, [[50, 68], [50, 10]], "#5a3518", 3);
+      rr(c, 27, 14, 46, 42, 3, "#fff6e3");
+      c.strokeStyle = "rgba(150,100,60,.3)"; c.lineWidth = 1;
+      [24, 46].forEach(y => { c.beginPath(); c.moveTo(27, y); c.lineTo(73, y); c.stroke(); });
+      circ(c, 50, 35, 12.5, "#c0392b");
+      kanji(c, "宝", 50, 36, 17, "#fffaf0");
+      oval(c, 33, 63, 7, 4.6, "#e8d29a"); line(c, [[30, 60], [30, 66]], "#a8874a", 1.2); line(c, [[36, 60], [36, 66]], "#a8874a", 1.2);
+      oval(c, 66, 63, 7, 4.6, "#e8d29a"); line(c, [[63, 60], [63, 66]], "#a8874a", 1.2); line(c, [[69, 60], [69, 66]], "#a8874a", 1.2);
+      oval(c, 44, 60.5, 4.6, 3, "#f7d872"); oval(c, 55, 60, 5, 3.2, "#f7d872"); oval(c, 50, 63, 6, 4, "#f3c34a");
+      shape(c, "M12 66 L84 66 C82 78 72 85 48 85 C26 85 15 78 12 66 Z", "#8c3b2e");
+      rr(c, 12, 65, 72, 4, 2, "#e9b949");
+      shape(c, "M82 68 C86 60 90 54 90 46 C93 50 94 56 92 60 C90 64 87 68 84 72 Z", "#e9b949");
+      circ(c, 89.5, 50.5, 1.3, INK);
+      c.save(); c.beginPath(); c.rect(0, 80, 100, 20); c.clip();
+      for (let row = 0; row < 3; row++) for (let i = -1; i < 9; i++) {
+        const x = i * 14 + (row % 2) * 7, y = 88 + row * 6;
+        [8, 5.5, 3].forEach((r, j) => { c.beginPath(); c.arc(x, y, r, Math.PI, TAU2); c.fillStyle = j % 2 ? "#2f7fa8" : "#e6f4fb"; c.fill(); });
+      }
+      c.restore();
+    },
+    maneki(c) { put(c, maneki, 50, 56, .96); },
+    noppera(c) {
+      put(c, noppera, 46, 58, .9);
+      rr(c, 62, 10, 32, 18, 9, "rgba(255,255,255,.95)");
+      poly(c, [[68, 26], [64, 34], [74, 27]], "rgba(255,255,255,.95)");
+      [70.5, 78, 85.5].forEach(x => circ(c, x, 19, 2.2, "#7b7468"));
+    },
+    yurei(c) {
+      put(c, yurei, 26, 44, .5, { alpha: .75 }); put(c, yurei, 76, 40, .46, { alpha: .75 });
+      put(c, yurei, 50, 60, .86);
+    }
+  };
+
+  // ---------- the card: an ofuda-style talisman with a red seal ----------
+  function paintStamp(cv, b) {
+    const W = 120, H = 144, c = cv.getContext("2d");
+    const k = cv.width / W;
+    c.setTransform(k, 0, 0, k, 0, 0);
+    c.clearRect(0, 0, W, H);
+    rr(c, 2, 2, 116, 140, 7, "#f7efdf");
+    c.save(); rrPath(c, 2, 2, 116, 140, 7); c.clip();
+    c.strokeStyle = "rgba(170,140,100,.18)"; c.lineWidth = .7;
+    for (let i = 0; i < 18; i++) { const y = (i * 37) % 140, x = (i * 53) % 120; c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + 8, y + 3, x + 16, y + 1); c.stroke(); }
+    c.restore();
+    c.strokeStyle = "#b8372b"; c.lineWidth = 1.6; rrPath(c, 6, 6, 108, 132, 4); c.stroke();
+    c.save();
+    rrPath(c, 10, 10, 100, 100, 3); c.clip();
+    c.fillStyle = b.bg; c.fillRect(10, 10, 100, 100);
+    c.globalAlpha = .12; c.strokeStyle = "#ffffff"; c.lineWidth = 1.2;
+    for (let r = 10; r <= 34; r += 8) { c.beginPath(); c.arc(30, 110, r, Math.PI, TAU2); c.stroke(); c.beginPath(); c.arc(90, 110, r, Math.PI, TAU2); c.stroke(); }
+    c.globalAlpha = 1;
+    circ(c, 60, 60, 40, mix(b.bg, "#ffffff", .16));
+    c.save(); c.translate(10, 10); ART[b.art](c); c.restore();
+    c.restore();
+    c.save(); c.translate(26, 26); c.rotate(-.08);
+    rr(c, -13, -13, 26, 26, 4, "#c0392b");
+    c.strokeStyle = "rgba(255,255,255,.55)"; c.lineWidth = 1; rrPath(c, -10.5, -10.5, 21, 21, 3); c.stroke();
+    c.fillStyle = "#fffaf0"; c.font = `700 ${b.val.length > 2 ? 11 : 14}px 'Kaisei Decol', serif`; c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText(b.val || "福", 0, 1);
+    c.restore();
+    kanji(c, b.kanji, 60, 125, b.kanji.length > 4 ? 13 : 16, "#231c17");
+    c.textAlign = "left"; c.textBaseline = "alphabetic";
+  }
+
+  // ---------- the verdict scene: the worse the fortune, the more yokai ----------
+  function sky(c, W, H, a, b) { const g = c.createLinearGradient(0, 0, 0, H); g.addColorStop(0, a); g.addColorStop(1, b); c.fillStyle = g; c.fillRect(0, 0, W, H); }
+  function hill(c, W, H, y, amp, ph, f) {
+    c.beginPath(); c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 16) c.lineTo(x, y + Math.sin(x / 70 + ph) * amp + Math.sin(x / 31 + ph * 2) * amp * .35);
+    c.lineTo(W, H); c.closePath(); c.fillStyle = f; c.fill();
+  }
+  function torii(c, x, base, s, col, top) {
+    c.save(); c.translate(x, base); c.scale(s, s);
+    c.fillStyle = col;
+    c.fillRect(-32, -78, 8, 78); c.fillRect(24, -78, 8, 78);
+    c.fillRect(-40, -66, 80, 7);
+    c.fill(new Path2D("M-50 -86 Q0 -76 50 -86 L48 -78 Q0 -70 -48 -78 Z"));
+    c.fillStyle = top || "#2b2420"; c.fill(new Path2D("M-54 -92 Q0 -80 54 -92 L52 -86 Q0 -76 -52 -86 Z"));
+    c.fillStyle = col; c.fillRect(-4, -78, 8, 12);
+    c.restore();
+  }
+  function petals(c, W, H, t, n, col) {
+    for (let i = 0; i < n; i++) {
+      const x = ((i * 67 + t * (14 + i % 5 * 3)) % (W + 40)) - 20, y = ((i * 41 + t * (18 + i % 4 * 4)) % (H + 20)) - 10;
+      c.save(); c.translate(x, y); c.rotate(t + i); oval(c, 0, 0, 3.6, 2.2, col); c.restore();
+    }
+  }
+  function bubble(c, x, y, w, h, text) {
+    rr(c, x, y, w, h, h / 2, "rgba(255,255,255,.95)");
+    poly(c, [[x + 10, y + h - 1], [x + 4, y + h + 9], [x + 18, y + h - 1]], "rgba(255,255,255,.95)");
+    c.fillStyle = INK; c.font = "700 17px 'Kaisei Decol', serif"; c.textAlign = "center"; c.textBaseline = "middle";
+    c.fillText(text, x + w / 2, y + h / 2 + 1);
+    c.textAlign = "left"; c.textBaseline = "alphabetic";
+  }
+  const sway = (t, ph, a) => Math.sin(t * 2 + ph) * a;
+  function sceneYokai(c, W, H, level, t) {
+    switch (level) {
+      case "great": {
+        sky(c, W, H, "#cfe7ff", "#fff3e2");
+        circ(c, 400, 46, 22, "#ffd58a");
+        hill(c, W, H, 140, 7, 1, "#cfe2c2"); hill(c, W, H, 158, 5, 3, "#b8d6ae");
+        torii(c, 412, 168, .9, "#d8432f");
+        c.save(); c.strokeStyle = "#6b4a3a"; c.lineWidth = 5; c.lineCap = "round"; c.beginPath(); c.moveTo(0, 18); c.quadraticCurveTo(80, 30, 150, 14); c.stroke(); c.restore();
+        [[30, 20], [62, 28], [96, 24], [128, 16], [146, 22], [80, 14]].forEach(([x, y]) => { for (let k = 0; k < 5; k++) oval(c, x + Math.cos(k * 1.26) * 5, y + Math.sin(k * 1.26) * 5, 4, 3, "#ffc4d3", k * 1.26); circ(c, x, y, 2, "#ff8fab"); });
+        petals(c, W, H, t, 16, "#ffc4d3");
+        put(c, maneki, 228, 106 + sway(t, 0, 2), .9);
+        put(c, hitodama, 466, 70 + sway(t, 1, 4), .28, { alpha: .45 });
+        bubble(c, 418, 22, 46, 26, "bye");
+        break;
+      }
+      case "fine": {
+        sky(c, W, H, "#ffe6c4", "#f7efe6");
+        hill(c, W, H, 140, 7, 2, "#e9d6c2"); hill(c, W, H, 158, 5, 4, "#dcc3ac");
+        line(c, [[0, 20], [W, 28]], "#5a3b26", 1.6);
+        put(c, chochin, 120, 52, .44, { plain: true }); put(c, chochin, 380, 56, .44, { plain: true });
+        c.save(); c.translate(240, 24); c.rotate(sway(t, 0, .12)); put(c, chochin, 0, 62, .9); c.restore();
+        torii(c, 60, 168, .7, "#d8432f");
+        break;
+      }
+      case "quiet": {
+        sky(c, W, H, "#ffc7a2", "#dccbf0");
+        circ(c, 372, 130, 28, "#ff9d6b");
+        hill(c, W, H, 136, 8, 1.4, "#d9b7c6"); hill(c, W, H, 156, 6, 3.4, "#c79fb6");
+        line(c, [[0, 18], [W, 26]], "#5a3b26", 1.6);
+        c.save(); c.translate(170, 22); c.rotate(sway(t, 0, .1)); put(c, chochin, 0, 56, .78); c.restore();
+        put(c, kasa, 300, 104 - Math.abs(Math.sin(t * 3)) * 16, .86, { tilt: sway(t, 1, .08) });
+        bubble(c, 330, 26, 46, 26, "...");
+        break;
+      }
+      case "unusual": {
+        sky(c, W, H, "#262b57", "#6b5a8e");
+        circ(c, 92, 40, 16, "#fff3d1");
+        hill(c, W, H, 138, 8, .8, "#2e2a54");
+        torii(c, 380, 170, 1.05, "#7a2a2e", "#1d1830");
+        for (let i = 0; i < 3; i++) { c.fillStyle = `rgba(255,255,255,${.06 + i * .02})`; c.beginPath(); c.ellipse(((t * 12 + i * 170) % 640) - 80, 138 + i * 9, 120, 6, 0, 0, TAU2); c.fill(); }
+        rr(c, 0, 164, W, 16, 0, "#1d1830");
+        put(c, noppera, 88, 108 + sway(t, 0, 2), .62);
+        put(c, kasa, 180, 104 - Math.abs(Math.sin(t * 3)) * 12, .62);
+        put(c, chochin, 268, 74 + sway(t, 2, 4), .58);
+        put(c, hitodama, 222, 54 + sway(t, 3, 6), .34, { col: "#7fd4ff" });
+        put(c, hitodama, 330, 60 + sway(t, 4, 6), .3, { col: "#7fd4ff" });
+        break;
+      }
+      case "market": {
+        sky(c, W, H, "#12091a", "#3d1426");
+        for (let i = 0; i < 22; i++) circ(c, (i * 97) % W, (i * 53) % 100, 1.1, `rgba(255,255,255,${.3 + .3 * Math.sin(t * 2 + i)})`);
+        c.save(); c.shadowColor = "#ff5a3c"; c.shadowBlur = 30; circ(c, 240, 70, 46, "#d8432f"); c.restore();
+        circ(c, 252, 60, 8, "rgba(0,0,0,.12)"); circ(c, 226, 84, 6, "rgba(0,0,0,.12)");
+        torii(c, 66, 170, .95, "#2a0f18", "#1a0910");
+        shape(c, `M0 ${H} L0 146 C80 132 160 140 240 134 C320 128 400 140 ${W} 132 L${W} ${H} Z`, "#1a0b14");
+        parade(c, W, 134, 1.25, t, "#1a0b14", "#ffd36b", 26);
+        for (let i = 0; i < 6; i++) put(c, hitodama, 60 + i * 74 + sway(t, i, 10), 40 + (i % 3) * 16 + sway(t, i + 2, 6), .22, { col: i % 2 ? "#7fd4ff" : "#c7a6ff", face: false });
+        break;
+      }
+      case "early": {
+        sky(c, W, H, "#d6d9f6", "#fbefe2");
+        circ(c, 404, 42, 18, "#fff3cf"); circ(c, 412, 36, 15, "#d6d9f6");
+        hill(c, W, H, 140, 7, .6, "#cfd3ea"); hill(c, W, H, 158, 5, 2.6, "#bfc4e2");
+        put(c, tanuki, 220, 108 + sway(t, 0, 1.5), .78, { sleep: true });
+        c.fillStyle = "rgba(42,34,37,.55)"; c.font = "700 16px 'Kaisei Decol', serif";
+        for (let i = 0; i < 3; i++) { const q = ((t * .5 + i / 3) % 1); c.globalAlpha = 1 - q; c.fillText("z", 258 + q * 30 + i * 4, 76 - q * 40); }
+        c.globalAlpha = 1;
+        break;
+      }
+      default: {
+        sky(c, W, H, "#ebe2ff", "#fff7ec");
+        hill(c, W, H, 140, 7, 1, "#e4dbf2"); hill(c, W, H, 158, 5, 3, "#d8cdea");
+        torii(c, 400, 168, .8, "#d8432f");
+        c.save(); c.translate(230, 96 + sway(t, 0, 2));
+        shape(c, "M-24 30 L-24 -12 L0 -24 L24 -12 L24 30 L0 40 Z", "#8a5a33");
+        shape(c, "M0 -24 L24 -12 L24 30 L0 40 Z", "#6e4424");
+        rr(c, -3, -46, 6, 26, 2, "#e9d3b0");
+        kanji(c, "御神籤", -12, -2, 12, "#fff6e3", true);
+        c.restore();
+        bubble(c, 268, 28, 34, 28, "?");
+      }
+    }
+  }
+
+  const THEME = {
+    key: "yokai",
+    name: "Am I Being Ghosted?",
+    fontsToLoad: ["700 25px 'Kaisei Decol'", "400 16px 'Yuji Boku'", "400 16px 'Atkinson Hyperlegible'"],
+    levels: {
+      start:   { name: "Draw your fortune", kanji: "?", color: "--early", msg: "Enter your numbers to draw your job hunt fortune." },
+      early:   { name: "Too early for ghosts", kanji: "待", color: "--early", msg: "Replies usually take one to three weeks, and most of your applications have not had that time yet. The tanuki says wait and check back in a week." },
+      great:   { name: "大吉 Ghost-free", kanji: "大吉", en: "Ghost-free", color: "--great", msg: "Great blessing. Your rate is likely above the typical 3% to 6%. The yokai are leaving. Whatever you are doing, keep doing it.", story: "One story places the first beckoning cat at Gotokuji, a small temple in Tokyo. A lord riding past saw the temple cat raise its paw as if to wave him in. He stepped inside just before a storm broke. He became the temple's patron, and the cat became a symbol of good luck that now sits in shop windows everywhere." },
+      fine:    { name: "吉 Normal ghosting", kanji: "吉", en: "Normal ghosting", color: "--ok", msg: "Blessing. Everyone gets ghosted, and your numbers are right in the normal range. It's not you. One friendly lantern is normal." },
+      quiet:   { name: "末吉 A little haunted", kanji: "末吉", en: "A little haunted", color: "--quiet", msg: "Future blessing. A few more yokai than usual, but plenty of people with a typical rate go through the same stretch. Keep sending before you change much." },
+      unusual: { name: "凶 Ghost town", kanji: "凶", en: "Ghost town", color: "--unusual", msg: "Bad luck, and probably more than luck. Fewer replies than typical. Look at the roles you pick and how your CV reads, and change one thing at a time." },
+      market:  { name: "大凶 Haunted market?", kanji: "大凶", en: "Haunted market?", color: "--bad", msg: "Great curse. Far below typical. Maybe the market really is haunted. It could also be your CV or the roles you pick, and those are the part you control, so check them first." }
+    },
+    badges: {
+      a10:  { t: "Ittan-momen",   kanji: "一反木綿",   art: "ittan",     bg: "#2f4f86", val: "10",  f: "A strip of cotton that flies through the night. Your first ten applications are airborne.", story: "In Kimotsuki, in the far south of Kyushu, people told of a strip of white cotton about ten metres long that flew through the evening sky. It would drop out of nowhere and wrap itself around a traveller's face, so children were told to be home before dark. Modern manga turned it into a friendly creature that gives its friends a ride." },
+      a25:  { t: "Shikigami",     kanji: "式神",       art: "shikigami", bg: "#7a5bb0", val: "25",  f: "Paper spirits sent out on errands. Twenty-five of them now carry your name.", story: "Shikigami are spirits that onmyoji, the court diviners of old Kyoto, called up to run their errands. The most famous onmyoji, Abe no Seimei, is said to have kept his shikigami hidden under the Ichijo Modori bridge because his wife was afraid of them. In rituals they are often cut from paper in the shape of a person and sent out to do their work." },
+      a50:  { t: "Tanuki",        kanji: "狸",         art: "tanuki",    bg: "#c9853b", val: "50",  f: "The tanuki hauls a bundle bigger than itself and keeps smiling. Fifty applications on its back.", story: "The tanuki is a real animal, a raccoon dog, and in folklore a cheerful shapeshifter. It puts a leaf on its head to change form, and in one well-known tale a tanuki turns itself into a tea kettle. Statues of tanuki with a straw hat, a big belly and a bottle of sake stand outside shops and restaurants all over Japan to bring in business." },
+      a100: { t: "Hyakki Yagyo",  kanji: "百鬼夜行",   art: "hyakki",    bg: "#3b2a5c", val: "100", f: "The night parade of a hundred demons. You sent a hundred applications, so the parade is yours.", story: "On certain nights in old Kyoto, a hundred demons were said to march through the streets. Anyone who saw the procession risked their life unless they carried a protective sutra. A famous scroll from the Muromachi period shows the marchers as old household things that came to life, umbrellas, pots and lanterns among them." },
+      d14:  { t: "Chochin-obake", kanji: "提灯お化け", art: "chochin",   bg: "#2c3d6e", val: "14",  f: "An old paper lantern that came to life. Two weeks of evenings lit by your search.", story: "Old Japanese belief held that a tool used for a hundred years could gain a soul. These objects are called tsukumogami, and the paper lantern is the best known of them. Its split paper turns into a grinning mouth with a long tongue, and an eye opens above it. It mostly enjoys startling people on dark paths and rarely does real harm." },
+      d30:  { t: "Tsuki Usagi",   kanji: "月の兎",     art: "usagi",     bg: "#1f2d5c", val: "30",  f: "In Japan the rabbit on the moon pounds rice cakes. A full month of steady pounding.", story: "An old Buddhist tale tells of a rabbit, a monkey and a fox who met a starving old man. The monkey and the fox found him food. The rabbit had nothing to give, so it jumped into the fire to offer itself. The old man was a god in disguise, and he placed the rabbit on the moon so it would be remembered. In Japan the rabbit is said to be pounding rice cakes up there." },
+      d60:  { t: "Daruma",        kanji: "達磨",       art: "daruma",    bg: "#e9c46a", val: "60",  f: "Fall down seven times, get up eight. Sixty days and you are still standing.", story: "Daruma dolls are modelled on Bodhidharma, the monk who brought Zen to China and is said to have meditated facing a wall for nine years. The doll has no arms or legs and a weighted base, so it always rolls back upright. People paint in one eye when they set a goal and the second eye when they reach it. Save the second eye for the day you sign a contract." },
+      s3:   { t: "Hitodama",      kanji: "人魂",       art: "hitodama",  bg: "#22385e", val: "3",   f: "A small soul flame. Three days in a row keeps it burning.", story: "Hitodama are balls of pale blue fire with a trailing tail, seen floating at night near graveyards and old houses. In folklore they are souls that have just left the body and drift around for a while before moving on. They are quiet and slow, and they usually vanish if you try to follow one." },
+      s7:   { t: "Kitsunebi",     kanji: "狐火",       art: "kitsunebi", bg: "#4a2346", val: "7",   f: "Fox fires light up one by one. Seven days in a row and the whole row is lit.", story: "Kitsunebi are strange lights that appear in a row across the fields at night, said to be lit by foxes. The most famous ones gathered at Oji, north of old Edo. Every New Year's Eve, foxes from the whole region were believed to meet under a big tree there before visiting the Inari shrine, and Hiroshige painted their glowing gathering." },
+      log:  { t: "Nekomata",      kanji: "猫又",       art: "nekomata",  bg: "#6b8f71", val: "5",   f: "A cat so old it grew a second tail and learned to keep records. Five check-ins in its ledger.", story: "Folklore says that a cat which lives long enough grows a second tail and becomes a nekomata. It can walk on two legs, talk and play tricks on people. In Tsurezuregusa, a book of essays from the 1330s, a monk walking home at night was sure a nekomata had leapt at him. It turned out to be his own dog, happy to see him." },
+      k1:   { t: "Kappa",         kanji: "河童",       art: "kappa",     bg: "#2f7f95", val: "1",   f: "The kappa fishes with a cucumber. Something finally took the bait.", story: "The kappa lives in rivers and ponds. It has a beak, a shell on its back and a dish of water on top of its head that holds all its strength. It loves cucumbers, which is why cucumber sushi rolls are called kappa maki. It is also very polite, so if you bow to a kappa it bows back and spills the water from its head." },
+      k3:   { t: "Kitsune",       kanji: "三尾の狐",   art: "kitsune",   bg: "#b8372b", val: "3",   f: "A fox gains a tail as it gains power. Three interviews, three tails.", story: "Foxes are the messengers of Inari, the god of rice and prosperity, and stone foxes guard Inari shrines all over Japan. Folklore says a fox grows another tail as it gains age and wisdom. The most powerful have nine tails and are said to be a thousand years old. Three tails is still young, but clearly on the way up." },
+      k5:   { t: "Tengu",         kanji: "天狗",       art: "tengu",     bg: "#2f5d46", val: "5",   f: "The tengu of the mountains train anyone brave enough to climb up to them. Five interviews of practice so far.", story: "Tengu are mountain spirits with red faces and very long noses, dressed like the monks who trained alone in the mountains. They can fly, and one wave of their feather fan whips up a storm. The great tengu of Mount Kurama, north of Kyoto, is said to have taught swordsmanship to a boy called Ushiwakamaru, who grew up to be the famous general Minamoto no Yoshitsune." },
+      k9:   { t: "Kyubi",         kanji: "九尾の狐",   art: "kyubi",     bg: "#5c1f2e", val: "9",   f: "Nine interviews, nine tails. The fox has come into its full power.", story: "The best-known nine-tailed fox took the form of Tamamo-no-Mae, a beautiful and brilliant lady at the imperial court in the twelfth century. When the emperor fell ill, a court diviner revealed her true shape, and she fled to the plains of Nasu. There she was hunted down and turned into a poisonous boulder called the Sessho-seki, the killing stone. In 2022 the real stone was found split in two, and the news went around the world." },
+      o1:   { t: "Koi",           kanji: "鯉",         art: "koi",       bg: "#2a6fb0", val: "1",   f: "A first offer. The koi made it up the waterfall, and its dragon horns are starting to show.", story: "An old Chinese legend tells of carp swimming up the Yellow River to a waterfall called the Dragon Gate. Most of them give up. The one that leaps all the way to the top turns into a dragon. In Japan the word toryumon, the dragon gate, still means the one big step into a career, and in May families fly carp streamers called koinobori so their children grow up strong and successful." },
+      o2:   { t: "Takarabune",    kanji: "宝船",       art: "takarabune", bg: "#0f6e74", val: "2",  f: "Two offers. The treasure ship has come in, and now you get to choose.", story: "At New Year the Seven Lucky Gods are said to sail into port on a treasure ship loaded with rice, gold coins and other riches. People slip a picture of the ship under their pillow, hoping for a lucky first dream of the year. Many of these pictures carry a short poem that reads the same forwards and backwards." },
+      great:{ t: "Maneki-neko",   kanji: "招き猫",     art: "maneki",    bg: "#d9a441", val: "",    f: "The beckoning cat brings good fortune. Your rate is likely above the typical 3% to 6%." },
+      g20:  { t: "Noppera-bo",    kanji: "のっぺらぼう", art: "noppera", bg: "#8a8fa6", val: "20",  f: "The faceless one. Twenty applications and nobody has shown you a face yet. Statistically normal, still rude.", story: "From behind, the noppera-bo looks like an ordinary person. When it turns around, its face is completely smooth. In a story written down by Lafcadio Hearn, a man finds a crying woman on a dark slope in Tokyo, and she has no face. He runs to a noodle stall for help, and the seller asks if it looked like this before wiping his own face blank." },
+      g50:  { t: "Yurei",         kanji: "幽霊",       art: "yurei",     bg: "#4b4368", val: "50",  f: "A crowd of restless spirits. Fifty without an interview is worth a fresh look at your CV and the roles you pick.", story: "Yurei are the spirits of people who died with strong feelings left over, love, sorrow or a grudge, and cannot rest. They wear a white burial kimono with a small triangle of cloth on the forehead, and they have long black hair and limp hands. The painter Maruyama Okyo is often credited with taking away their legs. Summer is their season, when people in Japan tell ghost stories to cool down." }
+    },
+    scene: sceneYokai,
+    spookCount: { start: 0, great: 0, fine: 1, early: 1, quiet: 2, unusual: 4, market: 9 },
+    sprite(c, x, y, s, a, t) { put(c, hitodama, x, y, s * 1.1, { alpha: a, tilt: Math.sin(t * 3) * .25, col: Math.floor(t * 10) % 2 ? "#7fd4ff" : "#a9e4ff" }); },
+    confetti: { shape: "petal", extra: ["#ffc4d3", "#ff9fb8", "#ffe0e8", "#f3c34a", "#d8432f"] },
+    rv: {
+      share: "Share my fortune",
+      envText: (r) => `Day ${r.days}`,
+      postmark: (L, date) => ({ top: date, big: L.kanji, small: L.en || L.name })
+    },
+    card: {
+      ink: "#231c17", muted: "#6f6257", accent: "#b8372b", label: "AM I BEING GHOSTED?",
+      level: { start: "#7b7468", early: "#7b7468", great: "#2b5c9b", fine: "#3d7a57", quiet: "#b0821f", unusual: "#c4612a", market: "#9e2a3a" },
+      font: { display: "'Kaisei Decol', 'Hiragino Mincho ProN', serif", body: "'Atkinson Hyperlegible', sans-serif", mono: "'Courier Prime', monospace" },
+      frame(ctx, W, H) {
+        ctx.fillStyle = "#b8372b"; ctx.fillRect(0, 0, W, H);
+        const spots = [];
+        for (let x = 46; x < W; x += 70) spots.push([x, 17], [x + 34, H - 17]);
+        for (let y = 80; y < H - 40; y += 70) spots.push([17, y], [W - 17, y + 34]);
+        spots.forEach(([x, y]) => put(ctx, chochin, x, y + 2, .26, { paper: "#fff2d6", band: "#2b2420" }));
+        ctx.fillStyle = "#f7efdf";
+        roundRect(ctx, 34, 34, W - 68, H - 68, 10); ctx.fill();
+        ctx.strokeStyle = "#b8372b"; ctx.lineWidth = 3;
+        roundRect(ctx, 48, 48, W - 96, H - 96, 6); ctx.stroke();
+      },
+      decor(ctx, s, W, H, sc) {
+        const r = 128, cx = W - 96 - r, cy = 214;
+        ctx.save();
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU2); ctx.clip();
+        const side = sc.height;
+        ctx.drawImage(sc, (sc.width - side) / 2, 0, side, side, cx - r, cy - r, 2 * r, 2 * r);
+        ctx.restore();
+        ctx.lineWidth = 14; ctx.strokeStyle = "#5a3b26";
+        ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, TAU2); ctx.stroke();
+        ctx.lineWidth = 2; ctx.strokeStyle = "#c9a24a";
+        ctx.beginPath(); ctx.arc(cx, cy, r - 4, 0, TAU2); ctx.stroke();
+      },
+      pill(ctx, s, L, x, y, maxW) {
+        const big = L.kanji && L.kanji !== "?" ? L.kanji : "";
+        let tx = x;
+        if (big) {
+          const w = big.length > 1 ? 150 : 96;
+          ctx.save(); ctx.translate(x + w / 2, y + 46); ctx.rotate(-.04);
+          ctx.fillStyle = "#c0392b"; roundRect(ctx, -w / 2, -46, w, 92, 10); ctx.fill();
+          ctx.strokeStyle = "rgba(255,255,255,.6)"; ctx.lineWidth = 3; roundRect(ctx, -w / 2 + 7, -39, w - 14, 78, 6); ctx.stroke();
+          kanji(ctx, big, 0, 3, big.length > 1 ? 56 : 62, "#fffaf0");
+          ctx.restore();
+          tx = x + w + 26;
+        }
+        ctx.fillStyle = this.level[s.level];
+        ctx.font = `700 50px ${this.font.display}`;
+        ctx.fillText(L.en || L.name, tx, y + 62);
+      }
+    }
+  };
+
+
+  // ---------- statistics ----------
+  const TAU = 7;              // days; most invites arrive within ~3 weeks (95% by day 21)
+  const LOW = 0.03, HIGH = 0.06;
+  const STORE_KEY = "iijm.v1";
+
+  function logGamma(z) {
+    const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+      771.32342877765313, -176.61502916214059, 12.507343278686905,
+      -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - logGamma(1 - z);
+    z -= 1;
+    let x = c[0];
+    for (let i = 1; i < 9; i++) x += c[i] / (z + i);
+    const t = z + 7.5;
+    return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+  }
+  function betacf(a, b, x) {
+    const FPMIN = 1e-300, EPS = 3e-14;
+    const qab = a + b, qap = a + 1, qam = a - 1;
+    let c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    d = 1 / d;
+    let h = d;
+    for (let m = 1; m <= 400; m++) {
+      const m2 = 2 * m;
+      let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d; h *= d * c;
+      aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d;
+      const del = d * c;
+      h *= del;
+      if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+  }
+  // Regularised incomplete beta I_x(a, b) = P(rate < x) for rate ~ Beta(a, b)
+  function ibeta(x, a, b) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    const lbt = logGamma(a + b) - logGamma(a) - logGamma(b) + a * Math.log(x) + b * Math.log(1 - x);
+    const bt = Math.exp(lbt);
+    if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
+    return 1 - bt * betacf(b, a, 1 - x) / b;
+  }
+  function betaQuantile(p, a, b) {
+    let lo = 0, hi = 1;
+    for (let i = 0; i < 80; i++) {
+      const mid = (lo + hi) / 2;
+      if (ibeta(mid, a, b) < p) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+  // Share of the eventual invites that have arrived, averaged over
+  // applications spread evenly across D days, when an invite comes after
+  // an exponential wait with mean TAU days.
+  function maturity(D) {
+    if (D <= 0) return 0;
+    return 1 - (TAU / D) * (1 - Math.exp(-D / TAU));
+  }
+  function assess(days, n, k) {
+    const neff = k + (n - k) * maturity(days);
+    const a = 1 + k, b = 1 + Math.max(0, neff - k);
+    const pLow = ibeta(LOW, a, b);
+    const pHigh = 1 - ibeta(HIGH, a, b);
+    const lo = betaQuantile(0.025, a, b), hi = betaQuantile(0.975, a, b);
+    let level;
+    if (n === 0) level = "start";
+    else if (k === 0 && neff < 5) level = "early";
+    else if (pHigh >= 0.8) level = "great";
+    else if (pLow < 0.5) level = "fine";
+    else if (pLow < 0.8) level = "quiet";
+    else if (pLow < 0.95) level = "unusual";
+    else level = "market";
+    return { days, n, k, neff, pLow, pHigh, lo, hi, level,
+      zeroLow: Math.pow(1 - HIGH, neff), zeroHigh: Math.pow(1 - LOW, neff),
+      expLow: neff * LOW, expHigh: neff * HIGH };
+  }
+
+  const LEVELS = THEME.levels;
+
+  // ---------- badges ----------
+  // Each badge is drawn as a postage stamp: art picks the picture, bg the stamp colour, val the denomination.
+  const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+  const BADGES = [
+    { id: "a10",  d: "Sent 10 applications",           ok: s => s.n >= 10,         prog: s => [s.n, 10],          need: m => `${plural(m, "more application")} to go` },
+    { id: "a25",  d: "Sent 25 applications",           ok: s => s.n >= 25,         prog: s => [s.n, 25],          need: m => `${plural(m, "more application")} to go` },
+    { id: "a50",  d: "Sent 50 applications",           ok: s => s.n >= 50,         prog: s => [s.n, 50],          need: m => `${plural(m, "more application")} to go` },
+    { id: "a100", d: "Sent 100 applications",          ok: s => s.n >= 100,        prog: s => [s.n, 100],         need: m => `${plural(m, "more application")} to go` },
+    { id: "d14",  d: "14 days of applying",            ok: s => s.days >= 14,      prog: s => [s.days, 14],       need: m => `${plural(m, "more day")} to go` },
+    { id: "d30",  d: "30 days of applying",            ok: s => s.days >= 30,      prog: s => [s.days, 30],       need: m => `${plural(m, "more day")} to go` },
+    { id: "d60",  d: "60 days and still going",        ok: s => s.days >= 60,      prog: s => [s.days, 60],       need: m => `${plural(m, "more day")} to go` },
+    { id: "s3",   d: "3 day streak",                   ok: s => s.streak >= 3,     prog: s => [s.streak, 3],      need: m => `Check in ${plural(m, "more day")} in a row` },
+    { id: "s7",   d: "7 day streak",                   ok: s => s.streak >= 7,     prog: s => [s.streak, 7],      need: m => `Check in ${plural(m, "more day")} in a row` },
+    { id: "log",  d: "Checked in on 5 different days", ok: s => s.loggedDays >= 5, prog: s => [s.loggedDays, 5],  need: m => `Check in on ${plural(m, "more day")}` },
+    { id: "k1",   d: "Got a first interview",          ok: s => s.k >= 1,          prog: s => [s.k, 1],           need: () => "Unlocks with your first interview" },
+    { id: "k3",   d: "Got 3 interviews",               ok: s => s.k >= 3,          prog: s => [s.k, 3],           need: m => `${plural(m, "more interview")} to go` },
+    { id: "k5",   d: "Got 5 interviews",               ok: s => s.k >= 5,          prog: s => [s.k, 5],           need: m => `${plural(m, "more interview")} to go` },
+    { id: "k9",   d: "Got 9 interviews",               ok: s => s.k >= 9,          prog: s => [s.k, 9],           need: m => `${plural(m, "more interview")} to go` },
+    { id: "o1",   d: "Got a first offer",              ok: s => s.o >= 1,          prog: s => [s.o, 1],           need: () => "Unlocks with your first offer" },
+    { id: "o2",   d: "Got 2 offers",                   ok: s => s.o >= 2,          prog: s => [s.o, 2],           need: m => `${plural(m, "more offer")} to go` },
+    { id: "great",d: "Rate likely above typical",      ok: s => s.level === "great" },
+    { id: "g20",  d: "20 sent, still no interview",    ok: s => s.n >= 20 && s.k === 0, prog: s => s.k === 0 ? [s.n, 20] : null, funny: true, need: m => `${plural(m, "more application")} without an interview` },
+    { id: "g50",  d: "50 sent, still no interview",    ok: s => s.n >= 50 && s.k === 0, prog: s => s.k === 0 ? [s.n, 50] : null, funny: true, need: m => `${plural(m, "more application")} without an interview` }
+  ].filter(b => THEME.badges[b.id]).map(b => Object.assign(b, THEME.badges[b.id]));
+  // badges you get by keeping at it, offered as the next goal
+  const NEXT_IDS = ["a10", "a25", "a50", "a100", "d14", "d30", "d60", "s3", "s7", "log"];
+  // most notable first, for the reveal stamps and the share card
+  const RANK = ["o2", "o1", "great", "k9", "k5", "g50", "g20", "a100", "k3", "k1", "d60", "s7", "a50", "d30", "s3", "a25", "log", "d14", "a10"];
+  const byRank = list => [...list].sort((x, y) => RANK.indexOf(x.id) - RANK.indexOf(y.id));
+  // the earned badges that go on the share card, best first
+  const cardBadges = s => byRank(earnedList(s).filter(b => !cardHide.has(b.id)));
+  const tiltOf = id => { let h = 7; for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) % 997; return (h % 9) - 4; };
+
+  const stampScale = () => Math.min(3, Math.max(2, window.devicePixelRatio || 1));
+  function stampCanvas(b) {
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(120 * stampScale());
+    cv.height = Math.round(144 * stampScale());
+    cv.setAttribute("aria-hidden", "true");
+    paintStamp(cv, b);
+    return cv;
+  }
+
+  // ---------- storage (per browser, optional) ----------
+  function loadStore() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      const s = JSON.parse(raw);
+      if (!s || !Array.isArray(s.log) || !s.start) return null;
+      return s;
+    } catch (e) { return null; }
+  }
+  function saveStore(s) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); return true; }
+    catch (e) { return false; }
+  }
+  function clearStore() { try { localStorage.removeItem(STORE_KEY); } catch (e) {} }
+
+  // ---------- dates ----------
+  const DAY = 86400000;
+  function todayStr(d = new Date()) {
+    const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, "0"), dd = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${dd}`;
+  }
+  function parseDay(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); }
+  function daysBetween(a, b) { return Math.round((parseDay(b) - parseDay(a)) / DAY); }
+  function addDays(s, n) { const d = parseDay(s); d.setDate(d.getDate() + n); return todayStr(d); }
+
+  function streakInfo(log) {
+    // days on which the saved application count went up
+    const active = new Set();
+    let prev = 0;
+    [...log].sort((x, y) => x.d < y.d ? -1 : 1).forEach(e => { if (e.n > prev) active.add(e.d); prev = Math.max(prev, e.n); });
+    const today = todayStr();
+    let cur = active.has(today) ? today : addDays(today, -1);
+    let streak = 0;
+    while (active.has(cur)) { streak++; cur = addDays(cur, -1); }
+    return { streak, loggedDays: new Set(log.map(e => e.d)).size, activeToday: active.has(today) };
+  }
+
+  // ---------- state ----------
+  const EXAMPLE = { days: 34, n: 52, k: 1, o: 0 };
+  let store = loadStore();
+  let storageOk = true;
+  let state;
+  if (store) {
+    const last = store.log[store.log.length - 1] || { n: 0, k: 0, o: 0 };
+    state = { start: store.start, days: Math.max(0, daysBetween(store.start, todayStr())), n: last.n, k: last.k, o: last.o || 0, example: false };
+  } else {
+    state = { start: addDays(todayStr(), -EXAMPLE.days), ...EXAMPLE, example: true };
+  }
+
+  const $ = id => document.getElementById(id);
+  const inputs = { start: $("start"), apps: $("apps"), ints: $("ints"), offers: $("offers"), market: $("market"), field: $("field"), channel: $("channel") };
+
+  function readInputs() {
+    const v = el => { const x = Math.floor(Number(el.value)); return Number.isFinite(x) && x > 0 ? x : 0; };
+    const start = /^\d{4}-\d{2}-\d{2}$/.test(inputs.start.value) ? inputs.start.value : "";
+    const days = start ? daysBetween(start, todayStr()) : 0;
+    return { start, days, n: v(inputs.apps), k: v(inputs.ints), o: v(inputs.offers) };
+  }
+  function readProfile() {
+    return { market: inputs.market.value || null, field: inputs.field.value || null, channel: inputs.channel.value || null };
+  }
+  function writeInputs() {
+    inputs.start.value = state.start;
+    inputs.start.max = todayStr();
+    inputs.apps.value = state.n;
+    inputs.ints.value = state.k;
+    inputs.offers.value = state.o || 0;
+    const pr = (store && !state.example && store.profile) || {};
+    inputs.market.value = pr.market || ""; inputs.field.value = pr.field || ""; inputs.channel.value = pr.channel || "";
+  }
+
+  const pct = (x, digits) => {
+    const v = x * 100;
+    if (digits === undefined) digits = v < 10 ? 1 : 0;
+    return v.toFixed(digits) + "%";
+  };
+  const whole = x => Math.round(x * 100) + "%";
+
+  function pinPosition(pLow) {
+    // four equal bands: [0,.5) [.5,.8) [.8,.95) [.95,1]
+    const edges = [0, 0.5, 0.8, 0.95, 1];
+    for (let i = 0; i < 4; i++) {
+      if (pLow < edges[i + 1] || i === 3) {
+        const f = (Math.min(pLow, 1) - edges[i]) / (edges[i + 1] - edges[i]);
+        return (i + Math.max(0, Math.min(1, f))) * 25;
+      }
+    }
+    return 0;
+  }
+
+  let current = null;   // result on screen, from the last checked numbers
+  let shown = null;     // the numbers behind it
+
+  function validate(v) {
+    return !v.start ? "Pick the date of your first application."
+      : v.days < 0 ? "The first application cannot be in the future."
+      : v.k > v.n ? "Interviews cannot be more than applications sent."
+      : v.o > v.k ? "Offers cannot be more than interviews." : "";
+  }
+  function updateHint(v) {
+    $("start-hint").textContent = !v.start || v.days < 0 ? "The day count updates by itself every day."
+      : v.days === 0 ? "That is today. The day count updates by itself every day."
+      : `That is ${v.days} day${v.days === 1 ? "" : "s"} ago. The count updates by itself every day.`;
+  }
+  function compute(v) {
+    const r = assess(v.days, v.n, v.k);
+    const st = (store && !state.example) ? streakInfo(store.log) : { streak: 0, loggedDays: 0, activeToday: false };
+    return { ...r, o: v.o || 0, streak: st.streak, loggedDays: st.loggedDays, activeToday: st.activeToday };
+  }
+  function setStale(on) {
+    $("verdict").classList.toggle("stale", on);
+    $("stale-note").hidden = !on;
+  }
+  function paint(r) {
+    current = r;
+    shown = { start: state.start, n: r.n, k: r.k, o: r.o };
+
+    const L = LEVELS[r.level];
+    const statusEl = $("status");
+    statusEl.textContent = L.name;
+    statusEl.style.setProperty("--lvl", `var(${L.color})`);
+    $("status-msg").textContent = L.msg;
+    $("day-pill").textContent = `Day ${r.days}`;
+
+    const showNums = r.level !== "start";
+    $("s-plow").textContent = showNums ? whole(r.pLow) : "–";
+    $("s-range").textContent = showNums ? `${pct(r.lo)} to ${pct(r.hi)}` : "–";
+    $("s-neff").textContent = showNums ? `${Math.round(r.neff)} of ${r.n}` : "–";
+    $("s-offer-box").hidden = !(showNums && r.o > 0);
+    $("s-offer-box").parentElement.classList.toggle("four", !$("s-offer-box").hidden);
+    $("s-offer").textContent = r.o > 0 ? `${r.o} of ${r.k}` : "–";
+
+    const segs = document.querySelectorAll(".meter-seg");
+    const band = r.pLow < 0.5 ? 0 : r.pLow < 0.8 ? 1 : r.pLow < 0.95 ? 2 : 3;
+    const meterOn = showNums && r.level !== "early";
+    segs.forEach((s, i) => s.classList.toggle("on", meterOn && i === band));
+    $("meter").style.setProperty("--lvl", `var(${L.color})`);
+    document.querySelectorAll(".meter-labels span").forEach((s, i) => s.classList.toggle("on", meterOn && i === band));
+    $("pin").style.left = (meterOn ? pinPosition(r.pLow) : 0) + "%";
+    $("meter").hidden = !meterOn;
+
+    const ex = $("explain");
+    ex.textContent = "";
+    const add = t => { const li = document.createElement("li"); li.textContent = t; ex.appendChild(li); };
+    if (showNums) {
+      if (r.neff < r.n - 0.5) add(`Your most recent applications count only partly, because their replies may still be on the way. Counted so far: about ${Math.round(r.neff)} of ${r.n}.`);
+      if (r.k === 0 && r.level !== "early") {
+        add(`At a typical rate of 3% to 6%, between ${whole(r.zeroLow)} and ${whole(r.zeroHigh)} of people with the same counted applications would also have zero interviews.`);
+      } else if (r.k > 0) {
+        add(`At a typical rate you would expect about ${r.expLow.toFixed(1)} to ${r.expHigh.toFixed(1)} interviews by now. You have ${r.k}.`);
+      }
+      add(`Your true interview rate is between ${pct(r.lo)} and ${pct(r.hi)} with 95% probability. The typical range is 3% to 6%.`);
+      if (r.o > 0) add(`You turned ${plural(r.k, "interview")} into ${plural(r.o, "offer")}. The rate above still only looks at interviews.`);
+    }
+
+    sceneLevel = r.level;
+    drawScene(performance.now() / 1000);
+    startScene();
+    renderBadges(r);
+    $("st-day").textContent = r.days;
+    $("st-streak").textContent = r.streak;
+    $("streak-note").textContent = ((store && !state.example)
+      ? (r.activeToday ? "Today counts toward your streak." : "Check in with new applications today to keep your streak going.")
+      : "Your streak counts days in a row on which you checked in with new applications. Check your numbers to start one.")
+      + " Tap any badge to see it up close.";
+
+    $("mode-pill").textContent = state.example ? "Example numbers" : "Your numbers";
+    $("vd-share").hidden = state.example || r.level === "start";
+    $("share-open").disabled = r.level === "start";
+    $("post").value = postText(r);
+    scheduleCard();
+    setStale(false);
+  }
+  function onEdit(ev) {
+    if (state.example) {
+      state.example = false;
+      $("mode-pill").textContent = "Your numbers";
+    }
+    const v = readInputs();
+    const problem = validate(v);
+    const err = $("err");
+    err.textContent = problem;
+    err.hidden = !problem;
+    updateHint(v);
+    setStale(!shown || v.start !== shown.start || v.n !== shown.n || v.k !== shown.k || v.o !== shown.o);
+  }
+
+  // Badges stay earned once you have them, even if the numbers move on.
+  function earnedList(s) {
+    const kept = (!state.example && store && Array.isArray(store.seen)) ? new Set(store.seen) : new Set();
+    return BADGES.filter(b => b.ok(s) || kept.has(b.id));
+  }
+  const shortDate = d => { const x = parseDay(d); return `${x.getDate()} ${x.toLocaleString("en-GB", { month: "short" })}`; };
+  function renderBadges(s) {
+    const wrap = $("badges");
+    wrap.textContent = "";
+    const earned = new Set(earnedList(s).map(b => b.id));
+    const dates = (!state.example && store && store.earned) || {};
+    const today = todayStr();
+    $("st-earned").textContent = earned.size;
+    $("st-total").textContent = BADGES.length;
+    BADGES.forEach(b => {
+      const has = earned.has(b.id);
+      const item = document.createElement("div");
+      item.setAttribute("role", "listitem");
+      const el = document.createElement("button");
+      el.type = "button";
+      el.className = "badge " + (has ? "earned" : "locked");
+      el.dataset.id = b.id;
+      item.appendChild(el);
+      const slot = document.createElement("span");
+      slot.className = "slot";
+      slot.style.setProperty("--tilt", `${tiltOf(b.id)}deg`);
+      slot.appendChild(stampCanvas(b));
+      if (has && dates[b.id] === today) {
+        const tag = document.createElement("span");
+        tag.className = "new-tag";
+        tag.textContent = "New";
+        slot.appendChild(tag);
+      }
+      const t = document.createElement("span"); t.className = "bt"; t.textContent = b.t;
+      const d = document.createElement("span"); d.className = "bd"; d.textContent = b.d;
+      el.append(slot, t, d);
+      let status;
+      const p = !has && b.prog ? b.prog(s) : null;
+      if (p) {
+        const cur = Math.min(p[0], p[1]);
+        const bp = document.createElement("span"); bp.className = "bp";
+        const bar = document.createElement("span"); bar.className = "bar";
+        const fill = document.createElement("i"); fill.style.width = `${cur / p[1] * 100}%`;
+        bar.appendChild(fill);
+        const num = document.createElement("span"); num.textContent = `${cur} / ${p[1]}`;
+        bp.append(bar, num);
+        el.appendChild(bp);
+        status = `Not earned yet, ${cur} of ${p[1]}`;
+      } else {
+        const m = document.createElement("span"); m.className = "bm";
+        m.textContent = has ? (dates[b.id] ? `Earned ${shortDate(dates[b.id])}` : "Earned") : (b.funny ? "Dodged" : "Not yet");
+        el.appendChild(m);
+        status = has ? m.textContent : (b.funny ? "Dodged, you already have an interview" : "Not earned yet");
+      }
+      el.setAttribute("aria-label", `${b.t}. ${b.d}. ${status}. Open a larger view.`);
+      wrap.appendChild(item);
+    });
+    renderNext(s, earned);
+  }
+  function renderNext(s, earned) {
+    let best = null;
+    BADGES.forEach(b => {
+      if (!NEXT_IDS.includes(b.id) || earned.has(b.id)) return;
+      const [cur, goal] = b.prog(s);
+      const f = cur / goal;
+      if (!best || f > best.f) best = { b, cur, goal, f };
+    });
+    $("next").hidden = !best;
+    if (!best) return;
+    const { b, cur, goal } = best;
+    $("next").dataset.id = b.id;
+    $("next").setAttribute("aria-label", `Next badge, ${b.t}. ${b.need(goal - cur)}. Open a larger view.`);
+    const cv = $("next-cv");
+    cv.width = Math.round(120 * stampScale());
+    cv.height = Math.round(144 * stampScale());
+    paintStamp(cv, b);
+    $("next-t").textContent = b.t;
+    $("next-d").textContent = b.need(goal - cur);
+    $("next-bar").style.width = `${Math.min(100, cur / goal * 100)}%`;
+    $("next-n").textContent = `${cur} / ${goal}`;
+  }
+
+  // "52 applications, 3 interviews, 1 offer"; offers only appear once there is one
+  function numsText(s) {
+    return `${plural(s.n, "application")}, ${plural(s.k, "interview")}` + (s.o > 0 ? `, ${plural(s.o, "offer")}` : "");
+  }
+  function postText(s) {
+    if (s.level === "start") return "";
+    const L = LEVELS[s.level];
+    const lines = [
+      `Day ${s.days} of my job hunt. ${numsText(s)}.`,
+      `Status: ${L.name}.`
+    ];
+    if (s.level !== "early") lines.push(`Chance my interview rate is below the typical 3%: ${whole(s.pLow)}.`);
+    const b = cardBadges(s).map(x => x.t);
+    if (b.length) lines.push(`Badges so far: ${b.length > 6 ? `${b.slice(0, 5).join(", ")} and ${b.length - 5} more` : b.join(", ")}.`);
+    lines.push(`Checked with ${THEME.name}, a small Bayesian tool for job hunt numbers.`);
+    return lines.join("\n");
+  }
+
+  // ---------- share card (canvas) ----------
+  const CARD = THEME.card;
+  let cardTimer = null;
+  function scheduleCard() { clearTimeout(cardTimer); cardTimer = setTimeout(drawCard, 120); }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function wrapText(ctx, text, x, y, maxW, lh) {
+    const words = text.split(" ");
+    let line = "";
+    for (const w of words) {
+      const test = line ? line + " " + w : w;
+      if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, x, y); line = w; y += lh; }
+      else line = test;
+    }
+    if (line) ctx.fillText(line, x, y);
+    return y + lh;
+  }
+  function sceneImage(level, scale) {
+    const sc = document.createElement("canvas");
+    sc.width = Math.round(480 * scale); sc.height = Math.round(180 * scale);
+    const x = sc.getContext("2d");
+    x.scale(scale, scale);
+    THEME.scene(x, 480, 180, level, 1.6);
+    return sc;
+  }
+  function drawCard() {
+    if (!current) return;
+    const s = current;
+    const cv = $("card");
+    const ctx = cv.getContext("2d");
+    const W = cv.width, H = cv.height, F = CARD.font;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.textBaseline = "alphabetic"; ctx.textAlign = "left";
+    CARD.frame(ctx, W, H);
+    CARD.decor(ctx, s, W, H, sceneImage(s.level, 1.4));
+
+    const X = 96;
+    ctx.fillStyle = CARD.accent;
+    ctx.font = `700 30px ${F.mono}`;
+    if ("letterSpacing" in ctx) ctx.letterSpacing = "4px";
+    ctx.fillText(CARD.label, X, 150);
+    if ("letterSpacing" in ctx) ctx.letterSpacing = "0px";
+
+    ctx.fillStyle = CARD.ink;
+    ctx.font = `800 150px ${F.display}`;
+    ctx.fillText(`Day ${s.days}`, X, 320);
+    ctx.font = `400 40px ${F.body}`;
+    ctx.fillStyle = CARD.muted;
+    ctx.fillText("of the job hunt", X, 398);
+
+    const nums = [[s.n, s.n === 1 ? "application" : "applications"], [s.k, s.k === 1 ? "interview" : "interviews"]];
+    if (s.o > 0) nums.push([s.o, s.o === 1 ? "offer" : "offers"]);
+    const colW = (W - 2 * X) / nums.length;
+    nums.forEach(([num, lab], i) => {
+      const x = X + i * colW;
+      ctx.fillStyle = CARD.ink;
+      ctx.font = `800 ${nums.length > 2 ? 110 : 120}px ${F.display}`;
+      ctx.fillText(String(num), x, 540);
+      ctx.fillStyle = CARD.muted;
+      ctx.font = `400 36px ${F.body}`;
+      ctx.fillText(lab, x, 590);
+    });
+
+    const L = LEVELS[s.level];
+    CARD.pill(ctx, s, L, X, 650, W - 2 * X);
+
+    ctx.fillStyle = CARD.ink;
+    ctx.font = `400 36px ${F.body}`;
+    let y = 810;
+    if (s.level !== "start" && s.level !== "early") {
+      y = wrapText(ctx, `Chance my interview rate is below the typical 3%: ${whole(s.pLow)}`, X, y, W - 2 * X, 48);
+      y = wrapText(ctx, `Likely rate: ${pct(s.lo)} to ${pct(s.hi)}`, X, y, W - 2 * X, 48);
+    } else if (s.level === "early") {
+      y = wrapText(ctx, "Too soon to judge. Most replies take one to three weeks.", X, y, W - 2 * X, 48);
+    }
+
+    const earned = earnedList(s);
+    const picks = cardBadges(s);
+    if (picks.length) {
+      // one row with names for up to five, then two or three rows of smaller stamps
+      const rows = picks.length <= 5 ? 1 : picks.length <= 12 ? 2 : 3;
+      const labelY = rows === 1 ? 952 : rows === 2 ? 910 : 896;
+      ctx.fillStyle = CARD.muted;
+      ctx.font = `700 26px ${F.mono}`;
+      ctx.fillText(`BADGES ${earned.length}/${BADGES.length}`, X, labelY);
+      const width = W - 2 * X, top = labelY + 26, bottom = H - 128;
+      const cols = rows === 1 ? 5 : Math.ceil(picks.length / rows);
+      const step = width / cols, gap = rows === 1 ? 0 : rows === 2 ? 16 : 12;
+      const sh = rows === 1 ? 158.4 : Math.min((bottom - top - gap * (rows - 1)) / rows, step * .84 * 1.2), sw = sh / 1.2;
+      picks.forEach((b, i) => {
+        const row = Math.floor(i / cols), col = i % cols, inRow = Math.min(cols, picks.length - row * cols);
+        const x0 = rows === 1 ? X : X + (width - inRow * step) / 2;
+        const mx = x0 + step * col + step / 2, my = top + row * (sh + gap) + sh / 2;
+        const off = document.createElement("canvas");
+        off.width = Math.round(sw * 2); off.height = Math.round(sh * 2);
+        paintStamp(off, b);
+        ctx.save();
+        ctx.translate(mx, my);
+        ctx.rotate(tiltOf(b.id) * Math.PI / 180);
+        ctx.shadowColor = "rgba(27, 37, 55, .28)"; ctx.shadowBlur = 18 * sw / 132; ctx.shadowOffsetY = 7 * sw / 132;
+        ctx.drawImage(off, -sw / 2, -sh / 2, sw, sh);
+        ctx.restore();
+        if (rows === 1) {
+          ctx.fillStyle = CARD.ink; ctx.textAlign = "center";
+          ctx.font = `700 21px ${F.body}`;
+          ctx.fillText(b.t, mx, top + sh + 40);
+          ctx.textAlign = "left";
+        }
+      });
+    }
+
+    ctx.fillStyle = CARD.muted;
+    ctx.font = `400 24px ${F.body}`;
+    ctx.fillText("Checked against a typical interview rate of 3% to 6% per application.", X, H - 92);
+
+    try {
+      const url = cv.toDataURL("image/png");
+      $("card-img").src = url;
+      if (!$("sharer").hidden) $("sr-img").src = url;
+    } catch (e) {}
+    const shown = picks.length ? `, ${picks.length} badge${picks.length === 1 ? "" : "s"}` : "";
+    $("card-img").alt = `Share card. Day ${s.days}, ${numsText(s)}, ${LEVELS[s.level].name}${shown}.`;
+    srBlob = null;
+    if (!$("sharer").hidden) prepareBlob();
+  }
+
+  // ---------- reply letter reveal ----------
+  const reduceMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  let revealRun = 0;
+  function anim(el, keyframes, opts) {
+    try {
+      return el.animate(keyframes, Object.assign({ fill: "forwards", easing: "cubic-bezier(.2,.8,.2,1)" }, opts)).finished.catch(() => {});
+    } catch (e) { return Promise.resolve(); }
+  }
+  function fillReveal(r, badges, isExample) {
+    const L = LEVELS[r.level];
+    const apps = `${r.n} application${r.n === 1 ? "" : "s"}`;
+    $("rv-example").hidden = !isExample;
+    $("rv-share").hidden = isExample;
+    $("rv-share-t").textContent = THEME.rv.share || "Share my card";
+    $("rv-title").textContent = `Day ${r.days} of your hunt`;
+    $("rv-nums").textContent = numsText(r);
+    $("rv-msg").textContent = L.msg;
+    $("rv-env-to").textContent = THEME.rv.envText(r, apps);
+    $("rv-postmark").style.setProperty("--lvl", `var(${L.color})`);
+    const dt = new Date();
+    const pm = THEME.rv.postmark(L, `${dt.getDate()} ${dt.toLocaleString("en-GB", { month: "short" }).toUpperCase()} ${dt.getFullYear()}`);
+    $("rv-pm-date").textContent = pm.top;
+    $("rv-pm-big").textContent = pm.big || "";
+    $("rv-pm-status").textContent = pm.small;
+    const ranked = byRank(badges);
+    const list = ranked.slice(0, 6).reverse();   // the best one lands last
+    const more = ranked.length - list.length;
+    $("rv-more").hidden = more === 0;
+    $("rv-more").textContent = `And ${more} more under Badges.`;
+    const wrap = $("rv-stamps");
+    wrap.textContent = "";
+    wrap.classList.toggle("big", list.length <= 2);
+    $("rv-stamps-wrap").hidden = list.length === 0;
+    $("rv-stamps-label").textContent = isExample ? "Badges in this example" : (list.length === 1 ? "New badge" : "New badges");
+    list.forEach(b => {
+      const f = document.createElement("button");
+      f.type = "button";
+      f.className = "rv-stamp";
+      f.dataset.id = b.id;
+      f.dataset.tilt = tiltOf(b.id);
+      f.dataset.color = b.bg;
+      f.setAttribute("aria-label", `${b.t}. Open a larger view.`);
+      const t = document.createElement("span"); t.textContent = b.t;
+      f.append(stampCanvas(b), t);
+      wrap.appendChild(f);
+    });
+  }
+  async function playReveal(r, badges, isExample) {
+    const run = ++revealRun;
+    const alive = () => run === revealRun;
+    fillReveal(r, badges, isExample);
+    const ov = $("reveal"), env = $("rv-env"), flap = $("rv-flap"), letter = $("rv-letter"), pm = $("rv-postmark"), done = $("rv-done"), share = $("rv-share");
+    const stamps = [...document.querySelectorAll("#rv-stamps .rv-stamp")];
+    [letter, pm, done, share, ...stamps].forEach(el => { el.style.opacity = "0"; });
+    ov.hidden = false;
+    ov.scrollTop = 0;
+    $("rv-skip").hidden = false;
+    document.querySelector(".wrap").inert = true;
+    document.body.style.overflow = "hidden";
+    $("rv-skip").focus({ preventScroll: true });
+
+    await anim(env, [{ transform: "translateY(70vh) rotate(-6deg)" }, { transform: "translateY(0) rotate(0deg)" }], { duration: 450 });
+    if (!alive()) return;
+    await anim(flap, [{ transform: "rotateX(0deg)" }, { transform: "rotateX(-180deg)" }], { duration: 320, easing: "ease-in-out" });
+    if (!alive()) return;
+    const eb = env.getBoundingClientRect();
+    spooks(eb.left + eb.width / 2, eb.top + eb.height * .35, THEME.spookCount[r.level] || 0);
+    anim(env, [{ transform: "translateY(0)", opacity: 1 }, { transform: "translateY(150px)", opacity: 0 }], { duration: 420, easing: "ease-in" });
+    letter.style.opacity = "";
+    await anim(letter, [{ opacity: 0, transform: "translateY(60px) scale(.94)" }, { opacity: 1, transform: "translateY(0) scale(1)" }], { duration: 500 });
+    if (!alive()) return;
+    pm.style.opacity = "";
+    await anim(pm, [{ opacity: 0, transform: "scale(2.2) rotate(-26deg)" }, { opacity: 1, transform: "scale(1) rotate(-10deg)" }], { duration: 260, easing: "cubic-bezier(.3,1.4,.5,1)" });
+    if (!alive()) return;
+    anim(letter, [{ transform: "translateX(0)" }, { transform: "translateX(-3px)" }, { transform: "translateX(3px)" }, { transform: "translateX(0)" }], { duration: 160 });
+    for (const st of stamps) {
+      if (!alive()) return;
+      st.style.opacity = "";
+      const cv = st.querySelector("canvas"), tilt = Number(st.dataset.tilt) || 0;
+      anim(st.querySelector("span"), [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+      await anim(cv, [{ opacity: 0, transform: `scale(1.8) rotate(${tilt - 16}deg)` }, { opacity: 1, transform: `scale(1) rotate(${tilt}deg)` }], { duration: stamps.length > 2 ? 230 : 300, easing: "cubic-bezier(.3,1.4,.5,1)" });
+    }
+    if (!alive()) return;
+    if (stamps.length) {
+      const box = stamps[stamps.length - 1].querySelector("canvas").getBoundingClientRect();
+      confetti(box.left + box.width / 2, box.top + box.height / 2, stamps.map(st => st.dataset.color).concat(THEME.confetti.extra));
+    }
+    [done, share].forEach(el => { el.style.opacity = ""; anim(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 220 }); });
+    $("rv-skip").hidden = true;
+    (share.hidden ? done : share).focus({ preventScroll: true });
+    // on short screens the buttons can sit below the fold of the overlay
+    const below = $("rv-actions").getBoundingClientRect().bottom + 24 - window.innerHeight;
+    if (below > 0) ov.scrollBy({ top: below, behavior: reduceMotion() ? "auto" : "smooth" });
+  }
+  // one overlay canvas for confetti and for the little spirits that escape the envelope
+  let fxRaf = 0, fxItems = [];
+  function fxStart() {
+    const cv = $("rv-confetti");
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = window.innerWidth, h = window.innerHeight;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    if (fxRaf) return;
+    let last = performance.now();
+    const step = now => {
+      const k = Math.min(3, (now - last) / 16.7);
+      last = now;
+      const c = cv.getContext("2d");
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
+      c.clearRect(0, 0, w, h);
+      fxItems.forEach(p => { p.age += k / 60; if (p.age >= 0) { p.update(k); p.draw(c); } });
+      fxItems = fxItems.filter(p => p.age < p.max);
+      fxRaf = fxItems.length ? requestAnimationFrame(step) : 0;
+      if (!fxRaf) c.clearRect(0, 0, w, h);
+    };
+    fxRaf = requestAnimationFrame(step);
+  }
+  function confetti(x, y, colors) {
+    const petal = THEME.confetti.shape === "petal";
+    for (let i = 0; i < 44; i++) {
+      const a = -Math.PI / 2 + (Math.random() - .5) * 2.6, v = 5 + Math.random() * 7;
+      const p = { x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, w: 6 + Math.random() * 5, h: 3 + Math.random() * 4,
+        r: Math.random() * 6, vr: (Math.random() - .5) * .35, col: colors[i % colors.length], age: 0, max: petal ? 1.8 : 1.4 };
+      p.update = k => {
+        p.vy += (petal ? .2 : .34) * k; p.vx *= Math.pow(petal ? .97 : .985, k);
+        p.x += (p.vx + (petal ? Math.sin(p.age * 7 + p.r) * .8 : 0)) * k; p.y += p.vy * k; p.r += p.vr * k;
+      };
+      p.draw = c => {
+        c.save();
+        c.globalAlpha = Math.max(0, 1 - p.age / p.max);
+        c.translate(p.x, p.y); c.rotate(p.r);
+        c.fillStyle = p.col;
+        if (petal) { c.beginPath(); c.ellipse(0, 0, p.w * .75, p.h * .8, 0, 0, Math.PI * 2); c.fill(); }
+        else c.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        c.restore();
+      };
+      fxItems.push(p);
+    }
+    fxStart();
+  }
+  function spooks(x, y, n) {
+    for (let i = 0; i < n; i++) {
+      const p = { x: x + (Math.random() - .5) * 70, y: y + Math.random() * 20, vx: (Math.random() - .5) * 2.2, vy: -(1.4 + Math.random() * 1.5),
+        s: .3 + Math.random() * .24, ph: Math.random() * 6, age: -i * .09, max: 2 };
+      p.update = k => { p.x += (p.vx + Math.sin(p.age * 5 + p.ph) * .7) * k; p.y += p.vy * k; };
+      p.draw = c => THEME.sprite(c, p.x, p.y, p.s, Math.min(1, p.age * 4) * Math.max(0, 1 - p.age / p.max), p.age + p.ph);
+      fxItems.push(p);
+    }
+    if (n) fxStart();
+  }
+  function stopConfetti() {
+    cancelAnimationFrame(fxRaf);
+    fxRaf = 0; fxItems = [];
+    const cv = $("rv-confetti");
+    cv.getContext("2d").clearRect(0, 0, cv.width, cv.height);
+  }
+  function closeReveal() {
+    const ov = $("reveal");
+    if (ov.hidden) return;
+    revealRun++;
+    stopConfetti();
+    if (typeof ov.getAnimations === "function") ov.getAnimations({ subtree: true }).forEach(a => a.cancel());
+    ["rv-letter", "rv-postmark", "rv-done", "rv-share", "rv-env"].forEach(id => { $(id).style.opacity = ""; });
+    document.querySelectorAll("#rv-stamps .rv-stamp").forEach(el => { el.style.opacity = ""; });
+    ov.hidden = true;
+    document.querySelector(".wrap").inert = false;
+    document.body.style.overflow = "";
+    showResults();
+  }
+  function showResults() {
+    $("verdict").scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
+    $("out-h").focus({ preventScroll: true });
+  }
+  $("rv-skip").addEventListener("click", closeReveal);
+  $("rv-done").addEventListener("click", closeReveal);
+  $("reveal").addEventListener("click", e => { if (e.target === e.currentTarget) closeReveal(); });
+  $("rv-stamps").addEventListener("click", e => {
+    const btn = e.target.closest(".rv-stamp");
+    if (btn) openViewer(btn.dataset.id, btn);
+  });
+  // ---------- badge viewer ----------
+  let vwIndex = 0, vwOpener = null, swipeX = null;
+  function fillViewer() {
+    const b = BADGES[vwIndex], s = current;
+    const has = earnedList(s).some(x => x.id === b.id);
+    const dates = (!state.example && store && store.earned) || {};
+    $("viewer").classList.toggle("locked", !has);
+    const cv = $("vw-cv");
+    const k = Math.min(3, Math.max(2, window.devicePixelRatio || 1)) * 260 / 120;
+    cv.width = Math.round(120 * k); cv.height = Math.round(144 * k);
+    paintStamp(cv, b);
+    $("vw-k").textContent = `Badge ${vwIndex + 1} of ${BADGES.length}`;
+    $("vw-title").textContent = b.t;
+    $("vw-d").textContent = b.d;
+    $("vw-flavor").textContent = b.f;
+    $("vw-story").hidden = !b.story;
+    $("vw-story-t").textContent = b.story || "";
+    const p = !has && b.prog ? b.prog(s) : null;
+    $("vw-status").textContent = has
+      ? (state.example ? "Earned in the example" : dates[b.id] ? `Earned ${shortDate(dates[b.id])}` : "Earned")
+      : p ? `Locked, ${Math.min(p[0], p[1])} / ${p[1]}`
+      : b.funny ? "Dodged, you already have an interview" : "Locked";
+    $("vw-prog").hidden = !p;
+    if (p) {
+      const cur = Math.min(p[0], p[1]);
+      $("vw-bar").style.width = `${cur / p[1] * 100}%`;
+      $("vw-need").textContent = b.need ? b.need(p[1] - cur) : "";
+    } else if (!has && b.id === "great") {
+      $("vw-status").textContent = "Locked, needs a rate likely above 6%";
+    }
+  }
+  function resetTilt() {
+    const t = $("vw-tilt");
+    t.style.setProperty("--rx", "0deg"); t.style.setProperty("--ry", "0deg");
+    t.style.setProperty("--mx", "30%"); t.style.setProperty("--my", "20%");
+  }
+  function openViewer(id, opener) {
+    if (!current) return;
+    vwIndex = Math.max(0, BADGES.findIndex(b => b.id === id));
+    vwOpener = opener || null;
+    fillViewer();
+    resetTilt();
+    const ov = $("viewer");
+    ov.hidden = false;
+    ov.scrollTop = 0;
+    document.querySelector(".wrap").inert = true;
+    $("reveal").inert = !$("reveal").hidden;
+    document.body.style.overflow = "hidden";
+    $("vw-close").focus({ preventScroll: true });
+    if (reduceMotion()) return;
+    anim(ov, [{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "ease-out", fill: "none" });
+    const src = opener && opener.querySelector("canvas"), fly = $("vw-fly");
+    const a = src ? src.getBoundingClientRect() : null, z = fly.getBoundingClientRect();
+    if (a && a.width && z.width) {
+      const dx = a.left + a.width / 2 - (z.left + z.width / 2), dy = a.top + a.height / 2 - (z.top + z.height / 2);
+      anim(fly, [{ transform: `translate(${dx}px, ${dy}px) scale(${a.width / z.width}) rotate(${tiltOf(BADGES[vwIndex].id)}deg)` }, { transform: "none" }],
+        { duration: 460, easing: "cubic-bezier(.2, .9, .25, 1.08)", fill: "none" });
+    }
+    anim($("vw-info"), [{ opacity: 0, transform: "translateY(12px)" }, { opacity: 1, transform: "none" }], { duration: 320, delay: 140, fill: "both" });
+  }
+  function stepViewer(d) {
+    vwIndex = (vwIndex + d + BADGES.length) % BADGES.length;
+    fillViewer();
+    resetTilt();
+    if (vwOpener && vwOpener.classList.contains("badge")) vwOpener = document.querySelector(`.badge[data-id="${BADGES[vwIndex].id}"]`) || vwOpener;
+    if (!reduceMotion()) anim($("vw-fly"), [{ opacity: 0, transform: `translateX(${d * 48}px) rotate(${d * 6}deg)` }, { opacity: 1, transform: "none" }], { duration: 280, fill: "none" });
+  }
+  function closeViewer() {
+    const ov = $("viewer");
+    if (ov.hidden) return;
+    if (typeof ov.getAnimations === "function") ov.getAnimations({ subtree: true }).forEach(a => a.cancel());
+    ov.hidden = true;
+    $("reveal").inert = false;
+    if ($("reveal").hidden) {
+      document.querySelector(".wrap").inert = false;
+      document.body.style.overflow = "";
+    }
+    if (vwOpener && document.contains(vwOpener)) vwOpener.focus({ preventScroll: true });
+  }
+  $("badges").addEventListener("click", e => {
+    const btn = e.target.closest(".badge");
+    if (btn) openViewer(btn.dataset.id, btn);
+  });
+  $("next").addEventListener("click", () => openViewer($("next").dataset.id, $("next")));
+  $("vw-close").addEventListener("click", closeViewer);
+  $("vw-prev").addEventListener("click", () => stepViewer(-1));
+  $("vw-next").addEventListener("click", () => stepViewer(1));
+  $("viewer").addEventListener("click", e => { if (e.target === e.currentTarget || e.target.id === "vw-body") closeViewer(); });
+  const stage = $("vw-stage");
+  stage.addEventListener("pointermove", e => {
+    if (reduceMotion()) return;
+    const r = stage.getBoundingClientRect(), t = $("vw-tilt");
+    const x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+    t.style.setProperty("--ry", `${(x - .5) * 24}deg`);
+    t.style.setProperty("--rx", `${(.5 - y) * 20}deg`);
+    t.style.setProperty("--mx", `${x * 100}%`);
+    t.style.setProperty("--my", `${y * 100}%`);
+  });
+  stage.addEventListener("pointerleave", resetTilt);
+  stage.addEventListener("pointerdown", e => { swipeX = e.clientX; });
+  stage.addEventListener("pointerup", e => {
+    if (swipeX !== null && Math.abs(e.clientX - swipeX) > 50) stepViewer(e.clientX < swipeX ? 1 : -1);
+    swipeX = null;
+  });
+  stage.addEventListener("pointercancel", () => { swipeX = null; resetTilt(); });
+
+  function trapTab(e, items) {
+    const i = items.indexOf(document.activeElement);
+    e.preventDefault();
+    items[(i + (e.shiftKey ? -1 : 1) + items.length) % items.length].focus();
+  }
+  document.addEventListener("keydown", e => {
+    if (!$("sharer").hidden) {
+      if (e.key === "Escape") closeSharer();
+      else if (e.key === "Tab") trapTab(e, [...$("sharer").querySelectorAll("button, textarea")].filter(el => !el.hidden && !el.disabled && el.offsetParent !== null));
+      return;
+    }
+    if (!$("viewer").hidden) {
+      if (e.key === "Escape") closeViewer();
+      else if (e.key === "ArrowRight") stepViewer(1);
+      else if (e.key === "ArrowLeft") stepViewer(-1);
+      else if (e.key === "Tab") trapTab(e, [$("vw-close"), $("vw-prev"), $("vw-next")]);
+      return;
+    }
+    if ($("reveal").hidden) return;
+    if (e.key === "Escape") { closeReveal(); return; }
+    // keep keyboard focus inside the letter while it is open
+    if (e.key === "Tab") trapTab(e, [...$("reveal").querySelectorAll("button")].filter(el => !el.hidden && el.style.opacity !== "0" && el.offsetParent !== null));
+  });
+
+  // ---------- events ----------
+  Object.values(inputs).forEach(el => { el.addEventListener("input", onEdit); el.addEventListener("change", onEdit); });
+  document.querySelectorAll("[data-step]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const el = inputs[btn.dataset.step];
+      el.value = Math.max(0, (Math.floor(Number(el.value)) || 0) + Number(btn.dataset.d));
+      onEdit({ target: el });
+    });
+  });
+
+  $("save").addEventListener("click", () => {
+    const v = readInputs();
+    const problem = validate(v) || (v.n === 0 ? "Enter how many applications you have sent so far." : "");
+    const err = $("err");
+    err.textContent = problem;
+    err.hidden = !problem;
+    if (problem) return;
+    state.start = v.start; state.days = v.days; state.n = v.n; state.k = v.k; state.o = v.o;
+
+    if (state.example) {
+      const r = compute(v);
+      paint(r);
+      $("save-note").textContent = "That was the example. Enter your own numbers and check again to start your log.";
+      if (reduceMotion()) showResults(); else playReveal(r, earnedList(r), true);
+      return;
+    }
+
+    const today = todayStr();
+    const prevLevel = store ? store.lastLevel : undefined;
+    const first = prevLevel === undefined;
+    const prevSeen = new Set(store && Array.isArray(store.seen) ? store.seen : []);
+    if (!store) store = { start: v.start, log: [] };
+    store.start = v.start;
+    store.log = store.log.filter(e => e.d !== today);
+    store.log.push({ d: today, n: v.n, k: v.k, o: v.o });
+    store.profile = readProfile();
+    const r = compute(v);
+    const fresh = BADGES.filter(b => b.ok(r) && !prevSeen.has(b.id));
+    const levelChanged = !first && prevLevel !== r.level;
+    store.lastLevel = r.level;
+    store.seen = [...new Set([...prevSeen, ...fresh.map(b => b.id)])];
+    store.earned = Object.assign({}, store.earned);
+    fresh.forEach(b => { if (!store.earned[b.id]) store.earned[b.id] = today; });
+    storageOk = saveStore(store);
+    const sent = sendCheck(v);
+    paint(r);
+    renderDataset();
+    const news = first || levelChanged || fresh.length > 0;
+    $("save-note").textContent = !storageOk
+      ? "This browser is not keeping data for this page, so your streak and badges reset when you leave."
+      : news ? (sent ? "Checked and saved in this browser. Your numbers were added to the anonymous dataset." : "Checked and saved in this browser. Nothing is sent anywhere.")
+      : "Checked and saved. Same status as last time and no new badges.";
+    if (news && !reduceMotion()) playReveal(r, first ? earnedList(r) : fresh, false);
+    else showResults();
+  });
+
+  let resetArmed = false, resetTimer = null;
+  $("reset").addEventListener("click", () => {
+    const btn = $("reset");
+    if (!resetArmed) {
+      resetArmed = true;
+      btn.textContent = "Tap again to erase";
+      btn.classList.add("danger-ok");
+      resetTimer = setTimeout(() => { resetArmed = false; btn.textContent = "Start over"; btn.classList.remove("danger-ok"); }, 4000);
+      return;
+    }
+    clearTimeout(resetTimer);
+    resetArmed = false;
+    btn.textContent = "Start over";
+    btn.classList.remove("danger-ok");
+    clearStore();
+    store = null;
+    state = { start: todayStr(), days: 0, n: 0, k: 0, o: 0, example: false };
+    writeInputs();
+    updateHint(readInputs());
+    $("err").hidden = true;
+    $("save-note").textContent = "Erased. Enter your numbers and check them to start a new log.";
+    paint(compute(readInputs()));
+    renderDataset();
+  });
+
+  $("copy").addEventListener("click", () => {
+    const text = $("post").value;
+    const note = $("share-note");
+    const fallback = () => { const ta = $("post"); ta.focus(); ta.select(); note.textContent = "Text selected. Copy it with your keyboard or the share menu."; };
+    if (!text) { note.textContent = "Enter your numbers first."; return; }
+    try {
+      navigator.clipboard.writeText(text).then(() => { note.textContent = "Copied. Paste it into your post."; }, fallback);
+    } catch (e) { fallback(); }
+  });
+
+  // ---------- the job hunt dataset: own checks are added unless the box says no ----------
+  // Google Apps Script web app that appends rows to a sheet. Only the GitHub Pages build loads
+  // config.js, so inside Claude this stays empty and nothing is ever sent.
+  const CONF = window.GHOSTED_CONFIG || null;
+  const STANDALONE = !!CONF;
+  const ENDPOINT = CONF && /^https:\/\/script\.google\.com\/(a\/macros\/[A-Za-z0-9.-]+|macros)\/s\/[A-Za-z0-9_-]+\/exec$/.test(String(CONF.endpoint || "")) ? CONF.endpoint : "";
+  // the opt-out lives outside the log, so Start over and restores never undo it
+  const OPT_KEY = "iijm.nolog";
+  let optOut = (() => { try { return localStorage.getItem(OPT_KEY) === "1"; } catch (e) { return false; } })();
+  let restoreArmed = null;
+  function setOptOut(on) {
+    optOut = !!on;
+    try { if (optOut) localStorage.setItem(OPT_KEY, "1"); else localStorage.removeItem(OPT_KEY); } catch (e) {}
+    renderDataset();
+  }
+  function post(body) {
+    if (!ENDPOINT) return;
+    try { fetch(ENDPOINT, { method: "POST", mode: "no-cors", body: JSON.stringify(body) }).catch(() => {}); } catch (e) {}
+  }
+  function sendCheck(v) {
+    if (!ENDPOINT || optOut || !store) return false;
+    const pr = store.profile || {};
+    const body = { v: 2, theme: THEME.key, start: v.start, days: v.days, n: v.n, k: v.k, o: v.o, market: pr.market || null, field: pr.field || null, channel: pr.channel || null };
+    // the same numbers twice on one day add nothing new
+    const sig = [todayStr(), v.start, v.n, v.k, v.o, body.market, body.field, body.channel].join("|");
+    if (store.lastSent === sig) return true;
+    store.lastSent = sig;
+    saveStore(store);
+    post(body);
+    return true;
+  }
+  function renderDataset() {
+    $("no-log").checked = optOut;
+    $("ds-status").textContent = !ENDPOINT
+      ? "Adding to the dataset is not switched on in this version, so nothing leaves this browser."
+      : optOut ? "You opted out, so your checks are not added." : "Your checks are added without anything that identifies you. Thank you.";
+  }
+  $("no-log").addEventListener("change", e => setOptOut(e.target.checked));
+  ["market", "field", "channel"].forEach(k => inputs[k].addEventListener("change", () => {
+    if (store && !state.example) { store.profile = readProfile(); saveStore(store); }
+  }));
+
+  // ---------- backup code: move a log to another browser without an account ----------
+  function b64e(str) {
+    let bin = "";
+    new TextEncoder().encode(str).forEach(x => { bin += String.fromCharCode(x); });
+    return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function b64d(str) {
+    const bin = atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+    return new TextDecoder().decode(Uint8Array.from(bin, ch => ch.charCodeAt(0)));
+  }
+  const isDay = x => typeof x === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x);
+  function backupCode() {
+    const pack = { v: 2, s: store.start, l: store.log.map(e => [e.d, e.n, e.k, e.o || 0]), pr: store.profile || null,
+      lv: store.lastLevel || null, se: store.seen || [], ea: store.earned || {}, no: optOut ? 1 : 0 };
+    return "GHOST1." + b64e(JSON.stringify(pack));
+  }
+  function parseBackup(text) {
+    const m = /^GHOST1\.([A-Za-z0-9_-]+)$/.exec((text || "").replace(/\s+/g, ""));
+    if (!m) return null;
+    try {
+      const x = JSON.parse(b64d(m[1]));
+      if (!x || (x.v !== 1 && x.v !== 2) || !isDay(x.s) || !Array.isArray(x.l)) return null;
+      const num = y => Math.max(0, Math.min(5000, Math.floor(Number(y)) || 0));
+      // version 1 codes kept rejections in the fourth place, which are not offers
+      const log = x.l.filter(e => Array.isArray(e) && isDay(e[0])).map(([d, n, k, o]) => {
+        const e = { d, n: num(n), k: num(k), o: x.v === 2 ? num(o) : 0 };
+        e.k = Math.min(e.k, e.n); e.o = Math.min(e.o, e.k);
+        return e;
+      });
+      const earned = {};
+      if (x.ea && typeof x.ea === "object") Object.keys(x.ea).forEach(id => { if (isDay(x.ea[id])) earned[id] = x.ea[id]; });
+      const pr = x.pr && typeof x.pr === "object" ? x.pr : {};
+      const opt = (sel, val) => typeof val === "string" && val !== "" && [...sel.options].some(o => o.value === val) ? val : null;
+      const profile = { market: opt(inputs.market, pr.market), field: opt(inputs.field, pr.field), channel: opt(inputs.channel, pr.channel) };
+      const out = { start: x.s, log, profile, seen: Array.isArray(x.se) ? x.se.filter(id => typeof id === "string") : [], earned };
+      if (typeof x.lv === "string") out.lastLevel = x.lv;
+      return { store: out, optOut: x.no === 1 };
+    } catch (e) { return null; }
+  }
+  const checkins = n => `${n} check-in${n === 1 ? "" : "s"}`;
+  $("bk-copy").addEventListener("click", () => {
+    const note = $("bk-note");
+    if (!store || state.example) { note.textContent = "Check your own numbers once first. Then there is a log to back up."; return; }
+    const code = backupCode();
+    const fallback = () => { const ta = $("bk-in"); ta.value = code; ta.focus(); ta.select(); note.textContent = "The code is selected in the box. Copy it and keep it somewhere safe."; };
+    try {
+      navigator.clipboard.writeText(code).then(() => { note.textContent = `Copied. It holds ${checkins(store.log.length)}. Keep it in a note or an email to yourself.`; }, fallback);
+    } catch (e) { fallback(); }
+  });
+  $("bk-restore").addEventListener("click", () => {
+    const note = $("bk-note"), btn = $("bk-restore"), text = $("bk-in").value;
+    const got = parseBackup(text);
+    const parsed = got && got.store;
+    if (!parsed) { note.textContent = "That does not look like a backup code. It starts with GHOST1 and is one long line."; return; }
+    if (store && !state.example && restoreArmed !== text) {
+      restoreArmed = text;
+      btn.textContent = "Tap again to replace this browser's log";
+      btn.classList.add("danger-ok");
+      note.textContent = `The code holds ${checkins(parsed.log.length)} since ${shortDate(parsed.start)}. Restoring replaces the log in this browser.`;
+      return;
+    }
+    restoreArmed = null;
+    btn.textContent = "Restore from code";
+    btn.classList.remove("danger-ok");
+    store = parsed;
+    storageOk = saveStore(store);
+    if (got.optOut) setOptOut(true);
+    const last = store.log[store.log.length - 1] || { n: 0, k: 0, o: 0 };
+    state = { start: store.start, days: Math.max(0, daysBetween(store.start, todayStr())), n: last.n, k: last.k, o: last.o || 0, example: false };
+    writeInputs();
+    updateHint(readInputs());
+    paint(compute(readInputs()));
+    renderDataset();
+    $("bk-in").value = "";
+    note.textContent = `Restored ${checkins(store.log.length)} since ${shortDate(store.start)}.`;
+  });
+
+  // ---------- share sheet ----------
+  // which earned badges stay off the card; everything is on unless someone takes it off
+  const HIDE_KEY = "iijm.cardhide";
+  let cardHide = new Set((() => { try { const a = JSON.parse(localStorage.getItem(HIDE_KEY) || "[]"); return Array.isArray(a) ? a.filter(x => typeof x === "string") : []; } catch (e) { return []; } })());
+  let srOpener = null, srBlob = null, srBlobWait = null;
+  function prepareBlob() {
+    if (srBlob || srBlobWait) return srBlobWait || Promise.resolve(srBlob);
+    srBlobWait = new Promise(res => $("card").toBlob(b => { srBlob = b; srBlobWait = null; res(b); }, "image/png"));
+    return srBlobWait;
+  }
+  const cardBlob = () => srBlob ? Promise.resolve(srBlob) : prepareBlob();
+  const cardName = () => `job-hunt-day-${current.days}.png`;
+  const pageLink = () => STANDALONE ? `${location.origin}${location.pathname}` : "";
+  const shareText = () => postText(current) + (pageLink() ? `\n${pageLink()}` : "");
+  const pasteKey = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "") ? "Cmd+V" : "Ctrl+V";
+  let canFileShare = false;
+  try { canFileShare = !!(navigator.canShare && navigator.canShare({ files: [new File([new Blob(["x"], { type: "image/png" })], "card.png", { type: "image/png" })] })); } catch (e) {}
+  const canCopyImage = !!(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
+  $("sr-native").hidden = !canFileShare;
+  $("sr-copyimg").hidden = !canCopyImage;
+  // the phone share sheet leads when there is one, otherwise LinkedIn
+  (canFileShare ? $("sr-native") : $("sr-li")).classList.add("primary");
+
+  function renderChips() {
+    const wrap = $("sr-chips");
+    wrap.textContent = "";
+    const earned = byRank(earnedList(current));
+    $("sr-pick").hidden = earned.length === 0;
+    earned.forEach(b => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "sr-chip";
+      btn.dataset.id = b.id;
+      const cv = document.createElement("canvas");
+      cv.width = 96; cv.height = 115;
+      cv.setAttribute("aria-hidden", "true");
+      paintStamp(cv, b);
+      const t = document.createElement("span");
+      t.textContent = b.t;
+      btn.append(cv, t);
+      wrap.appendChild(btn);
+    });
+    syncChips();
+  }
+  function syncChips() {
+    document.querySelectorAll(".sr-chip").forEach(btn => {
+      const on = !cardHide.has(btn.dataset.id);
+      btn.setAttribute("aria-pressed", String(on));
+    });
+    $("sr-pick-n").textContent = `${cardBadges(current).length} of ${earnedList(current).length}`;
+  }
+  function setHidden(ids) {
+    cardHide = new Set(ids);
+    if (!state.example) { try { localStorage.setItem(HIDE_KEY, JSON.stringify([...cardHide])); } catch (e) {} }
+    syncChips();
+    drawCard();
+    $("post").value = postText(current);
+    $("sr-text").value = shareText();
+  }
+  function openSharer(opener) {
+    if (!current || current.level === "start") return;
+    srOpener = opener || null;
+    const ov = $("sharer");
+    ov.hidden = false;
+    drawCard();
+    renderChips();
+    $("sr-example").hidden = !state.example;
+    $("sr-note").textContent = "";
+    $("sr-text").hidden = true;
+    $("sr-text").value = shareText();
+    ov.scrollTop = 0;
+    document.querySelector(".wrap").inert = true;
+    $("reveal").inert = !$("reveal").hidden;
+    document.body.style.overflow = "hidden";
+    $("sr-close").focus({ preventScroll: true });
+    if (!reduceMotion()) {
+      anim(ov, [{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: "ease-out", fill: "none" });
+      anim($("sr-img"), [{ opacity: 0, transform: "translateY(16px) scale(.97)" }, { opacity: 1, transform: "none" }], { duration: 320, fill: "none" });
+    }
+  }
+  function closeSharer() {
+    const ov = $("sharer");
+    if (ov.hidden) return;
+    ov.hidden = true;
+    $("reveal").inert = false;
+    if ($("reveal").hidden) {
+      document.querySelector(".wrap").inert = false;
+      document.body.style.overflow = "";
+    }
+    if (srOpener && document.contains(srOpener)) srOpener.focus({ preventScroll: true });
+  }
+  const srNote = (text, link) => {
+    const n = $("sr-note");
+    n.textContent = text;
+    if (link) {
+      const a = document.createElement("a");
+      a.href = link.href; a.target = "_blank"; a.rel = "noopener"; a.textContent = link.text;
+      n.append(" ", a);
+    }
+  };
+  async function copyCardImage() {
+    const blob = await cardBlob();
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+  }
+  ["rv-share", "vd-share", "share-open", "card-open"].forEach(id => $(id).addEventListener("click", () => openSharer($(id))));
+  $("sr-close").addEventListener("click", closeSharer);
+  $("sharer").addEventListener("click", e => { if (e.target === e.currentTarget || e.target.id === "sr-body") closeSharer(); });
+  $("sr-chips").addEventListener("click", e => {
+    const btn = e.target.closest(".sr-chip");
+    if (!btn) return;
+    const next = new Set(cardHide);
+    if (next.has(btn.dataset.id)) next.delete(btn.dataset.id); else next.add(btn.dataset.id);
+    setHidden(next);
+  });
+  $("sr-all").addEventListener("click", () => setHidden([]));
+  $("sr-none").addEventListener("click", () => setHidden(earnedList(current).map(b => b.id)));
+  $("sr-native").addEventListener("click", async () => {
+    const ready = !!srBlob;
+    try {
+      const blob = await cardBlob();
+      await navigator.share({ files: [new File([blob], cardName(), { type: "image/png" })], text: shareText(), title: THEME.name });
+      srNote("Shared.");
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+      if (e && e.name === "NotAllowedError" && !ready) { srNote("Tap Share once more."); return; }
+      $("sr-native").hidden = true;
+      $("sr-li").classList.add("primary");
+      srNote("This browser cannot share the image directly. Post it on LinkedIn or save it instead.");
+    }
+  });
+  $("sr-li").addEventListener("click", async () => {
+    let copied = false;
+    if (canCopyImage) { try { await copyCardImage(); copied = true; } catch (e) {} }
+    const href = "https://www.linkedin.com/feed/?shareActive=true&text=" + encodeURIComponent(shareText());
+    window.open(href, "_blank", "noopener");
+    srNote(copied
+      ? `LinkedIn opens with your post text. Press ${pasteKey} in the post to add the card image.`
+      : "LinkedIn opens with your post text. Save the image and add it to the post.", { href, text: "Open LinkedIn again" });
+  });
+  $("sr-copyimg").addEventListener("click", async () => {
+    try { await copyCardImage(); srNote("Card image copied. Paste it into a post or a chat."); }
+    catch (e) { $("sr-copyimg").hidden = true; srNote("This browser does not let pages copy images. Save the image instead."); }
+  });
+  $("sr-copytxt").addEventListener("click", () => {
+    const text = shareText();
+    const fallback = () => { const ta = $("sr-text"); ta.value = text; ta.hidden = false; ta.focus(); ta.select(); srNote("The text is selected below. Copy it with your keyboard or the share menu."); };
+    try { navigator.clipboard.writeText(text).then(() => srNote("Post text copied."), fallback); } catch (e) { fallback(); }
+  });
+
+  // saving: the downloads capability inside Claude, a plain link on the website
+  let downloads = null;
+  if (window.claude && typeof window.claude.use === "function") {
+    window.claude.use("downloads").then(d => { downloads = d; $("sr-save").hidden = !d; }).catch(() => {});
+  } else if (STANDALONE) $("sr-save").hidden = false;
+  $("sr-save").addEventListener("click", async () => {
+    if (!downloads && !STANDALONE) return;
+    const blob = await cardBlob();
+    if (!blob) { srNote("The image could not be created. Try again."); return; }
+    if (!downloads) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = cardName();
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+      srNote("Card saved.");
+      return;
+    }
+    downloads.save({ filename: cardName(), data: blob })
+      .then(() => srNote("Card saved."))
+      .catch(e => {
+        const code = e && e.code;
+        if (code === "declined") srNote("Not saved.");
+        else if (code === "rate_limited") srNote("A save is already waiting for your answer.");
+        else { srNote("Saving is not available here. Long-press or right-click the card to save it."); $("sr-save").hidden = true; }
+      });
+  });
+
+  // ---------- verdict scene: the worse it looks, the more ghosts ----------
+  let sceneLevel = "start", sceneRaf = 0, sceneOn = true, sceneLast = 0;
+  function drawScene(t) {
+    const cv = $("scene");
+    const w = cv.clientWidth;
+    if (!w) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const Wp = Math.round(w * dpr), Hp = Math.round(w * 3 / 8 * dpr);
+    if (cv.width !== Wp || cv.height !== Hp) { cv.width = Wp; cv.height = Hp; }
+    const c = cv.getContext("2d");
+    c.setTransform(Wp / 480, 0, 0, Wp / 480, 0, 0);
+    c.clearRect(0, 0, 480, 180);
+    THEME.scene(c, 480, 180, sceneLevel, t);
+  }
+  function sceneLoop(now) {
+    sceneRaf = 0;
+    if (!sceneOn || document.hidden || reduceMotion()) return;
+    if (now - sceneLast > 33) { sceneLast = now; drawScene(now / 1000); }
+    sceneRaf = requestAnimationFrame(sceneLoop);
+  }
+  function startScene() {
+    if (reduceMotion()) { drawScene(1.6); return; }
+    if (!sceneRaf) sceneRaf = requestAnimationFrame(sceneLoop);
+  }
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(es => { sceneOn = es[es.length - 1].isIntersecting; if (sceneOn) startScene(); }).observe($("scene"));
+  }
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) startScene(); });
+  window.addEventListener("resize", () => drawScene(performance.now() / 1000));
+
+  writeInputs();
+  updateHint(readInputs());
+  paint(compute(readInputs()));
+  renderDataset();
+  if (document.fonts && document.fonts.ready) {
+    Promise.all([document.fonts.ready, ...THEME.fontsToLoad.map(f => document.fonts.load(f).catch(() => {}))])
+      .then(() => { if (current) renderBadges(current); drawScene(performance.now() / 1000); drawCard(); });
+  }
+})();
+</script>
+
+</html>
