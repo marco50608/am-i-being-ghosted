@@ -2,8 +2,7 @@
 
 A Bayesian reality check for a job hunt. Enter the date you started applying, how many applications you sent and how many interviews you got, and the page tells you whether the silence is ordinary ghosting or a sign to change something.
 
-- Yokai edition: https://marco50608.github.io/am-i-being-ghosted/
-- Ghost edition: https://marco50608.github.io/am-i-being-ghosted/ghost/
+Live at https://marco50608.github.io/am-i-being-ghosted/ (yokai edition).
 
 Everything runs in the browser. The log, streak and badges stay in the visitor's browser. A backup code moves them to another phone or computer without an account.
 
@@ -14,7 +13,7 @@ Each check of a visitor's own numbers adds one row to a Google Sheet through a G
 | Column | What it holds |
 |---|---|
 | received_at | when the row arrived |
-| theme | ghost or yokai |
+| theme | which edition sent the row, yokai for now |
 | start, days | start date of the search and days since then |
 | applications, interviews, offers | counts |
 | market, field, channel | optional menu answers |
